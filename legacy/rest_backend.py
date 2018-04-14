@@ -20,20 +20,19 @@ def not_found(error):
 
 users = [
     {
-
         'amtname': u'firelord',
         'fbname': u'alex balderson',
-        'email': u'ptmmr.black@gmail.com'
-        'uid': u'does facebook have this, mongo will generate one'
+        'email': u'ptmmr.black@gmail.com',
+        'uid': u'does facebook have this, mongo will generate one',
 
-        certifications = [
-            { 
+        'certifications' = [
+            {
                 'name': u'rules of engagement',
                 'correct': u'20',
                 'testdate': u'8/22/2017',
                 'status': u'passed'
             }
-            { 
+            {
                 'name': u'tournament rules',
                 'correct': u'20',
                 'testdate': u'3/29/2016',
@@ -41,25 +40,25 @@ users = [
             }
         ]
 
-    }    
+    }
 ]
 
 
 
 sections = [
     {
-    'title': u'example_section'
-    'uid': 0
+    'title': u'example_section',
+    'uid': 0,
 
         questions = [
         {
             'question': u'Buy groceries',
-            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'], 
+            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
             'correct': u'Cheese'
         },
         {
             'question': u'Buy groceries',
-            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'], 
+            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
             'correct': 'Cheese'
         }
 
@@ -67,18 +66,18 @@ sections = [
     }
 
     {
-    'title': u'miscellaneous'
-    'uid': 1
+    'title': u'miscellaneous',
+    'uid': 1,
 
         questions = [
         {
             'question': u'howdo',
-            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'], 
+            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
             'correct': u'Cheese'
         },
         {
             'question': u'whendo',
-            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'], 
+            'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
             'correct': u'Cheese'
         }
 
@@ -88,7 +87,7 @@ sections = [
 
 
 tests = [
-    
+
     {
         'name': u'rules of engagement',
         'passing score': u'75',
@@ -96,7 +95,7 @@ tests = [
         'expires': u'2y',
         'user agreement': 'i agree that this test was taken honestly blah blah...'
         'sections': {
-                        u'example_section':2, 
+                        u'example_section':2,
                         u'miscellaneous':1
                     }
     }
@@ -123,16 +122,15 @@ def make_public_task(task):
         else:
             new_task[field] = task[field]
     return new_task
-    
+
 
 
 @app.route('/users/<int:user_id>', methods = ['GET'])
-
 def get_user(user_id):
     """
     gets user data to be parsed and/or displayed on the admin page
     return: literally everything in the users table, see line 21
-            but should probably return only the non expired most 
+            but should probably return only the non expired most
             recent test result for each user.
     """
     user = filter(lambda t: t['id'] == user_id, users)
@@ -153,13 +151,13 @@ def create_user():
     """
     user = {
         'amtname': request.json['amtname'],
-        'fbname': request.json['fbname']
+        'fbname': reqtuest.json['fbname']
     }
     users.append(user)
     return jsonify( { 'user': make_public_task(user) } ), 201
 
 @app.route('/users/<int:user_uid>', methods = ['PUT'])
-def update_user(user_uid):
+def put_update_user(user_uid):
     """
     updates user with new information, generally after a user has submitted a test,
     uid is required, whatever information is being updated should be included
@@ -188,7 +186,7 @@ def update_certificate(user_uid, test_id):
     calculated on the fly and droped in.
 
     {
-        "correct": 3 
+        "correct": 3
     }
     """
     pass
@@ -225,7 +223,7 @@ def get_all_sections():
         {
             'title': 'Misc',
             'uid': 1
-        }   
+        }
     }
     """
     pass
@@ -234,7 +232,7 @@ def get_all_sections():
 def get_section(section_id):
     """
     returns all the section data + questions for a given section,
-    actually dont know if this is needed, might be able to just 
+    actually dont know if this is needed, might be able to just
     get questions for a section id
     """
     section = filter(lambda t: t['id'] == section_id, sections)
@@ -247,10 +245,10 @@ def update_section(section_id):
     this one is probalby not needed either, unless we rename a section
     """
     section = filter(lambda t: t['id'] == section_id, sections)
-    
+
     section[0]['title'] = request.json.get('title', section[0]['title'])
     return jsonify( { 'section': make_public_task(section[0]) } )
-    
+
 
 @app.route('/sections/<int:section_id>', methods = ['DELETE'])
 def delete_section(section_id):
@@ -262,7 +260,7 @@ def delete_section(section_id):
     eventually we will need a way to query the archive, but i bet
     i could mirror most of the calls and add a /archive/ infront of
     everything
-    """    
+    """
     section = filter(lambda t: t['id'] == section_id, sections)
     sections.remove(section[0])
     return jsonify( { 'result': True } )
@@ -324,19 +322,19 @@ def update_question(section_id, question_id):
     }
     """
     question = filter(lambda t: t['id'] == question_id, questions)
-    
+
     # needs to access questions table, dont know how this would be implemented
     question[0]['question'] = request.json.get('question', question[0]['question'])
     return jsonify( { 'question': make_public_task(question[0]) } )
- 
+
 @app.route('/sections/<int section_id>/questions</int:question_id>', methods = ['DELETE'])
 def delete_question(section_id, question_id):
     """
     deletes question from a section
-    """    
+    """
     question = filter(lambda t: t['id'] == question_id, questions)
     questions.remove(question[0])
-    return jsonify( { 'result': True } )   
+    return jsonify( { 'result': True } )
 
 
 @app.route('/tests/<int:test_id>', methods = ['GET'])
@@ -352,10 +350,10 @@ def get_test(test_id):
 @app.route('/tests/<str test_name>', methods = ['POST'])
 def create_test(test_name):
     """
-    creates a test which can be taken by users, questions will be 
+    creates a test which can be taken by users, questions will be
     random from a given sections (and probably in a random order too) and
     answers will also come in a random order.  the formatting on this is the
-    key to the whole project 
+    key to the whole project
     """
     test = {
         'name': request.json['name'],
@@ -382,7 +380,7 @@ def update_test(test_id):
     }
     """
     test = filter(lambda t: t['id'] == test_id, tests)
-    
+
     test[0]['name'] = request.json.get('name', test[0]['name'])
     test[0]['time_limit'] = request.json.get('time_lmit', test[0]['time_limit'])
     test[0]['expires'] = request.json.get('expires', test[0]['expires'])
@@ -395,11 +393,11 @@ def update_test(test_id):
 def delete_test(test_id):
     """
     removes a test (archive)
-    """    
+    """
     test = filter(lambda t: t['id'] == test_id, tests)
     tests.remove(test[0])
     return jsonify( { 'result': True } )
- 
+
 
 def submit_test():
     """
@@ -416,4 +414,4 @@ def parse_xls(filexls):
     pass
 
 if __name__ == '__main__':
-app.run(debug = True)
+    app.run(debug = True)
