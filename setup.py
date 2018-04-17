@@ -9,7 +9,7 @@ from setuptools import setup
 from setuptools import find_packages
 
 
-NAME = 'amtgardtest'
+NAME = 'amttest'
 PWD = os.path.abspath(os.path.dirname(__name__))
 
 METADATA_FILE = os.path.join(PWD, NAME, '__init__.py')
@@ -32,10 +32,10 @@ setup(
     url=METADATA['__url__'],
     license=METADATA['__license__'],
     packages=find_packages('.'),
-    install_requirements=REQUIREMENTS,
+    install_requires=REQUIREMENTS,
     zip_safe=True,
     entry_points={
-        'console_scripts': ['%s=%s.__main__:main' % (NAME, NAME)]
+        'console_scripts': ['amttest=amttest.amttest:launch_api']
     },
     classifiers=(
         'Development Status :: 1 - Planning',

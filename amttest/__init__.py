@@ -2,10 +2,9 @@
 TODO
 """
 
-__description__ = 'What is this package'
+__description__ = 'API for amtgard test package'
 __url__ = 'http://whereis.this/located'
-__version__ = 'x.x.x'
-__author__ = 'Your Name'
-__author_email__ = 'youremail@some.where'
+__version__ = '0.0.1'
+__author__ = 'Alex Balderson'
+__author_email__ = 'mr.balderson.alex@gmail.com'
 __license__ = 'GNU General Public License v3 (GPLv3)'
-__copyright__ = 'who owns this'

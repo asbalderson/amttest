@@ -1,8 +1,21 @@
-from flask import Flask, jsonify, abort, request, make_response, url_for
+from flask import jsonify, request, make_response, Blueprint
 
-from .amttest import AMT_TEST
+from .errors.badrequest import BadRequest
 
-@AMT_TEST.route('/users/<int:user_id>', methods = ['GET'])
+USER_BP = Blueprint('user', __name__)
+
+#this data is temproary for test data
+users = [
+    {
+        'amtname': 'baconman',
+        'fbname': 'super bacon',
+        'email': 'bacon@bacon.bacon',
+        'uid': 'does facebook have this, mongo will generate one'
+
+    },
+]
+
+@USER_BP.route('/users/<int:user_id>', methods = ['GET'])
 def get_user(user_id):
     """
     gets user data to be parsed and/or displayed on the admin page
@@ -10,11 +23,12 @@ def get_user(user_id):
             but should probably return only the non expired most
             recent test result for each user.
     """
-    user = filter(lambda t: t['id'] == user_id, users)
-    return jsonify( { 'user': make_public_task(user[0]) } )
+
+    global user
+    return make_response(jsonify(user), 200)
 
 
-@app.route('/users', methods = ['POST'])
+@USER_BP.route('/users', methods = ['POST'])
 def create_user():
     """
     creates a shell of a user, with their uid, amtname, name, and email
@@ -26,14 +40,21 @@ def create_user():
             "uid": "is this email?"
         }
     """
-    user = {
-        'amtname': request.json['amtname'],
-        'fbname': reqtuest.json['fbname']
-    }
-    users.append(user)
-    return jsonify( { 'user': make_public_task(user) } ), 201
+    user_shell = {}
+    bad = {}
+    for arg in ['amtname', 'email', 'name', 'uid']:
+        value = request.args.get(arg)
+        if value:
+            user_shell[arg] = value
+        else:
+            bad[arg] = value
+    if bad:
+        raise BadRequest('not all required values suplied', **bad)
 
-@app.route('/users/<int:user_uid>', methods = ['PUT'])
+
+    return make_response({'status': 'success'}, 200)
+
+@USER_BP.route('/users/<int:user_uid>', methods = ['PUT'])
 def put_update_user(user_uid):
     """
     updates user with new information, generally after a user has submitted a test,
@@ -44,22 +65,17 @@ def put_update_user(user_uid):
     }
 
     """
-    if 'username' in request.json and type(request.json['username']) != unicode:
-        abort(400)
-    if 'passed' in request.json and type(request.json['passed']) is not unicode:
-        abort(400)
-    user[0]['amtname'] = request.json.get('amtname', user[0]['amtname'])
-    user[0]['fbname'] = request.json.get('fbname', user[0]['fbname'])
-    # updating certifcations table may be tricky within the user table: may need seperate
-    # "update_certificates" method
-    #user[0]['certifications'] = request.json.get('certifications', user[0]['certifications'])
-    return jsonify( { 'user': make_public_task(user[0]) } )
+    global user
+    return make_response(jsonify(user), 200)
 
-@app.route('/users/<int:user_id>', methods = ['DELETE'])
+
+@USER_BP.route('/users/<int:user_id>', methods = ['DELETE'])
 def delete_user(user_id):
     """
     removes a user, probably because something went wrong :)
+    user will actually be archived
     """
-    user = filter(lambda t: t['id'] == user_id, users)
-    users.remove(user[0])
-    return jsonify( { 'result': True } )
+    result = {}
+    result['success'] = True
+    result['message'] = 'user %s Deleted' % user_id
+    return make_response(jsonify(result), 200)

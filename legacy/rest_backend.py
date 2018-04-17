@@ -25,7 +25,7 @@ users = [
         'email': u'ptmmr.black@gmail.com',
         'uid': u'does facebook have this, mongo will generate one',
 
-        'certifications' = [
+        'certifications': [
             {
                 'name': u'rules of engagement',
                 'correct': u'20',
@@ -50,7 +50,7 @@ sections = [
     'title': u'example_section',
     'uid': 0,
 
-        questions = [
+        'questions': [
         {
             'question': u'Buy groceries',
             'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
@@ -63,13 +63,13 @@ sections = [
         }
 
         ]
-    }
+    },
 
     {
     'title': u'miscellaneous',
     'uid': 1,
 
-        questions = [
+        'questions': [
         {
             'question': u'howdo',
             'answers': [u'Cheese', u'Pizza', u'Fruit', u'Tylenol'],
@@ -93,19 +93,19 @@ tests = [
         'passing score': u'75',
         'time limit': u'60m',
         'expires': u'2y',
-        'user agreement': 'i agree that this test was taken honestly blah blah...'
+        'user agreement': 'i agree that this test was taken honestly blah blah...',
         'sections': {
                         u'example_section':2,
                         u'miscellaneous':1
                     }
-    }
+    },
 
     {
         'name': u'rules of engagement',
         'passing score': u'75',
         'time limit': u'60m',
         'expires': u'2y',
-        'sections': [u'example_section':2, u'miscellaneous':1]
+        'sections': {u'example_section':2, u'miscellaneous':1}
     }
 
 ]
