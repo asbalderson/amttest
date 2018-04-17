@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, abort, request, make_response, url_for, Blueprint
-
+from ..helpers.bphandler import BPHandler
 
 sections = [
     {
@@ -14,6 +14,7 @@ sections = [
 ]
 
 SECTION_BP = Blueprint('sections', __name__)
+BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 #i think this is all admin stuff?
 @SECTION_BP.route('/sections/str:section_name', methods=['POST'])

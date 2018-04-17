@@ -1,9 +1,10 @@
 from flask import jsonify, request, make_response, Blueprint
 
 from ..errors.badrequest import BadRequest
+from ..helpers.bphandler import BPHandler
 
 USER_BP = Blueprint('user', __name__)
-
+BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 #this data is temproary for test data
 users = [
     {

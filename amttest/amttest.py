@@ -5,12 +5,11 @@ import os
 from flask import Flask
 from logging import handlers
 
-from .routes.certificate import CERT_BP
-from .routes.question import QUESTION_BP
-from .routes.section import SECTION_BP
-from .routes.test import TEST_BP
-from .routes.user import USER_BP
-from .errors.badrequest import BAD_REQUEST_BP
+from .routes import certificate, question, section, test, user
+from .errors import badrequest
+
+from .helpers.bphandler import BPHandler
+
 
 AMT_TEST = None
 
@@ -60,9 +59,5 @@ def launch_api():
     args = parser.parse_args()
     setup_logging(args.debug, args.verbose)
     config_app('amttest')
-    AMT_TEST.register_blueprint(CERT_BP, url_prefix='/amttest/api')
-    AMT_TEST.register_blueprint(QUESTION_BP, url_prefix='/amttest/api')
-    AMT_TEST.register_blueprint(SECTION_BP, url_prefix='/amttest/api')
-    AMT_TEST.register_blueprint(TEST_BP, url_prefix='/amttest/api')
-    AMT_TEST.register_blueprint(BAD_REQUEST_BP, url_prefix='/amttest/api')
+    BPHandler.register_blueprints(AMT_TEST)
     AMT_TEST.run(debug=args.debug)
