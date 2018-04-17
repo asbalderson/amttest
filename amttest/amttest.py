@@ -5,11 +5,11 @@ import os
 from flask import Flask
 from logging import handlers
 
-from .certificate import CERT_BP
-from .question import QUESTION_BP
-from .section import SECTION_BP
-from .test import TEST_BP
-from .user import USER_BP
+from .routes.certificate import CERT_BP
+from .routes.question import QUESTION_BP
+from .routes.section import SECTION_BP
+from .routes.test import TEST_BP
+from .routes.user import USER_BP
 from .errors.badrequest import BAD_REQUEST_BP
 
 AMT_TEST = None

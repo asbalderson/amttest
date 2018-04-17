@@ -2,7 +2,7 @@ import logging
 
 from flask import jsonify, request, make_response, Blueprint
 
-from .errors.badrequest import BadRequest
+from ..errors.badrequest import BadRequest
 
 tests = [
 
