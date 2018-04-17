@@ -22,7 +22,7 @@ def create_question(section_id):
     """
     message = {}
     message['questoinid'] = 1234
-    return make_response(jsonify(message), 200)
+    return make_response(jsonify(message), 201)
 
 
 @QUESTION_BP.route('/sections/<int:section_id>/question/<int:question_id>', methods = ['GET'])
@@ -77,7 +77,7 @@ def update_question(section_id, question_id):
             "confusing everyone reading it"],
         "answer": "having a laugh at alex's incompetence"
     }
-    return make_response((jsonify(message)), 200)
+    return make_response((jsonify(message)), 201)
 
 
 @QUESTION_BP.route('/sections/<int:section_id>/question/<int:question_id>', methods = ['DELETE'])

@@ -23,7 +23,7 @@ def create_section(section_name):
     """
     message = {}
     message['section_id'] = 1234
-    return make_response(jsonify(message), 200)
+    return make_response(jsonify(message), 201)
 
 
 @SECTION_BP.route('/sections', methods=['GET'])
@@ -80,7 +80,7 @@ def update_section(section_id):
             'title': 'Rules of Engagement',
             'section_id': 2
         }
-    return make_response(jsonify(message), 200)
+    return make_response(jsonify(message), 201)
 
 @SECTION_BP.route('/sections/<int:section_id>', methods = ['DELETE'])
 def delete_section(section_id):

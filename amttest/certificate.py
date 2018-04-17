@@ -36,7 +36,7 @@ def update_certificate(user_uid, test_id):
     message = {}
     message['correct'] = 20
     message['questions'] = 25
-    return make_response(jsonify(message), 200)
+    return make_response(jsonify(message), 201)
 
 
 # does it make more sense to do /user/userid/certificates?

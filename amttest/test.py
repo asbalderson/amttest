@@ -58,7 +58,7 @@ def create_test(test_name):
         'message': 'test created successfuly',
         'testid': 123456,
     }
-    return make_response(jsonify(msg), 200)
+    return make_response(jsonify(msg), 201)
 
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['PUT'])
@@ -76,18 +76,18 @@ def update_test(test_id):
     }
     """
      global test
-     bad = []
+     bad = {}
      good = []
-     for arg in request.args:
+     for arg in request.args.keys():
          #TODO fix this its bullshit
          if arg in test.keys():
             good.append(arg)
          else:
-             bad.append(arg)
+             bad[arg] = request[arg]
      if bad:
          raise BadRequest('some values do not exist for tests', **bad)
 
-     return make_response()
+     return make_response({}, 200)
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['DELETE'])
 def delete_test(test_id):

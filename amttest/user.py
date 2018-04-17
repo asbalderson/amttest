@@ -52,7 +52,7 @@ def create_user():
         raise BadRequest('not all required values suplied', **bad)
 
 
-    return make_response({'status': 'success'}, 200)
+    return make_response({'status': 'success'}, 201)
 
 @USER_BP.route('/users/<int:user_uid>', methods = ['PUT'])
 def put_update_user(user_uid):
@@ -66,7 +66,7 @@ def put_update_user(user_uid):
 
     """
     global user
-    return make_response(jsonify(user), 200)
+    return make_response(jsonify(user), 201)
 
 
 @USER_BP.route('/users/<int:user_id>', methods = ['DELETE'])
