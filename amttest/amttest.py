@@ -5,8 +5,8 @@ import os
 from flask import Flask
 from logging import handlers
 
-from .routes import certificate, question, section, test, user
-from .errors import badrequest
+from .routes import *
+from .errors import *
 
 from .helpers.bphandler import BPHandler
 
