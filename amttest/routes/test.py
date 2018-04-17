@@ -3,6 +3,7 @@ import logging
 from flask import jsonify, request, make_response, Blueprint
 
 from ..errors.badrequest import BadRequest
+from ..helpers.bphandler import BPHandler
 
 tests = [
 
@@ -30,6 +31,7 @@ tests = [
 ]
 
 TEST_BP = Blueprint('test', __name__)
+BPHandler.add_blueprint(TEST_BP, url_prefix='/amttest/api')
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['GET'])
 def get_test(test_id):

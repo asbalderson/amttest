@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, abort, request, make_response, url_for, Blueprint
+from ..helpers.bphandler import BPHandler
 
 QUESTION_BP = Blueprint('question', __name__)
+BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')
 
 @QUESTION_BP.route('/sections/<int:section_id>/question', methods=['POST'])
 def create_question(section_id):

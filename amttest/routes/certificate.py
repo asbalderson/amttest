@@ -1,6 +1,9 @@
 from flask import jsonify, request, make_response, Blueprint
 
+from ..helpers.bphandler import BPHandler
+
 CERT_BP = Blueprint('certificate', __name__)
+BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
 
 certifications =  [
     {
