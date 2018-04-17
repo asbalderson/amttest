@@ -11,14 +11,10 @@ from .errors import *
 from .helpers.bphandler import BPHandler
 
 
-AMT_TEST = None
-
-
 def config_app(name, urlbase_url='/amttest/api'):
-    global AMT_TEST
-    AMT_TEST = Flask(name)
-    AMT_TEST.config['APPLICATION_ROOT'] = urlbase_url
-
+    app = Flask(name)
+    app.config['APPLICATION_ROOT'] = urlbase_url
+    return app
 
 def setup_logging(debug=False, verbose=False):
     logger = logging.getLogger()
@@ -58,6 +54,6 @@ def launch_api():
                         action='store_true')
     args = parser.parse_args()
     setup_logging(args.debug, args.verbose)
-    config_app('amttest')
-    BPHandler.register_blueprints(AMT_TEST)
-    AMT_TEST.run(debug=args.debug)
+    app = config_app('amttest')
+    BPHandler.register_blueprints(app)
+    app.run(debug=args.debug)
