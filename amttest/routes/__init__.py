@@ -3,5 +3,6 @@ __all__=[
     'question',
     'section',
     'test',
-    'user'
+    'user',
+    'bad'
 ]
