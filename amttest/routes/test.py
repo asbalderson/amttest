@@ -33,6 +33,45 @@ tests = [
 TEST_BP = Blueprint('test', __name__)
 BPHandler.add_blueprint(TEST_BP, url_prefix='/amttest/api')
 
+@TEST_BP.route('/tests/', methods=['GET'])
+def get_tests():
+    """
+    gets all tests which exists
+    :return:
+    """
+    global tests
+    return make_response((jsonify(tests)), 200)
+
+
+@TEST_BP.route('/tests/<int:test_id>/take', methods = ['GET'])
+def get_randomized_test(test_id):
+    """
+    returns a randomized test with a list of questions based on parameters set
+    by the admin on test creation.
+    :param test_id:
+    :return:
+    """
+    msg = [
+        {'questionid': 1234,
+         'answers': [
+             {'answerid': 2345,
+              'answer': 'yes'},
+             {'answerid': 2346,
+              'answer': 'no'
+             }
+         ]},
+        {'questionid': 1235,
+         'answers': [
+             {'answerid': 2347,
+              'answer': 'up'},
+             {'answerid': 2348,
+              'answer': 'down'
+              }
+         ]}
+    ]
+    return make_response(jsonify(msg), 200)
+
+
 @TEST_BP.route('/tests/<int:test_id>', methods = ['GET'])
 def get_test(test_id):
     """
@@ -47,8 +86,8 @@ def get_test(test_id):
     return make_response(jsonify(msg), 200)
 
 
-@TEST_BP.route('/tests/<string:test_name>', methods = ['POST'])
-def create_test(test_name):
+@TEST_BP.route('/tests/', methods = ['POST'])
+def create_test():
     """
     creates a test which can be taken by users, questions will be
     random from a given sections (and probably in a random order too) and
