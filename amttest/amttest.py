@@ -5,8 +5,11 @@ import os
 from flask import Flask
 from logging import handlers
 
+from .database import db
+from .database.utils import create_tables
 from .routes import *
 from .errors import *
+
 
 from .helpers.bphandler import BPHandler
 
@@ -15,6 +18,19 @@ def config_app(name, urlbase_url='/amttest/api'):
     app = Flask(name)
     app.config['APPLICATION_ROOT'] = urlbase_url
     return app
+
+
+def config_dabase(app):
+    global db
+    app_path = '/var/cache/amttest'
+    if not os.path.exists(app_path):
+        os.mkdir(app_path)
+    db_path = 'sqlite:///%s/amttest.db' % app_path
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_path
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.app = app
+    db.init_app(app)
+
 
 def setup_logging(debug=False, verbose=False):
     logger = logging.getLogger()
@@ -41,7 +57,6 @@ def setup_logging(debug=False, verbose=False):
 
 
 def launch_api():
-    global AMT_TEST, CERT_BP
     parser = argparse.ArgumentParser(description='Launch a API with routes for '
                                                  'a test application')
     parser.add_argument('-d', '--debug',
@@ -52,8 +67,26 @@ def launch_api():
                         help='turn on terminal output',
                         default=False,
                         action='store_true')
+    subparser = parser.add_subparsers(dest='subcmd')
+    subparser.required = True
+
+    subparser.add_parser('init', help='setup the database')
+
+    run = subparser.add_parser('run', help='run the app')
+
+    run.add_argument('-p', '--port',
+                     help='port to run the app on',
+                     default=None)
+    run.add_argument('-i', '--ip',
+                     help='ip address to run the host at',
+                     default=None)
     args = parser.parse_args()
+    cmd = vars(args).pop('subcmd')
     setup_logging(args.debug, args.verbose)
     app = config_app('amttest')
     BPHandler.register_blueprints(app)
-    app.run(debug=args.debug)
+    config_dabase(app)
+    if cmd == 'run':
+        app.run(debug=args.debug, port=args.port)
+    elif cmd =='init':
+        create_tables()
