@@ -9,10 +9,10 @@ tests = [
 
     {
         'name': u'rules of engagement',
-        'passing score': u'75',
-        'time limit': u'60m',
-        'expires': u'2y',
-        'user agreement': 'i agree that this test was taken honestly blah blah...',
+        'pass_percent': 75,
+        'time_limit': 60,
+        'expiration': 1,
+        'ula': 'i agree that this test was taken honestly blah blah...',
         'sections': {
                         u'example_section':2,
                         u'miscellaneous':1
@@ -21,11 +21,14 @@ tests = [
 
     {
         'name': u'rules of engagement',
-        'passing score': u'75',
-        'time limit': u'60m',
-        'expires': u'2y',
-        'sections': {u'example_section':2,
-                     u'miscellaneous':1}
+        'pass_percent': 75,
+        'time_limit': 60,
+        'expiration': 1,
+        'ula': 'i agree to NOTHING',
+        'sections': {
+                        u'example_section':2,
+                        u'miscellaneous':1
+                    }
     }
 
 ]
@@ -53,6 +56,7 @@ def get_randomized_test(test_id):
     """
     msg = [
         {'questionid': 1234,
+         'question':'yes?',
          'answers': [
              {'answerid': 2345,
               'answer': 'yes'},
@@ -61,6 +65,7 @@ def get_randomized_test(test_id):
              }
          ]},
         {'questionid': 1235,
+         'question': 'up?',
          'answers': [
              {'answerid': 2347,
               'answer': 'up'},
@@ -75,15 +80,12 @@ def get_randomized_test(test_id):
 @TEST_BP.route('/tests/<int:test_id>', methods = ['GET'])
 def get_test(test_id):
     """
-    returns the test information, including all the sections, question counts
-    form each section, time limits, etc.
+    returns the test information, and the section names and ids for that test
 
     also need to to flag the test as grabed once before, so it cant be grabbed again
     """
-    msg = {
-        'message': 'this fucking thing is so long, im not setting it up right now'
-    }
-    return make_response(jsonify(msg), 200)
+    global test
+    return make_response(jsonify(test), 200)
 
 
 @TEST_BP.route('/tests/', methods = ['POST'])

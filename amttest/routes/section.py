@@ -3,13 +3,14 @@ from ..helpers.bphandler import BPHandler
 
 sections = [
     {
-    'title': u'example_section',
+    'section_name': u'example_section',
     'section_id': 0,
+    'active_qestions': 10
     },
     {
-    'title': u'miscellaneous',
+    'section_name': u'miscellaneous',
     'section_id': 1,
-
+    'active_qestions': 5
     }
 ]
 
@@ -17,8 +18,8 @@ SECTION_BP = Blueprint('sections', __name__)
 BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 #i think this is all admin stuff?
-@SECTION_BP.route('/sections/str:section_name', methods=['POST'])
-def create_section(section_name):
+@SECTION_BP.route('/tests/<int:test_id>/section/', methods=['POST'])
+def create_section(test_id):
     """
     creates a new section
     """
@@ -33,28 +34,18 @@ def get_all_sections():
     gets all the section names and uid's
     return:
     {
-        {
-            'title': 'Rules of Engagement',
-            'uid': 2
-        },
-        {
-            'title': 'Misc',
-            'uid': 1
-        }
+    'section_name': u'example_section',
+    'section_id': 0,
+    'active_qestions': 10
+    },
+    {
+    'section_name': u'miscellaneous',
+    'section_id': 1,
+    'active_qestions': 5
     }
     """
-    message =[
-        {
-            'title': 'Rules of Engagement',
-            'section_id': 2
-        },
-
-        {
-            'title': 'Misc',
-            'section_id': 1
-        }
-    ]
-    return make_response(jsonify(message), 200)
+    global sections
+    return make_response(jsonify(sections), 200)
 
 
 @SECTION_BP.route('/sections/<int:section_id>', methods = ['GET'])
@@ -65,9 +56,28 @@ def get_section(section_id):
     get questions for a section id
     """
     message ={
-            'title': 'Rules of Engagement',
+            'section_name': 'Rules of Engagement',
             'section_id': 2,
-            'questoin_ids': [1,2,3,4]
+            'active_questions': 5,
+            'questions': [
+                {
+                    'question_id as int':{
+                        'question': 'what are we doing',
+                        'answers':[
+                            {
+                            'answer_id': 5,
+                            'answer': 'no one knows',
+                            'correct': False
+                            },
+                            {
+                                'answer_id': 6,
+                                'answer': 'having a laugh at alex\'s expense',
+                                'correct': True
+                            },
+                        ]
+                    }
+                }
+            ]
         }
     return make_response(jsonify(message), 200)
 
@@ -75,11 +85,12 @@ def get_section(section_id):
 @SECTION_BP.route('/sections/<int:section_id>', methods = ['PUT'])
 def update_section(section_id):
     """
-    this one is probalby not needed either, unless we rename a section
+    this is used to change the number of questions usd for a section
     """
     message ={
-            'title': 'Rules of Engagement',
-            'section_id': 2
+            'section_name': 'Rules of Engagement',
+            'section_id': 2,
+            'active_questions': 5
         }
     return make_response(jsonify(message), 201)
 

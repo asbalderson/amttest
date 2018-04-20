@@ -8,11 +8,11 @@ BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 #this data is temproary for test data
 users = [
     {
+        'fburserid':12345678,
         'amtname': 'baconman',
         'fbname': 'super bacon',
         'email': 'bacon@bacon.bacon',
-        'uid': 'does facebook have this, mongo will generate one'
-
+        'userid': 1
     },
 ]
 
@@ -38,12 +38,12 @@ def create_user():
             "amtname": "example",
             "email": "example@amtgard.com",
             "name": "jane doe",
-            "uid": "is this email?"
+            "userid": "is this email?"
         }
     """
     user_shell = {}
     bad = {}
-    for arg in ['amtname', 'email', 'name', 'uid']:
+    for arg in ['amtname', 'email', 'name', 'userid']:
         value = request.args.get(arg)
         if value:
             user_shell[arg] = value
