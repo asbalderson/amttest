@@ -8,4 +8,5 @@ class Test(db.Model):
     test_name = db.Column(db.Text, nullable=False)
     pass_percent = db.Column(db.Integer, nullable=False)
     expiration = db.Column(db.Integer, nullable=False)
+    ula = db.Column(db.Text, nullable=False)
     archive = db.Column(db.Boolean, nullable=False, default=False)

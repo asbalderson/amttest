@@ -11,7 +11,7 @@ class Certificate(db.Model):
                        nullable=False)
     correct = db.Column(db.Integer, nullable=False)
     possible = db.Column(db.Integer, nullable=False)
-    date = db.Column(db.DateTime, nullable=False,
+    testdate = db.Column(db.DateTime, nullable=False,
                       default=datetime.datetime.utcnow)
     passed = db.Column(db.Boolean, nullable=False, default=False)
     archive = db.Column(db.Boolean, nullable=False, default=False)

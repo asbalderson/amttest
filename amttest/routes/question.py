@@ -12,13 +12,13 @@ def create_question(section_id):
     can assign the question id
 
     {
-        "text":"what is this api even doing?",
-        "options": [
-                    "no one knows",
-                    "testing amtgarders",
-                    "having a laugh at alex's incompetence",
-                    "confusing everyone reading it"],
-        "answer": "having a laugh at alex's incompetence"
+        "question":"what is this api even doing?",
+        "answers": {
+                    "no one knows":False,
+                    "testing amtgarders":False,
+                    "having a laugh at alex's incompetence":True,
+                    "confusing everyone reading it":False
+                    },
     }
 
     """
@@ -27,62 +27,70 @@ def create_question(section_id):
     return make_response(jsonify(message), 201)
 
 
-@QUESTION_BP.route('/sections/<int:section_id>/question/<int:question_id>', methods = ['GET'])
+@QUESTION_BP.route('/question/<int:question_id>', methods = ['GET'])
 def get_question(section_id, question_id):
     """
     may not be needed but returns a specfic question.
     return:
         {
-        "text":"what is this api even doing?",
-        "options": [
-                    "no one knows",
-                    "testing amtgarders",
-                    "having a laugh at alex's incompetence",
-                    "confusing everyone reading it"],
-        "answer": "having a laugh at alex's incompetence"
-    }
+        'question_id as int':
+            {
+            'question': 'what are we doing',
+            'answers':
+                [
+                    {
+                        'answer_id': 5,
+                        'answer': 'no one knows',
+                        'correct': False
+                    },
+                    {
+                        'answer_id': 6,
+                        'answer': 'having a laugh at alex\'s expense',
+                        'correct': True
+                    },
+                ]
+            }
+        }
     """
-    message = {
-        "text":"what is this api even doing?",
-        "options": [
-                    "no one knows",
-                    "testing amtgarders",
-                    "having a laugh at alex's incompetence",
-                    "confusing everyone reading it"],
-        "answer": "having a laugh at alex's incompetence"
-    }
+    message ={
+        'question_id as int':
+            {
+            'question': 'what are we doing',
+            'answers':
+                [
+                    {
+                        'answer_id': 5,
+                        'answer': 'no one knows',
+                        'correct': False
+                    },
+                    {
+                        'answer_id': 6,
+                        'answer': 'having a laugh at alex\'s expense',
+                        'correct': True
+                    },
+                ]
+            }
+        }
     return make_response((jsonify(message)), 200)
 
 
-@QUESTION_BP.route('/sections/<int:section_id>/question/<int:question_id>', methods = ['PUT'])
-def update_question(section_id, question_id):
+@QUESTION_BP.route('/question/<int:question_id>', methods = ['PUT'])
+def update_question(question_id):
     """
     updates a question, so it should probably send the entire question
 
     args:
     {
-        "text":"what is this api even doing?",
-        "options": [
-                    "no one knows",
-                    "testing amtgarders",
-                    "having a laugh at alex's incompetence",
-                    "confusing everyone reading it"],
-        "answer": "having a laugh at alex's incompetence"
+        "question":"some updated text?",
     }
     """
     message = {
-        "text": "what is this api even doing?",
-        "options": [
-            "no one knows",
-            "testing amtgarders",
-            "having a laugh at alex's incompetence",
-            "confusing everyone reading it"],
-        "answer": "having a laugh at alex's incompetence"
+        "question": "some updated text?",
     }
     return make_response((jsonify(message)), 201)
 
 
-@QUESTION_BP.route('/sections/<int:section_id>/question/<int:question_id>', methods = ['DELETE'])
+@QUESTION_BP.route('/question/<int:question_id>', methods = ['DELETE'])
 def delete_question(section_id, question_id):
     """
     deletes question from a section
@@ -92,3 +100,7 @@ def delete_question(section_id, question_id):
     result['success'] = True
     result['message'] = 'question %s Deleted' % question_id
     return make_response(jsonify(result), 200)
+
+
+# there is currently no way to update a questions answers
+# gota figure out where to put that route
