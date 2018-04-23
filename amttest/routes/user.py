@@ -2,6 +2,7 @@ from flask import jsonify, request, make_response, Blueprint
 
 from ..errors.badrequest import BadRequest
 from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 USER_BP = Blueprint('user', __name__)
 BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
@@ -41,6 +42,7 @@ def create_user():
             "userid": "is this email?"
         }
     """
+    check_token(get_token(request))
     user_shell = {}
     bad = {}
     for arg in ['amtname', 'email', 'name', 'userid']:
@@ -66,6 +68,7 @@ def put_update_user(user_uid):
     }
 
     """
+    check_token(get_token(request))
     global user
     return make_response(jsonify(user), 201)
 
@@ -76,6 +79,7 @@ def delete_user(user_id):
     removes a user, probably because something went wrong :)
     user will actually be archived
     """
+    check_token(get_token(request))
     result = {}
     result['success'] = True
     result['message'] = 'user %s Deleted' % user_id

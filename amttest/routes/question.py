@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, abort, request, make_response, url_for, Blueprint
 from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 QUESTION_BP = Blueprint('question', __name__)
 BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')
@@ -22,6 +23,7 @@ def create_question(section_id):
     }
 
     """
+    check_token(get_token(request))
     message = {}
     message['questoinid'] = 1234
     return make_response(jsonify(message), 201)
@@ -84,6 +86,7 @@ def update_question(question_id):
         "question":"some updated text?",
     }
     """
+    check_token(get_token(request))
     message = {
         "question": "some updated text?",
     }
@@ -96,6 +99,7 @@ def delete_question(section_id, question_id):
     deletes question from a section
     archive
     """
+    check_token(get_token(request))
     result = {}
     result['success'] = True
     result['message'] = 'question %s Deleted' % question_id

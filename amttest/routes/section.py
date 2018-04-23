@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, abort, request, make_response, url_for, Blueprint
+from flask import jsonify, request, make_response, Blueprint
 from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 sections = [
     {
@@ -23,6 +24,7 @@ def create_section(test_id):
     """
     creates a new section
     """
+    check_token(get_token(request))
     message = {}
     message['section_id'] = 1234
     return make_response(jsonify(message), 201)
@@ -87,6 +89,7 @@ def update_section(section_id):
     """
     this is used to change the number of questions usd for a section
     """
+    check_token(get_token(request))
     message ={
             'section_name': 'Rules of Engagement',
             'section_id': 2,
@@ -105,6 +108,7 @@ def delete_section(section_id):
     i could mirror most of the calls and add a /archive/ infront of
     everything
     """
+    check_token(get_token(request))
     result = {}
     result['success'] = True
     result['message'] = 'section %s Deleted' % section_id
