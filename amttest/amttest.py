@@ -12,6 +12,7 @@ from .errors import *
 
 
 from .helpers.bphandler import BPHandler
+from .helpers.token import gen_token, list_token
 
 
 def config_app(name, urlbase_url='/amttest/api'):
@@ -80,6 +81,12 @@ def launch_api():
     run.add_argument('-i', '--ip',
                      help='ip address to run the host at',
                      default=None)
+    token = subparser.add_parser('token', help='generate a fresh token')
+    token.add_argument('-l', '--list',
+                      help='List all current tokens',
+                      default=False,
+                      action='store_true')
+
     args = parser.parse_args()
     cmd = vars(args).pop('subcmd')
     setup_logging(args.debug, args.verbose)
@@ -90,3 +97,8 @@ def launch_api():
         app.run(debug=args.debug, port=args.port)
     elif cmd =='init':
         create_tables()
+    elif cmd == 'token':
+        if args.list:
+            list_token()
+        else:
+            gen_token()

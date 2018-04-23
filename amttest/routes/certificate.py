@@ -1,6 +1,7 @@
 from flask import jsonify, request, make_response, Blueprint
 
 from ..helpers.bphandler import BPHandler
+from ..helpers.token import check_token, get_token
 
 CERT_BP = Blueprint('certificate', __name__)
 BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
@@ -34,6 +35,8 @@ def update_certificate(user_uid, test_id):
     so the only missing information is the users score since pass fail can be
     calculated on the fly and dropped in.
     """
+    check_token(get_token(request))
+
     message = {}
     message['correct'] = 20
     message['possible'] = 25

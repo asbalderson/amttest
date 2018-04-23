@@ -4,5 +4,6 @@ __all__ = [
     'question',
     'section',
     'test',
+    'token',
     'user'
 ]

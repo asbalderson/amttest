@@ -4,6 +4,7 @@ from flask import jsonify, request, make_response, Blueprint
 
 from ..errors.badrequest import BadRequest
 from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 tests = [
 
@@ -96,7 +97,7 @@ def create_test():
     answers will also come in a random order.  the formatting on this is the
     key to the whole project
     """
-
+    check_token(get_token(request))
     msg = {
         'message': 'test created successfuly',
         'testid': 123456,
@@ -118,6 +119,7 @@ def update_test(test_id):
         "timelimit": 60
     }
     """
+     check_token(get_token(request))
      global test
      bad = {}
      good = []
@@ -137,6 +139,7 @@ def delete_test(test_id):
     """
     removes a test (archive)
     """
+    check_token(get_token(request))
     result = {}
     result['success'] = True
     result['message'] = 'test %s Deleted' % test_id
