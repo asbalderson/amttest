@@ -2,9 +2,5 @@
 
 from .amttest import launch_api
 
-def main():
-    launch_api()
-
-
 if __name__ == '__main__':
     launch_api()
