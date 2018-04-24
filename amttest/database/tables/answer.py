@@ -9,3 +9,4 @@ class Answer(db.Model):
     questionid = db.Column(db.Integer, db.ForeignKey('question.questionid'),
                            nullable=False)
     archive = db.Column(db.Boolean, nullable=False, default=False)
+    chosen = db.Collumn(db.Integer, nullable=False, default=0)

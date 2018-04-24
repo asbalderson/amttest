@@ -10,10 +10,9 @@ from .database.utils import create_tables
 from .routes import *
 from .errors import *
 
-
 from .helpers.bphandler import BPHandler
 from .helpers.token import gen_token, list_token
-
+from .helpers.importer import import_file
 
 def config_app(name, urlbase_url='/amttest/api'):
     app = Flask(name)
@@ -86,7 +85,20 @@ def launch_api():
                       help='List all current tokens',
                       default=False,
                       action='store_true')
-
+    importer = subparser.add_parser('import',
+                                    help='import questions from a csv file')
+    importer.add_argument('file',
+                          help='File to import questions from, '
+                               'needs to be a csv file, and have the following '
+                               'headers in the following order:\n'
+                               'section: Name of the section the question belongs \n'
+                               'question: the question being asked \n'
+                               'answer: an answer for that question \n'
+                               'correct: TRUE for correct, FALSE for incorrect')
+    importer.add_argument('test',
+                          help='test to import the questions for ex:\n'
+                               '\t"Reeves Test"'
+                               '\t"Corpra Test"')
     args = parser.parse_args()
     cmd = vars(args).pop('subcmd')
     setup_logging(args.debug, args.verbose)
@@ -102,3 +114,5 @@ def launch_api():
             list_token()
         else:
             gen_token()
+    elif cmd == 'import':
+        import_file(args.file, args.test)
