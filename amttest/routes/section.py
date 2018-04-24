@@ -4,12 +4,12 @@ from ..helpers.token import get_token, check_token
 
 sections = [
     {
-    'section_name': u'example_section',
+    'name': u'example_section',
     'section_id': 0,
     'active_qestions': 10
     },
     {
-    'section_name': u'miscellaneous',
+    'name': u'miscellaneous',
     'section_id': 1,
     'active_qestions': 5
     }
@@ -58,7 +58,7 @@ def get_section(section_id):
     get questions for a section id
     """
     message ={
-            'section_name': 'Rules of Engagement',
+            'name': 'Rules of Engagement',
             'section_id': 2,
             'active_questions': 5,
             'questions': [
@@ -91,7 +91,7 @@ def update_section(section_id):
     """
     check_token(get_token(request))
     message ={
-            'section_name': 'Rules of Engagement',
+            'name': 'Rules of Engagement',
             'section_id': 2,
             'active_questions': 5
         }

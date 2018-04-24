@@ -1,0 +1,9 @@
+section,question,answer,correct
+General,Why are we making this api?,Kent is super demanding,FALSE
+General,Why are we making this api?,Have a laugh at Alex’s incompetence.,TRUE
+General,Why are we making this api?,Do we even care?,FALSE
+General,Why are we making this api?,You can’t answer a question with a question.,FALSE
+Safety,Can I stick a fork in an outlet?,Yes,TRUE
+Safety,Can I stick a fork in an outlet?,No,FALSE
+Safety,Can I stick a fork in an outlet?,Maybe,FALSE
+Safety,Can I stick a fork in an outlet?,You’re already dead,FALSE
