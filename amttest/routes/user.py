@@ -1,21 +1,18 @@
 from flask import jsonify, request, make_response, Blueprint
 
+from ..database import db
+from ..database.utils import table2dict
+from ..database.tables.user import User
 from ..errors.badrequest import BadRequest
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
 
+import logging
+import json
+
 USER_BP = Blueprint('user', __name__)
 BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
-#this data is temproary for test data
-users = [
-    {
-        'fburserid':12345678,
-        'amtname': 'baconman',
-        'fbname': 'super bacon',
-        'email': 'bacon@bacon.bacon',
-        'userid': 1
-    },
-]
+
 
 @USER_BP.route('/users/<int:user_id>', methods = ['GET'])
 def get_user(user_id):
@@ -25,9 +22,11 @@ def get_user(user_id):
             but should probably return only the non expired most
             recent test result for each user.
     """
+    user = User.query.filter_by(userid=user_id, archive=False).first()
+    if not user:
+        raise BadRequest(message='User not found')
 
-    global user
-    return make_response(jsonify(user), 200)
+    return make_response(jsonify(table2dict(user)), 200)
 
 
 @USER_BP.route('/users', methods = ['POST'])
@@ -35,30 +34,43 @@ def create_user():
     """
     creates a shell of a user, with their uid, amtname, name, and email
     args:
-        {
-            "amtname": "example",
-            "email": "example@amtgard.com",
-            "name": "jane doe",
-            "userid": "is this email?"
-        }
     """
+    logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    user_shell = {}
-    bad = {}
-    for arg in ['amtname', 'email', 'name', 'userid']:
-        value = request.args.get(arg)
-        if value:
-            user_shell[arg] = value
+    required = ['fbuserid', 'name', 'email']
+    possible = ['amtname', 'kingdom'] + required
+    # veryify json
+    payload_raw = request.data.decode()
+    payload = json.loads(payload_raw)
+    logger.info(payload)
+    unused = {}
+    user = {}
+    for column in payload.keys():
+        logger.info(column)
+        if column in required:
+            required.remove(column)
+            possible.remove(column)
+            user[column] = payload[column]
+        elif column in possible:
+            possible.remove(column)
+            user[column] = payload[column]
         else:
-            bad[arg] = value
-    if bad:
-        raise BadRequest('not all required values suplied', **bad)
+            unused[column] = payload[column]
+    if required:
+        raise BadRequest(message='Missing fields: %s' % required)
+
+    logger.info(user)
+    new = User(**user)
+
+    db.session.add(new)
+    db.session.commit()
+    db.session.refresh(new)
+
+    return make_response(jsonify(table2dict(new)), 201)
 
 
-    return make_response({'status': 'success'}, 201)
-
-@USER_BP.route('/users/<int:user_uid>', methods = ['PUT'])
-def put_update_user(user_uid):
+@USER_BP.route('/users/<int:user_id>', methods = ['PUT'])
+def put_update_user(user_id):
     """
     updates user with new information, generally after a user has submitted a test,
     uid is required, whatever information is being updated should be included
@@ -68,9 +80,24 @@ def put_update_user(user_uid):
     }
 
     """
+    logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    global user
-    return make_response(jsonify(user), 201)
+    payload_raw = request.data.decode()
+    payload = json.loads(payload_raw)
+    user = User.query.filter_by(userid=user_id, archive=False).first()
+    if not user:
+        raise BadRequest(message='User not found')
+
+    ignored = {}
+    for field in payload.keys():
+        if field not in table2dict(user).keys():
+            ignored[field] = payload[field]
+        else:
+            setattr(user, field, payload[field])
+
+    db.session.commit()
+
+    return make_response('', 204)
 
 
 @USER_BP.route('/users/<int:user_id>', methods = ['DELETE'])
@@ -79,8 +106,14 @@ def delete_user(user_id):
     removes a user, probably because something went wrong :)
     user will actually be archived
     """
+    logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    result = {}
-    result['success'] = True
-    result['message'] = 'user %s Deleted' % user_id
-    return make_response(jsonify(result), 200)
+    user = User.query.filter_by(userid=user_id, archive=False).first()
+    if not user:
+        raise BadRequest(message='User not found')
+
+    logger.info(user)
+    user.archive = True
+    db.session.commit()
+
+    return make_response('', 204)
