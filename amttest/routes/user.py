@@ -1,4 +1,5 @@
 from flask import jsonify, request, make_response, Blueprint
+from sqlalchemy import inspect
 
 from ..database import db
 from ..database.utils import table2dict

@@ -7,4 +7,5 @@ def create_tables():
 
 
 def table2dict(table):
-    return {attr.key: getattr(table, attr.key) for attr in inspect(table).mapper.column_attrs}
+    return {attr.key: getattr(table, attr.key)
+            for attr in inspect(table).mapper.column_attrs}
