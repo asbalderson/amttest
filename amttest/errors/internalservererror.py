@@ -16,10 +16,10 @@ class InternalServerError(APIError):
 
 @INTERNAL_SERVER_ERROR_BP.app_errorhandler(InternalServerError)
 def handle_internal_server_error(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)
 
 
 @INTERNAL_SERVER_ERROR_BP.app_errorhandler(500)
 def handle_500(error):
-    not_found = InternalServerError(message=str(error))
-    return make_response(not_found.to_json())
+    ise = InternalServerError(message=str(error))
+    return make_response(ise.to_json(), ise.code)

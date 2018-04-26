@@ -16,4 +16,4 @@ class Unauthorized(APIError):
 
 @UNAUTHORIZED_BP.app_errorhandler(Unauthorized)
 def handle_unauthorized(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)

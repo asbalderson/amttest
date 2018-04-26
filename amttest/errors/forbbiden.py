@@ -16,10 +16,10 @@ class Forbidden(APIError):
 
 @FORBIDDEN_BP.app_errorhandler(Forbidden)
 def handle_forbidden(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)
 
 
 @FORBIDDEN_BP.app_errorhandler(403)
 def handle_403(error):
-    not_found = Forbidden(message=str(error))
-    return make_response(not_found.to_json())
+    forbidden = Forbidden(message=str(error))
+    return make_response(forbidden.to_json(), forbidden.code)

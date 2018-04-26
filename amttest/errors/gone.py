@@ -16,10 +16,10 @@ class Gone(APIError):
 
 @GONE_BP.app_errorhandler(Gone)
 def handle_gone(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)
 
 
 @GONE_BP.app_errorhandler(410)
 def handle_410(error):
-    not_found = Gone(message=str(error))
-    return make_response(not_found.to_json())
+    gone = Gone(message=str(error))
+    return make_response(gone.to_json(), gone.code)

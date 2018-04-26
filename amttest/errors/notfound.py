@@ -16,10 +16,10 @@ class NotFound(APIError):
 
 @NOT_FOUND_BP.app_errorhandler(NotFound)
 def handle_not_found(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)
 
 
 @NOT_FOUND_BP.app_errorhandler(404)
 def handle_404(error):
     not_found = NotFound(message=str(error))
-    return make_response(not_found.to_json())
+    return make_response(not_found.to_json(), not_found.code)
