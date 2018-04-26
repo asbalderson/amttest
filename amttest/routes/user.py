@@ -39,9 +39,14 @@ def create_user():
     possible = ['amtname', 'kingdom'] + required
     payload_raw = request.data.decode()
     payload = json.loads(payload_raw)
+
     unused = {}
     user = {}
     for column in payload.keys():
+        if column == 'fbuserid':
+            exists = User.query.filter_by(fbuserid=payload[column]).one()
+            if exists:
+                return make_response(jsonify(table2dict(exists)), 200)
         if column in required:
             required.remove(column)
             possible.remove(column)
