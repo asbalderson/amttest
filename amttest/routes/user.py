@@ -24,7 +24,21 @@ def get_user(user_id):
     """
     user = query_userid(user_id)
 
-    return make_response(jsonify(table2dict(user)), 200)
+    data = table2dict(user)
+    data.pop('fbuserid')
+    return make_response(jsonify(data), 200)
+
+
+@USER_BP.route('/users', methods=['GET'])
+def get_all_users():
+    all_users = User.query.filter_by(archive=False).all()
+    returnlist = []
+    for user in all_users:
+        tmp = table2dict(user)
+        tmp.pop('fbuserid')
+        returnlist.append(tmp)
+
+    return make_response(jsonify(returnlist), 200)
 
 
 @USER_BP.route('/users', methods = ['POST'])
@@ -36,7 +50,7 @@ def create_user():
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     required = ['fbuserid', 'name', 'email']
-    possible = ['amtname', 'kingdom'] + required
+    possible = ['amtname', 'kingdom', 'admin'] + required
     payload_raw = request.data.decode()
     payload = json.loads(payload_raw)
 
@@ -44,7 +58,7 @@ def create_user():
     user = {}
     for column in payload.keys():
         if column == 'fbuserid':
-            exists = User.query.filter_by(fbuserid=payload[column]).one()
+            exists = User.query.filter_by(fbuserid=payload[column]).first()
             if exists:
                 return make_response(jsonify(table2dict(exists)), 200)
         if column in required:
@@ -117,7 +131,7 @@ def delete_user(user_id):
 
 
 def query_userid(userid):
-    user = User.query.filter_by(userid=user_id, archive=False).first()
+    user = User.query.filter_by(userid=userid, archive=False).first()
     if not user:
         raise BadRequest(message='User not found')
     return user
