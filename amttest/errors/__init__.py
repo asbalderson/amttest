@@ -3,6 +3,7 @@ __all__=[
     'forbbiden',
     'gone',
     'internalservererror',
+    'methodnotallowed',
     'notfound',
     'unauthorized'
 ]

@@ -22,9 +22,7 @@ def get_user(user_id):
             but should probably return only the non expired most
             recent test result for each user.
     """
-    user = User.query.filter_by(userid=user_id, archive=False).first()
-    if not user:
-        raise BadRequest(message='User not found')
+    user = query_userid(user_id)
 
     return make_response(jsonify(table2dict(user)), 200)
 
@@ -39,14 +37,11 @@ def create_user():
     check_token(get_token(request))
     required = ['fbuserid', 'name', 'email']
     possible = ['amtname', 'kingdom'] + required
-    # veryify json
     payload_raw = request.data.decode()
     payload = json.loads(payload_raw)
-    logger.info(payload)
     unused = {}
     user = {}
     for column in payload.keys():
-        logger.info(column)
         if column in required:
             required.remove(column)
             possible.remove(column)
@@ -59,7 +54,6 @@ def create_user():
     if required:
         raise BadRequest(message='Missing fields: %s' % required)
 
-    logger.info(user)
     new = User(**user)
 
     db.session.add(new)
@@ -84,9 +78,8 @@ def put_update_user(user_id):
     check_token(get_token(request))
     payload_raw = request.data.decode()
     payload = json.loads(payload_raw)
-    user = User.query.filter_by(userid=user_id, archive=False).first()
-    if not user:
-        raise BadRequest(message='User not found')
+
+    user = query_userid(user_id)
 
     ignored = {}
     for field in payload.keys():
@@ -108,12 +101,18 @@ def delete_user(user_id):
     """
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    user = User.query.filter_by(userid=user_id, archive=False).first()
-    if not user:
-        raise BadRequest(message='User not found')
+
+    user = query_userid(user_id)
 
     logger.info(user)
     user.archive = True
     db.session.commit()
 
     return make_response('', 204)
+
+
+def query_userid(userid):
+    user = User.query.filter_by(userid=user_id, archive=False).first()
+    if not user:
+        raise BadRequest(message='User not found')
+    return user

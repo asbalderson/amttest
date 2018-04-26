@@ -16,4 +16,4 @@ class BadRequest(APIError):
 
 @BAD_REQUEST_BP.app_errorhandler(BadRequest)
 def handle_bad_request(error):
-    return make_response(error.to_json())
+    return make_response(error.to_json(), error.code)

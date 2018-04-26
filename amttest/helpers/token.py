@@ -26,6 +26,8 @@ def gen_token(length=40):
     db.session.commit()
     logger.info('created token')
     logger.info(token)
+    return token
+
 
 def list_token():
     """
