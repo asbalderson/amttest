@@ -1,50 +1,34 @@
 import logging
+import json
 
 from flask import jsonify, request, make_response, Blueprint
+from sqlalchemy import inspect
 
 from ..errors.badrequest import BadRequest
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
 
-tests = [
+from ..database import db
+from ..database.utils import table2dict
+from ..database.tables.test import Test
 
-    {
-        'name': u'rules of engagement',
-        'pass_percent': 75,
-        'time_limit': 60,
-        'expiration': 1,
-        'ula': 'i agree that this test was taken honestly blah blah...',
-        'sections': {
-                        u'example_section':2,
-                        u'miscellaneous':1
-                    }
-    },
-
-    {
-        'name': u'rules of engagement',
-        'pass_percent': 75,
-        'time_limit': 60,
-        'expiration': 1,
-        'ula': 'i agree to NOTHING',
-        'sections': {
-                        u'example_section':2,
-                        u'miscellaneous':1
-                    }
-    }
-
-]
 
 TEST_BP = Blueprint('test', __name__)
 BPHandler.add_blueprint(TEST_BP, url_prefix='/amttest/api')
 
-@TEST_BP.route('/tests/', methods=['GET'])
+
+@TEST_BP.route('/tests', methods=['GET'])
 def get_tests():
     """
     gets all tests which exists
     :return:
     """
-    global tests
-    return make_response((jsonify(tests)), 200)
+    data = Test.query.filter_by(archive=False).all()
+    return_list = []
+    for test in data:
+        return_list.append(table2dict(test))
+
+    return make_response((jsonify(return_list)), 200)
 
 
 @TEST_BP.route('/tests/<int:test_id>/take', methods = ['GET'])
@@ -55,6 +39,7 @@ def get_randomized_test(test_id):
     :param test_id:
     :return:
     """
+    #TODO :: add this method after all the other data can be populated
     msg = [
         {'questionid': 1234,
          'question':'yes?',
@@ -85,54 +70,57 @@ def get_test(test_id):
 
     also need to to flag the test as grabed once before, so it cant be grabbed again
     """
-    global test
-    return make_response(jsonify(test), 200)
+    test = Test.query.filter_by(archive=False, testid=test_id).first()
+    if not test:
+        raise BadRequest('test not found')
+    return make_response(jsonify(table2dict(test)), 200)
 
 
 @TEST_BP.route('/tests/', methods = ['POST'])
 def create_test():
     """
-    creates a test which can be taken by users, questions will be
-    random from a given sections (and probably in a random order too) and
-    answers will also come in a random order.  the formatting on this is the
-    key to the whole project
+    Creates a new test.
     """
     check_token(get_token(request))
-    msg = {
-        'message': 'test created successfuly',
-        'testid': 123456,
-    }
-    return make_response(jsonify(msg), 201)
+    payload_raw = request.data.decode()
+    payload = json.loads(payload_raw)
+    tabledata = {}
+    for column in payload.keys():
+        if column not in inspect(Test).mapper.column_attrs:
+            continue
+        else:
+            tabledata[column] = payload[column]
+
+    test = Test(**tabledata)
+    db.session.add(test)
+    db.session.commit()
+    db.session.refresh(test)
+
+    return make_response(jsonify(table2dict(test)), 201)
 
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['PUT'])
 def update_test(test_id):
-     """
-    updates test if parameters need to be changed, things like
-    name, sections it takes questions from, number of questions in a section
-    time limit, passing score, etc
-    {
-        "title": "ROP",
-        "sections": {
-                <section_id>:<questions from that section for the test>
-        }
-        "timelimit": 60
-    }
     """
-     check_token(get_token(request))
-     global test
-     bad = {}
-     good = []
-     for arg in request.args.keys():
-         #TODO fix this its bullshit
-         if arg in test.keys():
-            good.append(arg)
-         else:
-             bad[arg] = request[arg]
-     if bad:
-         raise BadRequest('some values do not exist for tests', **bad)
+    updates test if parameters need to be changed, things like
+    name,
+    """
+    check_token(get_token(request))
 
-     return make_response({}, 200)
+    test = Test.query.filter_by(archive=False, testid=test_id).first()
+    if not test:
+        raise BadRequest('test not found')
+
+    payload_raw = request.data.decode()
+    payload = json.loads(payload_raw)
+    for field in payload.keys():
+        if field in table2dict(test).keys():
+            setattr(test, field, payload[field])
+
+    db.session.commit()
+
+    return make_response('', 204)
+
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['DELETE'])
 def delete_test(test_id):
@@ -140,7 +128,8 @@ def delete_test(test_id):
     removes a test (archive)
     """
     check_token(get_token(request))
-    result = {}
-    result['success'] = True
-    result['message'] = 'test %s Deleted' % test_id
-    return make_response(jsonify(result), 200)
+    test = Test.query.filter_by(archive=False, testid=test_id).first()
+    if not test:
+        raise BadRequest('test not found')
+    test.archive = True
+    return make_response('', 204)

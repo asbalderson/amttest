@@ -1,6 +1,12 @@
-from flask import Flask, jsonify, abort, request, make_response, url_for, Blueprint
+from flask import jsonify, request, make_response, Blueprint
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
+
+from ..database.tables.question import Question
+from ..database.tables.answer import Answer
+
+import json
+import logging
 
 QUESTION_BP = Blueprint('question', __name__)
 BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')

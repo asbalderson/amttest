@@ -19,7 +19,7 @@ SECTION_BP = Blueprint('sections', __name__)
 BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 #i think this is all admin stuff?
-@SECTION_BP.route('/tests/<int:test_id>/section/', methods=['POST'])
+@SECTION_BP.route('/tests/<int:test_id>/sections/', methods=['POST'])
 def create_section(test_id):
     """
     creates a new section
