@@ -1,7 +1,9 @@
 import logging
 import json
+import random
 
 from flask import jsonify, request, make_response, Blueprint
+from pprint import pformat
 from sqlalchemy import inspect
 
 from ..errors.badrequest import BadRequest
@@ -10,6 +12,9 @@ from ..helpers.token import get_token, check_token
 
 from ..database import db
 from ..database.utils import table2dict
+from ..database.tables.answer import Answer
+from ..database.tables.question import Question
+from ..database.tables.section import Section
 from ..database.tables.test import Test
 
 
@@ -39,28 +44,32 @@ def get_randomized_test(test_id):
     :param test_id:
     :return:
     """
-    #TODO :: add this method after all the other data can be populated
-    msg = [
-        {'questionid': 1234,
-         'question':'yes?',
-         'answers': [
-             {'answerid': 2345,
-              'answer': 'yes'},
-             {'answerid': 2346,
-              'answer': 'no'
-             }
-         ]},
-        {'questionid': 1235,
-         'question': 'up?',
-         'answers': [
-             {'answerid': 2347,
-              'answer': 'up'},
-             {'answerid': 2348,
-              'answer': 'down'
-              }
-         ]}
-    ]
-    return make_response(jsonify(msg), 200)
+    logger = logging.getLogger(__name__)
+    test = Test.query.filter_by(archive=False, testid=test_id).first()
+    if not test:
+        raise BadRequest('test does not exist')
+
+    test_dict = table2dict(test)
+    test_dict['questions'] = []
+    sections = Section.query.filter_by(archive=False, testid=test.testid)
+    for section in sections:
+        if section.active_questions == 0:
+            continue
+        all_questions = Question.query.filter_by(archive=False, sectionid=section.sectionid).all()
+        used_questions = random.sample(all_questions, section.active_questions)
+        for question in used_questions:
+            toadd = {'questionid': question.questionid,
+                     'question': question.question,
+                     'answers': []}
+            answers = Answer.query.filter_by(archive=False, questionid=question.questionid).all()
+            random.shuffle(answers)
+            for answer in answers:
+                answer_dict= {'answerid': answer.answerid,
+                              'answer': answer.answer}
+                toadd['answers'].append(answer_dict)
+            test_dict['questions'].append(toadd)
+
+    return make_response(jsonify(test_dict), 200)
 
 
 @TEST_BP.route('/tests/<int:test_id>', methods = ['GET'])

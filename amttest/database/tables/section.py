@@ -6,5 +6,5 @@ class Section(db.Model):
     sectionid = db.Column(db.Integer, primary_key=True, nullable=False)
     name = db.Column(db.Text, nullable=False)
     testid = db.Column(db.Integer, db.ForeignKey('test.testid'))
-    active_questions = db.Column(db.Integer, default=0)
+    active_questions = db.Column(db.Integer, default=1)
     archive = db.Column(db.Boolean, nullable=False, default=False)
