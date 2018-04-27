@@ -1,3 +1,5 @@
 Flask
 Flask-SQLAlchemy
 Flask-Testing
+nose
+nose-exclude
