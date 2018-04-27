@@ -68,7 +68,8 @@ def get_randomized_test(test_id):
                               'answer': answer.answer}
                 toadd['answers'].append(answer_dict)
             test_dict['questions'].append(toadd)
-
+            random.shuffle(test_dict['questions'])
+            
     return make_response(jsonify(test_dict), 200)
 
 
