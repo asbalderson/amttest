@@ -17,7 +17,7 @@ ANSWER_BP = Blueprint('answer', __name__)
 BPHandler.add_blueprint(ANSWER_BP, url_prefix='/amttest/api')
 
 
-@ANSWER_BP.route('question/<int:question_id>/answer', methods=['POST'])
+@ANSWER_BP.route('/question/<int:question_id>/answer', methods=['POST'])
 def add_answer(question_id):
     check_token(get_token(request))
     payload_raw = request.data.decode()
@@ -41,7 +41,7 @@ def add_answer(question_id):
     return make_response(jsonify(table2dict(new)), 201)
 
 
-@ANSWER_BP.route('answer/<int:answer_id>', methods=['GET'])
+@ANSWER_BP.route('/answer/<int:answer_id>', methods=['GET'])
 def get_answer(answer_id):
     answer = Answer.query.filter_by(archive=False, answerid=answer_id)
     if not answer:
@@ -49,7 +49,7 @@ def get_answer(answer_id):
     return make_response(jsonify(table2dict(answer)), 200)
 
 
-@ANSWER_BP.route('answer/<int:answer_id', methods=['PUT'])
+@ANSWER_BP.route('/answer/<int:answer_id>', methods=['PUT'])
 def update_answer(answer_id):
     check_token(get_token(request))
     answer = Answer.query.filter_by(archive=False, answerid=answer_id)
@@ -65,7 +65,7 @@ def update_answer(answer_id):
     return make_response('', 204)
 
 
-@ANSWER_BP.route('answer/<int:answer_id', methods=['DELETE'])
+@ANSWER_BP.route('/answer/<int:answer_id>', methods=['DELETE'])
 def delete_answer(answer_id):
     check_token(get_token(request))
     answer = Answer.query.filter_by(archive=False, answerid=answer_id)
