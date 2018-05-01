@@ -3,18 +3,19 @@ import logging
 
 from flask import jsonify, request, make_response, Blueprint
 
+from . import get_payload
+
 from ..database import db
-from ..database.utils import table2dict
+from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.certificate import Certificate
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-
 from ..errors.badrequest import BadRequest
-
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import check_token, get_token
+
 
 CERT_BP = Blueprint('certificate', __name__)
 BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
@@ -37,8 +38,7 @@ def update_certificate(user_id, exam_id):
 
     """
     check_token(get_token(request))
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+    payload = get_payload(request)
 
     sections = Section.query.filter_by(archive=False, examid=exam_id).all()
     exam = Exam.query.filter_by(archive=False, examid=exam_id)
@@ -76,13 +76,8 @@ def update_certificate(user_id, exam_id):
     if (100.0 * cert_dict['correct']/cert_dict['possible']) >= exam.pass_percent:
         cert_dict['passed'] = True
     cert = Certificate(**cert_dict)
-
-    db.session.add(cert)
-
-    #should also commit all the changes for the given questions
-    db.session.commit()
-    db.session.refresh(cert)
-
+    #calling this calls commit, which should write all the changes above for stats
+    add_value(cert)
     return make_response(jsonify(table2dict(cert)), 201)
 
 
