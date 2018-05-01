@@ -15,7 +15,7 @@ USER_BP = Blueprint('user', __name__)
 BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['GET'])
+@USER_BP.route('/user/<int:user_id>', methods = ['GET'])
 def get_user(user_id):
     """
     gets user data to be parsed and/or displayed on the admin page
@@ -30,7 +30,7 @@ def get_user(user_id):
     return make_response(jsonify(data), 200)
 
 
-@USER_BP.route('/users', methods=['GET'])
+@USER_BP.route('/user', methods=['GET'])
 def get_all_users():
     all_users = User.query.filter_by(archive=False).all()
     returnlist = []
@@ -42,7 +42,7 @@ def get_all_users():
     return make_response(jsonify(returnlist), 200)
 
 
-@USER_BP.route('/users', methods = ['POST'])
+@USER_BP.route('/user', methods = ['POST'])
 def create_user():
     """
     creates a shell of a user, with their uid, amtname, name, and email
@@ -80,7 +80,7 @@ def create_user():
     return make_response(jsonify(table2dict(new)), 201)
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['PUT'])
+@USER_BP.route('/user/<int:user_id>', methods = ['PUT'])
 def update_user(user_id):
     """
     updates user with new information, generally after a user has submitted a test,
@@ -109,7 +109,7 @@ def update_user(user_id):
     return make_response('', 204)
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['DELETE'])
+@USER_BP.route('/user/<int:user_id>', methods = ['DELETE'])
 def delete_user(user_id):
     """
     removes a user, probably because something went wrong :)

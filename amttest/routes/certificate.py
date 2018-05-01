@@ -101,7 +101,7 @@ def get_certificate(user_id, exam_id):
 
 
 # does it make more sense to do /user/userid/certificates?
-@CERT_BP.route('/certificate/users/<int:user_id>', methods = ['GET'])
+@CERT_BP.route('/certificate/user/<int:user_id>', methods = ['GET'])
 def get_user_certs(user_id):
     """
      get all certificates for a given user
