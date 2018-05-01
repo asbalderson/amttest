@@ -7,7 +7,7 @@ class Certificate(db.Model):
     certid = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('user.userid'),
                     nullable=False)
-    testid = db.Column(db.Integer, db.ForeignKey('test.testid'),
+    examid = db.Column(db.Integer, db.ForeignKey('exam.examid'),
                        nullable=False)
     correct = db.Column(db.Integer, nullable=False)
     possible = db.Column(db.Integer, nullable=False)

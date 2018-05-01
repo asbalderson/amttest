@@ -1,9 +1,9 @@
 __all__ = [
     'answer',
     'certificate',
+    'exam',
     'question',
     'section',
-    'test',
     'token',
     'user'
 ]

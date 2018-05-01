@@ -2,7 +2,7 @@ from ..database import db
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
-from ..database.tables.test import Test
+from ..database.tables.exam import Exam
 
 import csv
 import collections
@@ -10,11 +10,11 @@ import logging
 import os
 
 
-def import_file(file_path, testname):
+def import_file(file_path, examname):
     """
     Import a csv file of questions into the database.
     :param file_path: String, path to the csv file to import
-    :param testname: String, name of the test to import questions to
+    :param examname: String, name of the test` to import questions to
     :return: None
     """
     logger = logging.getLogger()
@@ -22,7 +22,7 @@ def import_file(file_path, testname):
         logger.error('cannot find file %s', file_path)
         raise OSError()
 
-    testid = get_test_id(testname)
+    examid = get_exam_id(examname)
 
     with open(file_path) as csvfile:
         data = csv.DictReader(csvfile)
@@ -41,7 +41,7 @@ def import_file(file_path, testname):
             sections[row['section']].add(row['question'])
 
         for section in sections.copy().keys():
-            sectionid = get_section_id(section, testid)
+            sectionid = get_section_id(section, examid)
             for question in sections[section]:
                 question_id = get_question_id(question, sectionid)
                 for answer in questions[question]:
@@ -49,26 +49,26 @@ def import_file(file_path, testname):
                     new_answer(answer)
 
 
-def get_test_id(testname):
+def get_exam_id(examname):
     """
     Get a test id, or create one if it does not exist.
     :param testname: String, name of test to find id for
     :return: int, id for the test
     """
     logger = logging.getLogger(__name__)
-    result = Test.query.filter_by(name=testname).first()
+    result = Exam.query.filter_by(name=examname).first()
     if result:
-        logger.info('Found test, id is: %s', result.testid)
-        return result.testid
-    new = Test(name=testname)
+        logger.info('Found exam, id is: %s', result.examid)
+        return result.examid
+    new = Exam(name=examname)
     db.session.add(new)
     db.session.commit()
     db.session.refresh(new)
-    logger.info('New test created: %s', new)
-    return new.testid
+    logger.info('New exam created: %s', new)
+    return new.examid
 
 
-def get_section_id(sectionname, testid):
+def get_section_id(sectionname, examid):
     """
     Get a section id or crate it if it does not exist.
     :param sectionname: String, Name of the section to get the id for
@@ -80,7 +80,7 @@ def get_section_id(sectionname, testid):
     if result:
         logger.info('Found section, id is: %s', result.sectionid)
         return result.sectionid
-    new = Section(name=sectionname, testid=testid)
+    new = Section(name=sectionname, examid=examid)
     db.session.add(new)
     db.session.commit()
     db.session.refresh(new)
