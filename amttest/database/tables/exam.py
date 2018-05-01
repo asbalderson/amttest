@@ -1,9 +1,9 @@
 from .. import db
 
 
-class Test(db.Model):
-    __tablename__ = 'test'
-    testid = db.Column(db.Integer, primary_key=True, nullable=False)
+class Exam(db.Model):
+    __tablename__ = 'exam'
+    examid = db.Column(db.Integer, primary_key=True, nullable=False)
     time_limit = db.Column(db.Integer, nullable=False, default=20)
     name = db.Column(db.Text, nullable=False)
     pass_percent = db.Column(db.Integer, nullable=False, default=75)

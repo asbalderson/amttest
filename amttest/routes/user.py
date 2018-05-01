@@ -1,21 +1,21 @@
+import logging
+
 from flask import jsonify, request, make_response, Blueprint
-from sqlalchemy import inspect
+
+from . import get_payload
 
 from ..database import db
-from ..database.utils import table2dict
 from ..database.tables.user import User
+from ..database.utils import add_value, table2dict
 from ..errors.badrequest import BadRequest
 from ..helpers.bphandler import BPHandler
-from ..helpers.token import get_token, check_token
-
-import logging
-import json
+from ..helpers.token import check_token, get_token
 
 USER_BP = Blueprint('user', __name__)
 BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['GET'])
+@USER_BP.route('/user/<int:user_id>', methods = ['GET'])
 def get_user(user_id):
     """
     gets user data to be parsed and/or displayed on the admin page
@@ -30,7 +30,7 @@ def get_user(user_id):
     return make_response(jsonify(data), 200)
 
 
-@USER_BP.route('/users', methods=['GET'])
+@USER_BP.route('/user', methods=['GET'])
 def get_all_users():
     all_users = User.query.filter_by(archive=False).all()
     returnlist = []
@@ -42,7 +42,7 @@ def get_all_users():
     return make_response(jsonify(returnlist), 200)
 
 
-@USER_BP.route('/users', methods = ['POST'])
+@USER_BP.route('/user', methods = ['POST'])
 def create_user():
     """
     creates a shell of a user, with their uid, amtname, name, and email
@@ -52,8 +52,8 @@ def create_user():
     check_token(get_token(request))
     required = ['fbuserid', 'name', 'email']
     possible = ['amtname', 'kingdom', 'admin'] + required
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+
+    payload = get_payload(request)
 
     unused = {}
     user = {}
@@ -76,15 +76,12 @@ def create_user():
 
     new = User(**user)
 
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
-
+    add_value(new)
     return make_response(jsonify(table2dict(new)), 201)
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['PUT'])
-def put_update_user(user_id):
+@USER_BP.route('/user/<int:user_id>', methods = ['PUT'])
+def update_user(user_id):
     """
     updates user with new information, generally after a user has submitted a test,
     uid is required, whatever information is being updated should be included
@@ -96,8 +93,7 @@ def put_update_user(user_id):
     """
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+    payload = get_payload(request)
 
     user = query_userid(user_id)
 
@@ -113,7 +109,7 @@ def put_update_user(user_id):
     return make_response('', 204)
 
 
-@USER_BP.route('/users/<int:user_id>', methods = ['DELETE'])
+@USER_BP.route('/user/<int:user_id>', methods = ['DELETE'])
 def delete_user(user_id):
     """
     removes a user, probably because something went wrong :)

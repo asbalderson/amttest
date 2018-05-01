@@ -17,7 +17,7 @@ import logging
 QUESTION_BP = Blueprint('question', __name__)
 BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')
 
-@QUESTION_BP.route('/sections/<int:section_id>/question', methods=['POST'])
+@QUESTION_BP.route('/section/<int:section_id>/question', methods=['POST'])
 def create_question(section_id):
     """
     creates a new question under a section, question id's will probably all be

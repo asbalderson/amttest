@@ -47,7 +47,7 @@ def check_token(token):
     :param token: String, a string of characters used as an API token
     :return: Boolean, true if the api token exists in the database
     """
-    result = Token.query.filter_by(token=token).all()
+    result = Token.query.filter_by(token=token).first()
     if result:
         return True
     raise Unauthorized('Bad API token')
@@ -59,7 +59,7 @@ def get_token(request):
     :param request: flask.request: a request from a http(s) request
     :return: String, token used ot authenticate api requests
     """
-    token = request.args.get('token')
+    token = request.headers.get('Token')
     if not token:
         raise BadRequest(message='API token not provided')
     return token

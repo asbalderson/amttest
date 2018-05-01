@@ -95,8 +95,8 @@ def launch_api():
                                'question: the question being asked \n'
                                'answer: an answer for that question \n'
                                'correct: TRUE for correct, FALSE for incorrect')
-    importer.add_argument('test',
-                          help='test to import the questions for ex:\n'
+    importer.add_argument('exam',
+                          help='exam to import the questions for ex:\n'
                                '\t"Reeves Test"'
                                '\t"Corpra Test"')
     args = parser.parse_args()
@@ -115,4 +115,4 @@ def launch_api():
         else:
             gen_token()
     elif cmd == 'import':
-        import_file(args.file, args.test)
+        import_file(args.file, args.exam)
