@@ -28,6 +28,7 @@ def create_question(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     question = {'sectionid': section_id}
+    # TODO ensure there are enough active questions for the section
     for field in payload.keys():
         if field in inspect(Question).mapper.column_attrs:
             question[field] = payload[field]
@@ -60,8 +61,8 @@ def update_question(question_id):
     """
     check_token(get_token(request))
     question = query_question(question_id)
-    payload = get_payload(request
-                          )
+    payload = get_payload(request)
+    #TODO ensure there are enough active questions for the section
     for field in payload.keys():
         if field in inspect(Question).mapper.column_attrs:
             setattr(question, field, payload[field])
