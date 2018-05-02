@@ -43,7 +43,7 @@ def get_exam_sections(exam_id):
 
     section_list = []
     for section in section_data:
-        section.append(table2dict(section))
+        section_list.append(table2dict(section))
 
     return make_response(jsonify(section_list), 200)
 
@@ -57,7 +57,7 @@ def get_all_sections():
 
     section_list = []
     for section in section_data:
-        section.append(table2dict(section))
+        section_list.append(table2dict(section))
 
     return make_response(jsonify(section_list), 200)
 
@@ -102,6 +102,7 @@ def update_section(section_id):
 
     return make_response('', 204)
 
+
 @SECTION_BP.route('/section/<int:section_id>', methods = ['DELETE'])
 def delete_section(section_id):
     """
@@ -110,7 +111,7 @@ def delete_section(section_id):
     """
     check_token(get_token(request))
     section = query_section(section_id)
-    section.archive = False
+    section.archive = True
     db.session.commit()
     return make_response('', 204)
 

@@ -1,38 +1,68 @@
-import json
+from .base_test import BaseTest
 
-from flask import Flask
-from flask_testing import TestCase
-
-from ..database import db
-from ..database.utils import table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..errors import *
 from ..routes import section
 
-from ..helpers import token
-from ..helpers.bphandler import BPHandler
 
-class TesSection(TestCase):
+class TestSection(BaseTest):
 
     def create_app(self):
-        app = Flask('testing')
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        BPHandler.register_blueprints(app)
-        db.app = app
-        db.init_app(app)
-        return app
+        return BaseTest.create_app(self)
 
 
     def setUp(self):
-        db.create_all()
-        this_token = token.gen_token()
-        self.header_dict = {'token': this_token}
+        BaseTest.setUp(self)
+        answer = Answer(answer='is this an answer?', correct=False,
+                        questionid=1)
+        answer2 = Answer(answer='what about this?', correct=False, questionid=1)
+        answer3 = Answer(answer='this for sure!', correct=True, questionid=1)
+        question = Question(question='what is not a question?', sectionid=1)
+        self.add_obj_to_db([answer, answer2, answer3, question])
 
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        BaseTest.tearDown(self)
+
+
+    def test_get_all_sections(self):
+        section1 = Section(name='world of unknown',
+                           examid=1)
+        section2 = Section(name='world of known',
+                           examid=1)
+
+        self.default_get_all('amttest/api/section', [section1, section2])
+
+
+    def test_get_section(self):
+        section1 = Section(name='world of unknown',
+                           examid=1)
+        self.default_get('amttest/api/section', section1, ignore=['questions'])
+
+
+    def test_get_exam_sections(self):
+        section1 = Section(name='world of unknown',
+                           examid=1)
+        section2 = Section(name='world of known',
+                           examid=1)
+        self.default_get_all('amttest/api/exam/1/section', [section1, section2])
+
+
+    def test_new_section(self):
+        payload = {'name': 'just some section'}
+        self.default_post('amttest/api/exam/1/section', payload, Section)
+
+
+    def test_update_section(self):
+        payload = {'active_questions': 15}
+        section1 = Section(name='world of unknown',
+                           examid=1)
+        self.default_put('amttest/api/section', payload, section1, Section)
+
+
+    def test_delete_section(self):
+        section1 = Section(name='world of unknown',
+                           examid=1)
+        self.default_delete('amttest/api/section', section1)
