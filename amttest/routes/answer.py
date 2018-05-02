@@ -68,7 +68,7 @@ def delete_answer(answer_id):
 
 
 def query_answerid(answer_id):
-    answer = Answer.query.filter_by(archive=False, answerid=answer_id)
+    answer = Answer.query.filter_by(archive=False, answerid=answer_id).first()
     if not answer:
         raise BadRequest('Answer not found')
     return answer
