@@ -1,37 +1,46 @@
-import json
+from .base_test import BaseTest
 
-from flask import Flask
-from flask_testing import TestCase
-
-from ..database import db
-from ..database.utils import table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..errors import *
 from ..routes import question
 
-from ..helpers import token
-from ..helpers.bphandler import BPHandler
 
-class TestQuestion(TestCase):
+class TesSection(BaseTest):
 
     def create_app(self):
-        app = Flask('testing')
-        app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-        BPHandler.register_blueprints(app)
-        db.app = app
-        db.init_app(app)
-        return app
+        return BaseTest.create_app(self)
 
 
     def setUp(self):
-        db.create_all()
-        this_token = token.gen_token()
-        self.header_dict = {'token': this_token}
+        BaseTest.setUp(self)
+        answer = Answer(answer='is this an answer?', correct=False,
+                        questionid=1)
+        answer2 = Answer(answer='what about this?', correct=False, questionid=1)
+        answer3 = Answer(answer='this for sure!', correct=True, questionid=1)
+        self.add_obj_to_db([answer, answer2, answer3])
 
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        BaseTest.tearDown(self)
+
+
+    def test_get_question(self):
+        question = Question(question='what is not a question?', sectionid=1)
+        self.default_get('amttest/api/question', question, ignore=['answers'])
+
+
+    def test_add_question(self):
+        payload = {'question': 'what is this?'}
+        self.default_post('amttest/api/section/1/question', payload, Question, )
+
+
+    def test_update_question(self):
+        payload = {'question': 'we changed it'}
+        question = Question(question='what is not a question?', sectionid=1)
+        self.default_put('amttest/api/question', payload, question, Question)
+
+
+    def test_delete_question(self):
+        question = Question(question='what is not a question?', sectionid=1)
+        self.default_delete('amttest/api/question', question)

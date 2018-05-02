@@ -46,11 +46,11 @@ def get_question(question_id):
     question = query_question(question_id)
     return_dict = table2dict(question)
     return_dict['answers'] = []
-    answers = Answer.query.filter_by(archive=False, question=question_id).all()
+    answers = Answer.query.filter_by(archive=False, questionid=question_id).all()
     for answer in answers:
         return_dict['answers'].append(table2dict(answer))
 
-    return make_response((jsonify(table2dict(return_dict))), 200)
+    return make_response(jsonify(return_dict), 200)
 
 
 @QUESTION_BP.route('/question/<int:question_id>', methods = ['PUT'])
@@ -59,7 +59,7 @@ def update_question(question_id):
     updates a question, so it should probably send the entire question
     """
     check_token(get_token(request))
-    question = question_id(question_id)
+    question = query_question(question_id)
     payload = get_payload(request
                           )
     for field in payload.keys():
@@ -78,12 +78,14 @@ def delete_question(question_id):
     check_token(get_token(request))
     question = query_question(question_id)
     question.archive = True
+    db.session.commit()
     return make_response('', 204)
 
 
 def query_question(question_id):
     question = Question.query.filter_by(archive=False,
                                         questionid=question_id).first()
+    print('query happened')
     if not question:
-        return BadRequest('Question not found')
+        raise BadRequest('Question not found')
     return question

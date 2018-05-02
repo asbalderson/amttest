@@ -35,13 +35,17 @@ class BaseTest(TestCase):
         db.drop_all()
 
 
-    def default_get(self, route, db_object):
+    def default_get(self, route, db_object, ignore=None):
         self.add_obj_to_db([db_object])
 
         response = self.client.get('%s/1' % route)
         self.assert200(response, 'success status code not 200')
 
         record = table2dict(db_object)
+        if ignore:
+            for thing in ignore:
+                response.json.pop(thing)
+
         self.compare_object(response.json, record)
 
         response = self.client.get('%s/42' % route)
@@ -128,7 +132,7 @@ class BaseTest(TestCase):
         self.assert400(response_no_header, 'delete should require a token')
 
         response_empty = self.client.delete('%s/42' % route, headers=self.header_dict)
-        self.assert400(response_empty, 'requesting a missing payload should fail')
+        self.assert400(response_empty, 'requesting a bad id should fail')
 
         db.session.add(db_object)
         db.session.commit()
