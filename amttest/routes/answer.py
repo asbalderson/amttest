@@ -10,6 +10,7 @@ from ..helpers.token import check_token, get_token
 from ..database import db
 from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
+from ..database.tables.question import Question
 from ..errors.badrequest import BadRequest
 
 
