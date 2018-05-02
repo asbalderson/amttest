@@ -1,12 +1,8 @@
-import json
-
 from flask import Flask
 from flask_testing import TestCase
 
 from .base_test import BaseTest
 
-from ..database import db
-from ..database.utils import table2dict
 from ..database.tables.answer import Answer
 from ..errors import *
 from ..routes import answer
