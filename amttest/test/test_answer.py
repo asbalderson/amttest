@@ -29,6 +29,7 @@ class TestAnswer(BaseTest):
         answer = Answer(answer='is this an answer?', correct=False, questionid=1)
         self.default_get('amttest/api/answer', answer)
 
+
     def test_add_answer(self):
         payload = {'answer': 'is this an answer?',
                    'correct': False}

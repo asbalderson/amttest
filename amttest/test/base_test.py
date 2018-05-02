@@ -36,10 +36,7 @@ class BaseTest(TestCase):
 
 
     def default_get(self, route, db_object):
-
-        db.session.add(db_object)
-        db.session.commit()
-        db.session.refresh(db_object)
+        self.add_obj_to_db([db_object])
 
         response = self.client.get('%s/1' % route)
         self.assert200(response, 'success status code not 200')
@@ -63,11 +60,7 @@ class BaseTest(TestCase):
         self.assert200(response_empty,
                        'even an emptry respones should return values')
         self.assertListEqual(response_empty.json, [])
-        for db_object in object_list:
-            db.session.add(db_object)
-            db.session.commit()
-            db.session.refresh(db_object)
-
+        self.add_obj_to_db(object_list)
 
         response = self.client.get(route)
         self.assert200(response, 'getting values should return a 200')
@@ -90,9 +83,7 @@ class BaseTest(TestCase):
         response_no_data = self.client.put('%s/42' % route, headers=self.header_dict)
         self.assert400(response_no_data, 'some data is required for a new entry')
 
-        db.session.add(db_obj)
-        db.session.commit()
-        db.session.refresh(db_obj)
+        self.add_obj_to_db([db_obj])
 
         response_no_value = self.client.put('%s/42' % route, data=json.dumps(payload),
                                            headers=self.header_dict)
@@ -152,3 +143,10 @@ class BaseTest(TestCase):
     def compare_object(self, response_dict, db_dict):
         for field in response_dict.keys():
             self.assertEqual(response_dict[field], db_dict[field], 'response and database do not match')
+
+
+    def add_obj_to_db(self, object_list):
+        for db_object in object_list:
+            db.session.add(db_object)
+            db.session.commit()
+            db.session.refresh(db_object)
