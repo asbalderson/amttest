@@ -83,7 +83,7 @@ def get_exam(exam_id):
     return make_response(jsonify(table2dict(exam)), 200)
 
 
-@EXAM_BP.route('/exam/', methods = ['POST'])
+@EXAM_BP.route('/exam', methods = ['POST'])
 def create_exam():
     """
     Creates a new exam.
@@ -130,7 +130,7 @@ def delete_exam(exam_id):
     check_token(get_token(request))
     exam = query_exam(exam_id)
     exam.archive = True
-    db.commit()
+    db.session.commit()
     return make_response('', 204)
 
 
