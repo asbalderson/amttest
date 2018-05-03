@@ -1,6 +1,3 @@
-from flask import Flask
-from flask_testing import TestCase
-
 from .base_test import BaseTest
 
 from ..database.tables.answer import Answer
