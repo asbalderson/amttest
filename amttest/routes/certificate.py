@@ -41,7 +41,7 @@ def update_certificate(user_id, exam_id):
     payload = get_payload(request)
 
     sections = Section.query.filter_by(archive=False, examid=exam_id).all()
-    exam = Exam.query.filter_by(archive=False, examid=exam_id)
+    exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
 
     if not exam:
         raise BadRequest('exam not found')
@@ -59,7 +59,7 @@ def update_certificate(user_id, exam_id):
                  'possible': needed_questions,
                  'passed': False}
     for submission in payload:
-        answer = Answer.query.filter_by(archive=False, answreid=submission['answerid']).first()
+        answer = Answer.query.filter_by(archive=False, answerid=submission['answerid']).first()
         question = Question.query.filter_by(archive=False, questionid=submission['questionid']).first()
         if not answer:
             raise BadRequest('no answer found as submitted for question %s' % submission['questionid'])
@@ -68,7 +68,6 @@ def update_certificate(user_id, exam_id):
 
         if answer.correct:
             cert_dict['correct'] += 1
-            answer.correct += 1
             question.correct += 1
         answer.chosen += 1
         question.used += 1
@@ -86,7 +85,7 @@ def get_certificate(user_id, exam_id):
     """
     gets all certs for a single user and test
     """
-    certs = Certificate.quest.filter_by(archive=False, userid=user_id, examid=exam_id).all()
+    certs = Certificate.query.filter_by(archive=False, userid=user_id, examid=exam_id).all()
     cert_dict = []
     for cert in certs:
         tmp = table2dict(cert)
@@ -101,13 +100,14 @@ def get_user_certs(user_id):
     """
      get all certificates for a given user
     """
-    certs = Certificate.quest.filter_by(archive=False, userid=user_id).all()
+    certs = Certificate.query.filter_by(archive=False, userid=user_id).all()
     cert_dict = []
     for cert in certs:
         tmp = table2dict(cert)
         cert_dict.append(tmp)
 
     return make_response(jsonify(cert_dict), 200)
+
 
 @CERT_BP.route('/certificate/exam/<int:exam_id>', methods = ['GET'])
 def get_test_certs(exam_id):
@@ -116,7 +116,7 @@ def get_test_certs(exam_id):
     :param test_id:
     :return:
     """
-    certs = Certificate.quest.filter_by(archive=False, examid=exam_id).all()
+    certs = Certificate.query.filter_by(archive=False, examid=exam_id).all()
     cert_dict = []
     for cert in certs:
         tmp = table2dict(cert)
@@ -131,7 +131,7 @@ def get_all_certs():
     get all certs
     :return:
     """
-    certs = Certificate.quest.filter_by(archive=False).all()
+    certs = Certificate.query.filter_by(archive=False).all()
     cert_dict = []
     for cert in certs:
         tmp = table2dict(cert)
