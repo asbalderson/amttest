@@ -39,9 +39,9 @@ class TestExam(BaseTest):
             question='When do shots count after a player is hit in the head?',
             sectionid=2))
         data.append(Answer(answer='All hits count even if the player is stunned', correct=False, questionid=3))
-        data.append(Answer(answer='No hits count until the struke player says they are OK', correct=False, questionid=3))
+        data.append(Answer(answer='No hits count until the struck player says they are OK', correct=False, questionid=3))
         data.append(Answer(answer='No hits count and the striking player should remove hiimself from the field', correct=False, questionid=3))
-        data.append(Answer(answer='All hits count, given the struck and striking players continue play, otherwise combat should be reset to before the strike', correct=False, questionid=3))
+        data.append(Answer(answer='All hits count, given the struck and striking players continue play, otherwise combat should be reset to before the strike', correct=True, questionid=3))
         data.append(Question(
             question='When should "Safety" be called?',
             sectionid=2))
