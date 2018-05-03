@@ -13,7 +13,6 @@ class BPHandler(object):
             argdict.update(**kwargs)
         BPHandler.bpdict[blueprint] = argdict
 
-
     @staticmethod
     def register_blueprints(flask_app):
         for bp in BPHandler.bpdict.keys():

@@ -14,6 +14,7 @@ from .helpers.bphandler import BPHandler
 from .helpers.token import gen_token, list_token
 from .helpers.importer import import_file
 
+
 def config_app(name, urlbase_url='/amttest/api'):
     app = Flask(name)
     app.config['APPLICATION_ROOT'] = urlbase_url
@@ -43,8 +44,8 @@ def setup_logging(debug=False, verbose=False):
         logger.setLevel(logging.DEBUG)
     elif verbose:
         logger.setLevel(logging.INFO)
-
-    formatter = logging.Formatter('%(asctime)s - %(name)s %(levelname)s: %(message)s')
+    fmt = '%(asctime)s - %(name)s %(levelname)s: %(message)s'
+    formatter = logging.Formatter(fmt)
 
     term_channel = logging.StreamHandler()
     term_channel.setFormatter(formatter)
@@ -57,8 +58,8 @@ def setup_logging(debug=False, verbose=False):
 
 
 def launch_api():
-    parser = argparse.ArgumentParser(description='Launch a API with routes for '
-                                                 'a test application')
+    parser = argparse.ArgumentParser(description='Launch a API with routes '
+                                                 'for a test application')
     parser.add_argument('-d', '--debug',
                         help='turn on the debug flag',
                         default=False,
@@ -82,19 +83,21 @@ def launch_api():
                      default=None)
     token = subparser.add_parser('token', help='generate a fresh token')
     token.add_argument('-l', '--list',
-                      help='List all current tokens',
-                      default=False,
-                      action='store_true')
+                       help='List all current tokens',
+                       default=False,
+                       action='store_true')
     importer = subparser.add_parser('import',
                                     help='import questions from a csv file')
     importer.add_argument('file',
                           help='File to import questions from, '
-                               'needs to be a csv file, and have the following '
-                               'headers in the following order:\n'
-                               'section: Name of the section the question belongs \n'
+                               'needs to be a csv file, and have the '
+                               'following headers in the following order:\n'
+                               'section: Name of the section the question '
+                               'belongs \n'
                                'question: the question being asked \n'
                                'answer: an answer for that question \n'
-                               'correct: TRUE for correct, FALSE for incorrect')
+                               'correct: TRUE for correct, FALSE for '
+                               'incorrect')
     importer.add_argument('exam',
                           help='exam to import the questions for ex:\n'
                                '\t"Reeves Test"'
@@ -105,9 +108,10 @@ def launch_api():
     app = config_app('amttest')
     BPHandler.register_blueprints(app)
     config_dabase(app)
+
     if cmd == 'run':
         app.run(debug=args.debug, port=args.port)
-    elif cmd =='init':
+    elif cmd == 'init':
         create_tables()
     elif cmd == 'token':
         if args.list:

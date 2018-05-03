@@ -72,7 +72,8 @@ def get_section_id(sectionname, examid):
     """
     Get a section id or crate it if it does not exist.
     :param sectionname: String, Name of the section to get the id for
-    :param testid: Int, when creating a new section, test to associate the section with
+    :param testid: Int, when creating a new section, test to associate
+    the section with
     :return: Int, id for the new section
     """
     logger = logging.getLogger(__name__)
@@ -92,7 +93,8 @@ def get_question_id(question, sectionid):
     """
     Get a question id or create one, if it does not exist
     :param question: String, Text for the question
-    :param sectionid: Int, if creating, the section id to associate the question to
+    :param sectionid: Int, if creating, the section id to associate the
+    question to
     :return: None
     """
     logger = logging.getLogger(__name__)

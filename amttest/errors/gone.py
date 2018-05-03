@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 GONE_BP = Blueprint('Gone', __name__)
 BPHandler.add_blueprint(GONE_BP, url_prefix='/amttest/api')
 
+
 class Gone(APIError):
 
     def __init__(self, message, **kwargs):

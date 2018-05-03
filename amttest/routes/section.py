@@ -26,7 +26,7 @@ def create_section(exam_id):
     """
     check_token(get_token(request))
     payload = get_payload(request)
-    fields = {'examid':exam_id}
+    fields = {'examid': exam_id}
     for column in payload.keys():
         if column not in inspect(Section).mapper.column_attrs:
             continue
@@ -62,7 +62,7 @@ def get_all_sections():
     return make_response(jsonify(section_list), 200)
 
 
-@SECTION_BP.route('/section/<int:section_id>', methods = ['GET'])
+@SECTION_BP.route('/section/<int:section_id>', methods=['GET'])
 def get_section(section_id):
     """
     returns all the section data + questions for a given section,
@@ -73,12 +73,14 @@ def get_section(section_id):
     section = query_section(section_id)
     return_dict = table2dict(section)
 
-    questions = Question.query.filter_by(archive=False, sectionid=section.sectionid)
+    questions = Question.query.filter_by(archive=False,
+                                         sectionid=section.sectionid).all()
     return_dict['questions'] = []
     for question in questions:
         question_dict = table2dict(question)
         question_dict['answers'] = []
-        answers = Answer.query.filter_by(archive=False, questionid=question.questionid)
+        answers = Answer.query.filter_by(archive=False,
+                                         questionid=question.questionid).all()
         for answer in answers:
             question_dict['answers'].append(table2dict(answer))
         return_dict['questions'].append(question_dict)
@@ -86,7 +88,7 @@ def get_section(section_id):
     return make_response(jsonify(return_dict), 200)
 
 
-@SECTION_BP.route('/section/<int:section_id>', methods = ['PUT'])
+@SECTION_BP.route('/section/<int:section_id>', methods=['PUT'])
 def update_section(section_id):
     """
     this is used to change the number of questions usd for a section
@@ -96,9 +98,11 @@ def update_section(section_id):
     section = query_section(section_id)
     for field in payload.keys():
         if field == 'active_questions':
-            questions = Question.query.filter_by(archive=False, sectionid=section_id).all()
+            questions = Question.query.filter_by(archive=False,
+                                                 sectionid=section_id).all()
             if len(questions) < payload['active_questions']:
-                raise BadRequest('Cannot have fewer questions than active questions, add some questions first')
+                raise BadRequest('Cannot have fewer questions than '
+                                 'active questions, add some questions first')
         if field in inspect(Section).mapper.column_attrs:
             setattr(section, field, payload[field])
 
@@ -107,7 +111,7 @@ def update_section(section_id):
     return make_response('', 204)
 
 
-@SECTION_BP.route('/section/<int:section_id>', methods = ['DELETE'])
+@SECTION_BP.route('/section/<int:section_id>', methods=['DELETE'])
 def delete_section(section_id):
     """
     removes a section, tests calling removed section will be invalid

@@ -28,7 +28,7 @@ def add_answer(question_id):
         if field in required:
             required.remove(field)
         if field in inspect(Answer).mapper.column_attrs:
-           answer[field] = payload[field]
+            answer[field] = payload[field]
 
     if required:
         raise BadRequest('missing all required fields: %s' % required)

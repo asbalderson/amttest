@@ -6,6 +6,7 @@ from flask import jsonify, make_response, Blueprint
 BAD_REQUEST_BP = Blueprint('BadRequest', __name__)
 BPHandler.add_blueprint(BAD_REQUEST_BP, url_prefix='/amttest/api')
 
+
 class BadRequest(APIError):
 
     def __init__(self, message, **kwargs):

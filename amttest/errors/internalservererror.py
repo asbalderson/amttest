@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 INTERNAL_SERVER_ERROR_BP = Blueprint('Internal Server Error', __name__)
 BPHandler.add_blueprint(INTERNAL_SERVER_ERROR_BP, url_prefix='/amttest/api')
 
+
 class InternalServerError(APIError):
 
     def __init__(self, message, **kwargs):

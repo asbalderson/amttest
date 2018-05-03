@@ -2,7 +2,7 @@ import json
 
 from ..errors.badrequest import BadRequest
 
-__all__=[
+__all__ = [
     'answer',
     'certificate',
     'exam',

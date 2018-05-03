@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 METHOD_NOT_ALLOWED_BP = Blueprint('Method Not Allowed', __name__)
 BPHandler.add_blueprint(METHOD_NOT_ALLOWED_BP, url_prefix='/amttest/api')
 
+
 class MethodNotAllowed(APIError):
 
     def __init__(self, message, **kwargs):

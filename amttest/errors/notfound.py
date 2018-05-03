@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 NOT_FOUND_BP = Blueprint('NotFound', __name__)
 BPHandler.add_blueprint(NOT_FOUND_BP, url_prefix='/amttest/api')
 
+
 class NotFound(APIError):
 
     def __init__(self, message, **kwargs):
