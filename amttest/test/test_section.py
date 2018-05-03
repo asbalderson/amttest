@@ -1,3 +1,5 @@
+import json
+
 from .base_test import BaseTest
 
 from ..database.tables.answer import Answer
@@ -56,10 +58,14 @@ class TestSection(BaseTest):
 
 
     def test_update_section(self):
-        payload = {'active_questions': 15}
+        payload = {'name': 'some new section name'}
         section1 = Section(name='world of unknown',
                            examid=1)
         self.default_put('amttest/api/section', payload, section1, Section)
+
+        payload_active_question = {'active_questions': 300}
+        result_not_enough_questions = self.client.put('amttest/api/section/1', headers=self.header_dict, data=json.dumps(payload_active_question))
+        self.assert400(result_not_enough_questions, 'should not be able to have more active quesitons than questions')
 
 
     def test_delete_section(self):

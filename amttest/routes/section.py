@@ -94,8 +94,11 @@ def update_section(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     section = query_section(section_id)
-    # TODO make sure there are enough active questions in a section
     for field in payload.keys():
+        if field == 'active_questions':
+            questions = Question.query.filter_by(archive=False, sectionid=section_id).all()
+            if len(questions) < payload['active_questions']:
+                raise BadRequest('Cannot have fewer questions than active questions, add some questions first')
         if field in inspect(Section).mapper.column_attrs:
             setattr(section, field, payload[field])
 
