@@ -3,20 +3,19 @@ import json
 import random
 
 from flask import jsonify, request, make_response, Blueprint
-from pprint import pformat
 from sqlalchemy import inspect
 
-from ..errors.badrequest import BadRequest
-from ..helpers.bphandler import BPHandler
-from ..helpers.token import get_token, check_token
+from . import get_payload
 
 from ..database import db
-from ..database.utils import table2dict
+from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-
+from ..errors.badrequest import BadRequest
+from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 EXAM_BP = Blueprint('exam', __name__)
 BPHandler.add_blueprint(EXAM_BP, url_prefix='/amttest/api')
@@ -45,9 +44,7 @@ def get_randomized_exam(exam_id):
     :return:
     """
     logger = logging.getLogger(__name__)
-    exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
-    if not exam:
-        raise BadRequest('exam does not exist')
+    exam = query_exam(exam_id)
 
     exam_dict = table2dict(exam)
     exam_dict['questions'] = []
@@ -86,14 +83,13 @@ def get_exam(exam_id):
     return make_response(jsonify(table2dict(exam)), 200)
 
 
-@EXAM_BP.route('/exam/', methods = ['POST'])
+@EXAM_BP.route('/exam', methods = ['POST'])
 def create_exam():
     """
     Creates a new exam.
     """
     check_token(get_token(request))
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+    payload = get_payload(request)
     tabledata = {}
     for column in payload.keys():
         if column not in inspect(Exam).mapper.column_attrs:
@@ -102,9 +98,7 @@ def create_exam():
             tabledata[column] = payload[column]
 
     exam = Exam(**tabledata)
-    db.session.add(exam)
-    db.session.commit()
-    db.session.refresh(exam)
+    add_value(exam)
 
     return make_response(jsonify(table2dict(exam)), 201)
 
@@ -117,12 +111,8 @@ def update_exam(exam_id):
     """
     check_token(get_token(request))
 
-    exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
-    if not exam:
-        raise BadRequest('exam not found')
-
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+    exam = query_exam(exam_id)
+    payload = get_payload(request)
     for field in payload.keys():
         if field in table2dict(exam).keys():
             setattr(exam, field, payload[field])
@@ -138,9 +128,14 @@ def delete_exam(exam_id):
     removes a test (archive)
     """
     check_token(get_token(request))
+    exam = query_exam(exam_id)
+    exam.archive = True
+    db.session.commit()
+    return make_response('', 204)
+
+
+def query_exam(exam_id):
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
         raise BadRequest('exam not found')
-    exam.archive = True
-    db.commit()
-    return make_response('', 204)
+    return exam

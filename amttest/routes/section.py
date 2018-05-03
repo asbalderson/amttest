@@ -1,20 +1,18 @@
-from collections import defaultdict
+import logging
+
 from flask import jsonify, request, make_response, Blueprint
 from sqlalchemy import inspect
 
-import logging
-import json
-
-from ..helpers.bphandler import BPHandler
-from ..helpers.token import get_token, check_token
+from . import get_payload
 
 from ..database import db
 from ..database.tables.answer import Answer
 from ..database.tables.section import Section
 from ..database.tables.question import Question
-from ..database.utils import table2dict
-
+from ..database.utils import add_value, table2dict
 from ..errors.badrequest import BadRequest
+from ..helpers.bphandler import BPHandler
+from ..helpers.token import get_token, check_token
 
 
 SECTION_BP = Blueprint('section', __name__)
@@ -27,17 +25,14 @@ def create_section(exam_id):
     creates a new section
     """
     check_token(get_token(request))
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
+    payload = get_payload(request)
     fields = {'examid':exam_id}
     for column in payload.keys():
         if column not in inspect(Section).mapper.column_attrs:
             continue
         fields[column] = payload[column]
     section = Section(**fields)
-    db.session.add(section)
-    db.session.commit()
-    db.session.refresh(section)
+    add_value(section)
 
     return make_response(jsonify(table2dict(section)), 201)
 
@@ -48,7 +43,7 @@ def get_exam_sections(exam_id):
 
     section_list = []
     for section in section_data:
-        section.append(table2dict(section))
+        section_list.append(table2dict(section))
 
     return make_response(jsonify(section_list), 200)
 
@@ -57,23 +52,12 @@ def get_exam_sections(exam_id):
 def get_all_sections():
     """
     gets all the section names and uid's
-    return:
-    {
-    'section_name': u'example_section',
-    'section_id': 0,
-    'active_qestions': 10
-    },
-    {
-    'section_name': u'miscellaneous',
-    'section_id': 1,
-    'active_qestions': 5
-    }
     """
     section_data = Section.query.filter_by(archive=False).all()
 
     section_list = []
     for section in section_data:
-        section.append(table2dict(section))
+        section_list.append(table2dict(section))
 
     return make_response(jsonify(section_list), 200)
 
@@ -86,10 +70,7 @@ def get_section(section_id):
     get questions for a section id
     """
 
-    section = Section.query.filter_by(archive=False, sectionid=section_id).first()
-    if not section:
-        raise BadRequest('Section does not exist')
-
+    section = query_section(section_id)
     return_dict = table2dict(section)
 
     questions = Question.query.filter_by(archive=False, sectionid=section.sectionid)
@@ -111,12 +92,9 @@ def update_section(section_id):
     this is used to change the number of questions usd for a section
     """
     check_token(get_token(request))
-    payload_raw = request.data.decode()
-    payload = json.loads(payload_raw)
-    section = Section.query.filter_by(archive=False, sectionid=section_id).first()
-    if not section:
-        raise BadRequest('Section not found')
-
+    payload = get_payload(request)
+    section = query_section(section_id)
+    # TODO make sure there are enough active questions in a section
     for field in payload.keys():
         if field in inspect(Section).mapper.column_attrs:
             setattr(section, field, payload[field])
@@ -125,6 +103,7 @@ def update_section(section_id):
 
     return make_response('', 204)
 
+
 @SECTION_BP.route('/section/<int:section_id>', methods = ['DELETE'])
 def delete_section(section_id):
     """
@@ -132,7 +111,15 @@ def delete_section(section_id):
     should produce error if section is in use
     """
     check_token(get_token(request))
-    section = Section.query.filter_by(archive=False, sectionid=section_id).first()
-    section.archive = False
+    section = query_section(section_id)
+    section.archive = True
     db.session.commit()
     return make_response('', 204)
+
+
+def query_section(section_id):
+    section = Section.query.filter_by(archive=False,
+                                      sectionid=section_id).first()
+    if not section:
+        raise BadRequest('Section not found')
+    return section
