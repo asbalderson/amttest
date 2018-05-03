@@ -94,6 +94,7 @@ def update_section(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     section = query_section(section_id)
+    # TODO make sure there are enough active questions in a section
     for field in payload.keys():
         if field in inspect(Section).mapper.column_attrs:
             setattr(section, field, payload[field])
