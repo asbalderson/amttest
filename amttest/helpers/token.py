@@ -8,6 +8,7 @@ import logging
 import random
 import string
 
+
 def gen_token(length=40):
     """
     Create a new token used to verify a user has write permission.

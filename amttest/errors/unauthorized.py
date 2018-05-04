@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 UNAUTHORIZED_BP = Blueprint('Unauthorized', __name__)
 BPHandler.add_blueprint(UNAUTHORIZED_BP, url_prefix='/amttest/api')
 
+
 class Unauthorized(APIError):
 
     def __init__(self, message, **kwargs):

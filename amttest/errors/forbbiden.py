@@ -6,6 +6,7 @@ from flask import make_response, Blueprint
 FORBIDDEN_BP = Blueprint('Forbidden', __name__)
 BPHandler.add_blueprint(FORBIDDEN_BP, url_prefix='/amttest/api')
 
+
 class Forbidden(APIError):
 
     def __init__(self, message, **kwargs):

@@ -8,6 +8,6 @@ class Question(db.Model):
     sectionid = db.Column(db.Integer, db.ForeignKey('section.sectionid'),
                           nullable=False)
     archive = db.Column(db.Boolean, nullable=False, default=False)
-    #these are used potential question analisys
+    # these are used potential question analisys
     used = db.Column(db.Integer, nullable=False, default=0)
     correct = db.Column(db.Integer, nullable=False, default=0)

@@ -28,7 +28,6 @@ def create_question(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     question = {'sectionid': section_id}
-    # TODO ensure there are enough active questions for the section
     for field in payload.keys():
         if field in inspect(Question).mapper.column_attrs:
             question[field] = payload[field]
@@ -39,7 +38,7 @@ def create_question(section_id):
     return make_response(jsonify(table2dict(new)), 201)
 
 
-@QUESTION_BP.route('/question/<int:question_id>', methods = ['GET'])
+@QUESTION_BP.route('/question/<int:question_id>', methods=['GET'])
 def get_question(question_id):
     """
     may not be needed but returns a specfic question.
@@ -47,14 +46,15 @@ def get_question(question_id):
     question = query_question(question_id)
     return_dict = table2dict(question)
     return_dict['answers'] = []
-    answers = Answer.query.filter_by(archive=False, questionid=question_id).all()
+    answers = Answer.query.filter_by(archive=False,
+                                     questionid=question_id).all()
     for answer in answers:
         return_dict['answers'].append(table2dict(answer))
 
     return make_response(jsonify(return_dict), 200)
 
 
-@QUESTION_BP.route('/question/<int:question_id>', methods = ['PUT'])
+@QUESTION_BP.route('/question/<int:question_id>', methods=['PUT'])
 def update_question(question_id):
     """
     updates a question, so it should probably send the entire question
@@ -62,7 +62,7 @@ def update_question(question_id):
     check_token(get_token(request))
     question = query_question(question_id)
     payload = get_payload(request)
-    #TODO ensure there are enough active questions for the section
+    # TODO ensure there are enough active questions for the section
     for field in payload.keys():
         if field in inspect(Question).mapper.column_attrs:
             setattr(question, field, payload[field])
@@ -70,7 +70,7 @@ def update_question(question_id):
     return make_response('', 204)
 
 
-@QUESTION_BP.route('/question/<int:question_id>', methods = ['DELETE'])
+@QUESTION_BP.route('/question/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     """
     deletes question from a section

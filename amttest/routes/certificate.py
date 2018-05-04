@@ -21,7 +21,7 @@ CERT_BP = Blueprint('certificate', __name__)
 BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
 
 
-@CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods = ['POST'])
+@CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['POST'])
 def update_certificate(user_id, exam_id):
     """
     adds a new exam result to the users certificate.  date can be auto gnerated
@@ -59,12 +59,20 @@ def update_certificate(user_id, exam_id):
                  'possible': needed_questions,
                  'passed': False}
     for submission in payload:
-        answer = Answer.query.filter_by(archive=False, answerid=submission['answerid']).first()
-        question = Question.query.filter_by(archive=False, questionid=submission['questionid']).first()
+        answer = Answer.query.filter_by(archive=False,
+                                        answerid=submission[
+                                            'answerid'
+                                        ]).first()
+        question = Question.query.filter_by(archive=False,
+                                            questionid=submission[
+                                                'questionid'
+                                            ]).first()
         if not answer:
-            raise BadRequest('no answer found as submitted for question %s' % submission['questionid'])
+            raise BadRequest('no answer found as submitted for question %s'
+                             % submission['questionid'])
         if not question:
-            raise BadRequest('could not find question %s' % submission['questionid'])
+            raise BadRequest('could not find question %s'
+                             % submission['questionid'])
 
         if answer.correct:
             cert_dict['correct'] += 1
@@ -72,20 +80,24 @@ def update_certificate(user_id, exam_id):
         answer.chosen += 1
         question.used += 1
 
-    if (100.0 * cert_dict['correct']/cert_dict['possible']) >= exam.pass_percent:
+    if (100.0 * cert_dict['correct'] / cert_dict['possible']) \
+            >= exam.pass_percent:
         cert_dict['passed'] = True
     cert = Certificate(**cert_dict)
-    #calling this calls commit, which should write all the changes above for stats
+    # calling this calls commit, which should write all the changes
+    #  above for stats
     add_value(cert)
     return make_response(jsonify(table2dict(cert)), 201)
 
 
-@CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods = ['GET'])
+@CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['GET'])
 def get_certificate(user_id, exam_id):
     """
     gets all certs for a single user and test
     """
-    certs = Certificate.query.filter_by(archive=False, userid=user_id, examid=exam_id).all()
+    certs = Certificate.query.filter_by(archive=False,
+                                        userid=user_id,
+                                        examid=exam_id).all()
     cert_dict = []
     for cert in certs:
         tmp = table2dict(cert)
@@ -94,8 +106,7 @@ def get_certificate(user_id, exam_id):
     return make_response(jsonify(cert_dict), 200)
 
 
-# does it make more sense to do /user/userid/certificates?
-@CERT_BP.route('/certificate/user/<int:user_id>', methods = ['GET'])
+@CERT_BP.route('/certificate/user/<int:user_id>', methods=['GET'])
 def get_user_certs(user_id):
     """
      get all certificates for a given user
@@ -109,7 +120,7 @@ def get_user_certs(user_id):
     return make_response(jsonify(cert_dict), 200)
 
 
-@CERT_BP.route('/certificate/exam/<int:exam_id>', methods = ['GET'])
+@CERT_BP.route('/certificate/exam/<int:exam_id>', methods=['GET'])
 def get_test_certs(exam_id):
     """
     get a cert for a specific testid
@@ -125,7 +136,7 @@ def get_test_certs(exam_id):
     return make_response(jsonify(cert_dict), 200)
 
 
-@CERT_BP.route('/certificate', methods = ['GET'])
+@CERT_BP.route('/certificate', methods=['GET'])
 def get_all_certs():
     """
     get all certs

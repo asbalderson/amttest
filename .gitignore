@@ -1,6 +1,12 @@
 __pychache__/
 *.pyc
 
+# Testing
+.tox
+.coverage
+.noseids
+cover/
+
 # Build
 *.egg-info
 build
