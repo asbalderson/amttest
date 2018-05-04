@@ -1,59 +1,88 @@
-NOT YET IN MARKDOWN
+# amttest
 
-Orignially I planned to write this in python using flask and a MongoDB to store 
-the information.  I may change the plan to use MySQL to store the data because
-I can do lookups and make things a bit more clean and efficient.  wont be a big
-change for the front end, so that design decision will be figured out when when
-the code is being written.
+A basic API for creating multiple choice tests.  Users are stored based on
+facebook uid.  Tests (exams) are broken into sections, and random questions are
+chosen from each section, answers and question order is scrambled.  Tests are
+graded and stored as certificates for each user based on the exam requirements
+at the time of grading.
 
-LOGIN:
-	Plan to use the facebook API to have logins use facebook authentication.
-	I'm not sure what information will be available to us, but hopefully some
-	level of email, name, etc.  The admin(s) might need to have their own seperate
-	login information unless we can have a closed group for the admins/GMR and
-	facebook look up the group and make the admin pages available.
+A front-end (UI) for this project is under development (at the time of this
+writing) by [dpat](https://github.com/dpat).
 
-ADMIN ROUTE:
-	The admin should be able to view and modify all existing tests and questions as 
-	well as all the users who have taken the test within some time limit (1 year?).
+## Prereqs
 
-	The ordering will seem a little backward here, but im a programmer and that's
-	how we think sometimes
+Requirements are meant to be installed via pip, the requirements likely exist
+from apt, but the project was designed to run with pip.
+```
+$ pip3 install --user --requirements requirements.txt
+```
 
-	1) Create a new section and add questions
-		A) /sections/section_name should create a new blank section for questions
-		B) select the section from /sections (this is where we get the uid)
-		C) create a new qestion from /sections/section id/question (see 272)
-		D) Do A-C for as many sections and questions as needed
-	2) Create a test
-		A) /tests/test_name will create a new blank test
-		B) select the test from /tests
-		C) select the sections to take questions from /sections and choose how many
-		   questions to take from each section, number correct needed to pass, time
-		   limit, etc.  see 378
-	3) view results
-		A) /users should get all the relavent user information and can be posted in
-		   a nice pretty table, an export to xls can be added at a later date
+## Install
 
-USER ROUTE:
-	User should log in and see thier own information from /users/user_uid and 
-	the user_uid will probably be their email address or something facebook can
-	provide.  they should be able to select a test to take from available tests
-	at /tests and the test will start
+This api is meant to be run as a command line script, after installation.  The
+prereqs will be installed while the package is being installed and ready to go.
+```
+$ pip3 install --user .
+```
 
-	1) Taking a test
-		A) A test is generated from /tests/testid (as looked up from /tests before)
-		B) User checks the ULA or whatever we call it, and the timer starts once
-		they click accept.
-		C) timer should run from the frontend :)
-		D) User answers all the questions, I'd like to check all the answers at the
-		   end and log the score all at once.  sending back the API to check the 
-		   questions is still kinda being worked out, but it shouldnt be too big 
-		   of a deal. If MySQL is used, we can just look up the question by UID.
-		   questions need to be graded based on the text in the answer, which will
-		   allow for random question selection.
-		E) Use /certificate/userid/testid to update the number correct for that
-		   test. 
-		F) look up the user again from /user/userID and report the results, the API
-		   can calculate if they passed or not on the fly.
+## Using amttest
+### Help
+There are a variety of options while running the api, to get a full list of
+options run:
 
+```
+$ amttest -h
+```
+Finally, the api supports logging.  Everything which is a warning message or
+worse is logged in /var/log by default.  More information can be logged (and
+displayed) using additional options.  See the help for more details.
+
+### Database
+Amttest needs to setup a database to store the users, tests, and certificates.
+First the database needs to be created.  Currently amttest runs on an sqlite
+database and is stored /var/cache/amttest.
+sudo is needed to create the database in /var/cache, because permissoins.
+```
+$ sudo amttest init
+```
+
+### Token
+Any request that requires a write operation (delete, post, put) requires a
+token generated from amttest and stored in the database.  This is to help
+prevent unwanted users from deleting and modifying existing data.  To generate
+a new token run
+```
+$ sudo amttest token
+```
+To view existing tokens run
+```
+$ sudo amttest token --list
+```
+Tokens must be sent as a header with write required requests under the name
+token.  i.e. Token=<string of characters> inside the headers of the request.
+Headers were chosen to pass the token instead of URL parameters for security
+reasons.  I understand that this can be tricky with javascript.  Deal with it.
+
+### Import
+In the case of needing to add a large number of questions and answers to the
+database in one pass, an import feature was included.  It runs by reading in a
+table of questions from a .csv file and dumping the values into te database.
+Section information will have to be updated after the questions have been
+imported, but this should be much easier for managing a large number of files.
+A route to handle this import will be added eventally.  An example csv file is
+included in the [data](.data.) directory.
+```
+$ sudo amttest import <file.csv> <name of test>
+```
+Note that name of test will need to be in quotes if it is more than one word.
+see help for more information.
+
+### Run
+Running the api is very simple.
+```
+$ sudo amttest run [--ip <ip address>] [--port <port>]
+```
+By default can be reached at http://localhost:5000/amttest/api/<route>
+
+# Routes
+See [Routes](./amttest/routes/README.md)
