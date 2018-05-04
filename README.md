@@ -70,7 +70,7 @@ table of questions from a .csv file and dumping the values into te database.
 Section information will have to be updated after the questions have been
 imported, but this should be much easier for managing a large number of files.
 A route to handle this import will be added eventally.  An example csv file is
-included in the [data](.data.) directory.
+included in the [data](./data) directory.
 ```
 $ sudo amttest import <file.csv> <name of test>
 ```
