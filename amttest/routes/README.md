@@ -5,18 +5,23 @@ headers required, expected payload, and return content, are all documented below
 Order is based on expected use/flow for the api.
 
 All, PUT, POST, DELETE calls require a token in the headers i.e.
-Token=<40 character token>
+Token=server_generated_token
+
+
+
 ## User
-User has the following fields:
-userid: Integer, generated user identifier for each user, always unique.
+User has the following fields:<br>
+userid: Integer, generated user identifier for each user, always unique.<br>
 fbuserid: Text, the user id from facebook.  This is only used for log in, and
-                should never be returned.
-amt_name: Text, A users amtgard persona name, not required, good to have.  Optional
-name: Text, The users real name.
-email: Text, The users email address.
-kingdom: Text, The kingdom that the user is a member of.  Optional
-admin: Boolean, When true, the user can access the admin panel.
-archive: Boolean, When true, the user is no longer available for viewing.
+                should never be returned.<br>
+amt_name: Text, A users amtgard persona name, not required, good to have.  Optional<br>
+name: Text, The users real name.<br>
+email: Text, The users email address.<br>
+kingdom: Text, The kingdom that the user is a member of.  Optional<br>
+admin: Boolean, When true, the user can access the admin panel.<br>
+archive: Boolean, When true, the user is no longer available for viewing.<br>
+
+--------------------------------------------------------------------------------
 
 
 ```
@@ -25,9 +30,9 @@ amttest/api/user
 ### GET
 Get all active users
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -56,8 +61,8 @@ already in use, the existing user will be returned.
 fburserid, name, and email are all REQUIRED for creation, other fields are
 optional.
 
-Headers: Token=<40 digit token>
-Payload:
+Headers: Token=server_generated_token<br>
+Payload:<br>
 ```
 {
 fbuserid:<txt>,
@@ -88,9 +93,9 @@ amttest/api/user/<int:userid>
 Get an individual user based on its user id.  fbuserid is omitted for security
 reasons, and it should never be needed.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {userid: 1234,
@@ -104,46 +109,49 @@ Response:
 ```
 
 ### PUT
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
-name:<txt>,
-email:<txt>,
-amt_name:<txt>,
-kingdom:<txt>,
-admin:<bool>
+    name:<txt>,
+    email:<txt>,
+    amt_name:<txt>,
+    kingdom:<txt>,
+    admin:<bool>
 }
 ```
-Success: 204
-Response: None
+Success: 204<br>
+Response: None<br>
 
 ### DELETE
 "Delete" a user.  Users are not actually deleted, their flag is set to archive.
 
-Headers: Token=<40 digit token>
-Payload: None
-Success: 204
-Response: None
+Headers: Token=server_generated_token<br>
+Payload: None<br>
+Success: 204<br>
+Response: None<br><br>
+
+--------------------------------------------------------------------------------
 
 ## Exam
-Exam has the following fields:
-examid: Integer, the exam's identifier, always unique.
-time_limit: Integer, The number of minutes given for the user to take the exam.
-name: Text, The plain text name of the exam.
-pass_percent: Integer, The whole number value required to pass the exam, i.e. 70.
-expiration: Integer, The number of months the certifications from the exam are valid.
-ula: Text, What the user agrees to before they take the exam.
-archive: Boolean, When true, the exam will no longer be available from queries.
+Exam has the following fields:<br>
+examid: Integer, the exam's identifier, always unique.<br>
+time_limit: Integer, The number of minutes given for the user to take the exam.<br>
+name: Text, The plain text name of the exam.<br>
+pass_percent: Integer, The whole number value required to pass the exam, i.e. 70.<br>
+expiration: Integer, The number of months the certifications from the exam are valid.<br>
+ula: Text, What the user agrees to before they take the exam.<br>
+archive: Boolean, When true, the exam will no longer be available from queries.<br>
 
 ```
 amttest/api/exam
 ```
 ### GET
-Get all
-Headers: None
-Payload: None
-Success: 200
+Get all exams
+
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -170,7 +178,7 @@ Response:
 ### POST
 Create a new exam.  The only REQUIRED value is name.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -181,7 +189,7 @@ Payload:
     ula: do not cheat,
 }
 ```
-Success: 201
+Success: 201<br>
 Response:
 ```
 {
@@ -194,16 +202,18 @@ Response:
     archive: false
 }
 ```
+
 --------------------------------------------------------------------------------
+
 ```
 amttest/api/exam/<int:examid>
 ```
 ### GET
 Get one exam from based on the examid.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {
@@ -222,7 +232,7 @@ Update an existing exam.  If a value is passed in that does not exist in the
 exam table, the value will be ignored.  Not all possible fields need to be
 included.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -233,19 +243,20 @@ Payload:
     ula: do not cheat,
 }
 ```
-Success: 204
+Success: 204<br>
 Response: None
 
 ### DELETE
 Delete an exam.  Deleted exams have the archive flag set to True and will no
 longer appear in queries.
 
-Headers: Token=<40 digit token>
-Payload: None
-Success: 204
-Response:None
+Headers: Token=server_generated_token<br>
+Payload: None<br>
+Success: 204<br>
+Response:None<br>
 
 --------------------------------------------------------------------------------
+
 ```
 amttest/api/exam/<int:examid>/take
 ```
@@ -256,9 +267,9 @@ section in the exam.  Questions are randomly selected from each section, and
 the answers for each question are put in a random order.  Question order is
 also scrambled.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -292,13 +303,15 @@ Response:
 ]
 ```
 
+--------------------------------------------------------------------------------
+
 ## Section
-The fields in section are:
-sectionid: Integer, The unique identifier for the section.
-name: Text, Name of the section as seen by the admin.
-examid: Integer, Related to the exam table.  The exam that this section belongs to.
-active_questions: Integer, The number of questions to use from this section for each exam.
-archive: Boolean, When true, the section will no longer appear in queries.
+The fields in section are:<br>
+sectionid: Integer, The unique identifier for the section.<br>
+name: Text, Name of the section as seen by the admin.<br>
+examid: Integer, Related to the exam table.  The exam that this section belongs to.<br>
+active_questions: Integer, The number of questions to use from this section for each exam.<br>
+archive: Boolean, When true, the section will no longer appear in queries.<br>
 
 ```
 amttest/api/exam/<int:exam_id>/section
@@ -306,9 +319,9 @@ amttest/api/exam/<int:exam_id>/section
 ### GET
 Get all sections for a given exam
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -333,7 +346,7 @@ Response:
 ### POST
 Create a new section for a given examid.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -341,7 +354,7 @@ Payload:
     active_qustions: 3
 }
 ```
-Success: 201
+Success: 201<br>
 Response:
 ```
 {
@@ -352,16 +365,18 @@ Response:
     archive: false
 }
 ```
+
 --------------------------------------------------------------------------------
+
 ```
 amttest/api/section
 ```
 ### GET
 Get every active section from the database.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -382,17 +397,19 @@ Response:
     ...
 ]
 ```
+
 --------------------------------------------------------------------------------
+
 ```
 amttest/api/section/<int:section_id>
+```
+### GET
 Get the section data + all question data for any question in that section +
 answers for all the questions.  It may return too much data right now.
 
-```
-### GET
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {
@@ -429,7 +446,7 @@ Response:
 Update values in a given section. Values which do not match a database field
 for section will be ignored.  Not all fields need to be included.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -438,28 +455,30 @@ Payload:
     active_qustions: 3
 }
 ```
-Success: 204
+Success: 204<br>
 Response:
 
 ### DELETE
 Delete an active section.  Deleted section only have their archive flag set to
 True.
 
-Headers: Token=<40 digit token>
-Payload: None
-Success: 204
-Response: None
+Headers: Token=server_generated_token<br>
+Payload: None<br>
+Success: 204<br>
+Response: None<br>
+
+--------------------------------------------------------------------------------
 
 ## Question
-The fields in question are:
-questionid: Integer, The unique identifier for the question.
-question: Text, Actual text of the given question.
+The fields in question are:<br>
+questionid: Integer, The unique identifier for the question.<br>
+question: Text, Actual text of the given question.<br>
 sectionid: Integer, Related to the section table.  The section that this
-                    question belongs to
+                    question belongs to<br>
 used: Integer, A count for how many times this question has been asked. Plans
-               to use this for statistics.
-correct: Integer, How many times this question has been answered correctly.
-archive: Boolean, When true, will no longer appear in queries.
+               to use this for statistics.<br>
+correct: Integer, How many times this question has been answered correctly.<br>
+archive: Boolean, When true, will no longer appear in queries.<br>
 
 ```
 amttest/api/section/<int:section_id>/question
@@ -467,14 +486,14 @@ amttest/api/section/<int:section_id>/question
 ### POST
 Create a new question for a given section.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
     question: this is a question
 }
 ```
-Success: 201
+Success: 201<br>
 Response:
 ```
 {
@@ -486,16 +505,18 @@ Response:
     archive: false
 }
 ```
+
 --------------------------------------------------------------------------------
+
 ```
 amttest/api/question/<int:questionid>
 ```
 ### GET
 Get a single question and its answers.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {
@@ -522,7 +543,7 @@ Response:
 Update fields in a given section.  Extra fields are ignored, not all possible
 fields need to be provided.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -530,25 +551,28 @@ Payload:
     sectionid: 1234
 }
 ```
-Success: 204
-Response: None
+Success: 204<br>
+Response: None<br>
 
 ### DELETE
 Delete an active question.  Deleted questions have their archive flag set to
 true and will no longer appear in queries.
-Headers: Token=<40 digit token>
-Payload: None
-Success: 204
-Response: None
+
+Headers: Token=server_generated_token<br>
+Payload: None<br>
+Success: 204<br>
+Response: None<br>
+
+--------------------------------------------------------------------------------
 
 ## Answer
-The fields in answer are:
-answerid: Integer, Unique identifier for an answer.
-correct: Boolean, True for the correct answer
+The fields in answer are:<br>
+answerid: Integer, Unique identifier for an answer.<br>
+correct: Boolean, True for the correct answer<br>
 questionid: Integer, Relates to the question table.  The question this answer
-belongs to.
-archive: Boolean, When true, this question will no longer appear in queries.
-chosen: Integer, The number of times this answer has been chosen by a user.
+belongs to.<br>
+archive: Boolean, When true, this question will no longer appear in queries.<br>
+chosen: Integer, The number of times this answer has been chosen by a user.<br>
 
 ```
 amttest/api/question/<int:questionid>/answer
@@ -556,7 +580,7 @@ amttest/api/question/<int:questionid>/answer
 ### POST
 Create a new question for a given answer.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -564,7 +588,7 @@ Payload:
     correct: false
 }
 ```
-Success: 201
+Success: 201<br>
 Response:
 ```
 {
@@ -582,9 +606,9 @@ amttest/api/answer/<int:answreid>
 ### GET
 Gets one given answer.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {
@@ -600,7 +624,7 @@ Response:
 Update a given answer.  Extra fields are ignored, and not all possible fields
 need to be included.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 {
@@ -609,32 +633,35 @@ Payload:
     correct: false,
 }
 ```
-Success: 204
-Response: None
+Success: 204<br>
+Response: None<br>
 
 ### DELETE
 Delete a given answer.  Deleted answers have their archive flag set to true, and
 will no longer appear in queries.
 
-Headers: Token=<40 digit token>
-Payload: None
-Success: 204
-Response: None
+Headers: Token=server_generated_token<br>
+Payload: None<br>
+Success: 204<br>
+Response: None<br>
+
+--------------------------------------------------------------------------------
+
 
 ## Certificate
-The fields for certificate are:
-certid: Integer, The unique identifier for a cetificate.
+The fields for certificate are:<br>
+certid: Integer, The unique identifier for a cetificate.<br>
 userid: Integer, Related to the User table.  The user this certificate
-                 belongs to.
+                 belongs to.<br>
 examid: Integer, Related to the Exam table.  The exam this certificate belongs
-                 to.
-correct: Integer, Number of questions that were answered correctly.
-possible: Integer, Number of questions that were given for the exam.
+                 to.<br>
+correct: Integer, Number of questions that were answered correctly.<br>
+possible: Integer, Number of questions that were given for the exam.<br>
 passed: Boolean, True if the correct/possible was greater than or equal to the
                  required passing score from the exam AT THE TIME OF TAKING THE
-                 TEST.
-testdate: Date, Date this test was taken.
-archive: Boolean, When true, this certificate will no longer appear in queries.
+                 TEST.<br>
+testdate: Date, Date this test was taken.<br>
+archive: Boolean, When true, this certificate will no longer appear in queries.<br>
 
 ```
 amttest/api/certificate/<int:userid>/<int:examid>
@@ -647,7 +674,7 @@ the user mid test.
 
 Stats for questions and answers are also updated during grading.
 
-Headers: Token=<40 digit token>
+Headers: Token=server_generated_token<br>
 Payload:
 ```
 [
@@ -660,7 +687,7 @@ Payload:
     ...
 ]
 ```
-Success: 201
+Success: 201<br>
 Response:
 ```
 {
@@ -677,9 +704,9 @@ Response:
 ### GET
 Get a certificate for a given user and exam.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 {
@@ -699,9 +726,9 @@ amttest/api/certificate/user/<int:userid>
 ### GET
 Get all cetificates for a given user.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -733,9 +760,9 @@ amttest/api/certificate/exam/<int:examid>
 ### GET
 Get all certificates for a given exam.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
@@ -767,9 +794,9 @@ amttest/api/certificate
 ### GET
 Get every certificate issued ever.
 
-Headers: None
-Payload: None
-Success: 200
+Headers: None<br>
+Payload: None<br>
+Success: 200<br>
 Response:
 ```
 [
