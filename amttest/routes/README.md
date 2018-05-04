@@ -542,94 +542,255 @@ Success: 204
 Response: None
 
 ## Answer
+The fields in answer are:
+answerid: Integer, Unique identifier for an answer.
+correct: Boolean, True for the correct answer
+questionid: Integer, Relates to the question table.  The question this answer
+belongs to.
+archive: Boolean, When true, this question will no longer appear in queries.
+chosen: Integer, The number of times this answer has been chosen by a user.
 
 ```
 amttest/api/question/<int:questionid>/answer
 ```
 ### POST
+Create a new question for a given answer.
+
 Headers: Token=<40 digit token>
-Payload: None
-Success: 200
+Payload:
+```
+{
+    answer: this is an answer,
+    correct: false
+}
+```
+Success: 201
 Response:
 ```
+{
+    answerid: 34,
+    answer: this is an answer,
+    questionid: 234,
+    correct: false,
+    chosen: 0
+}
 ```
 --------------------------------------------------------------------------------
 ```
 amttest/api/answer/<int:answreid>
 ```
 ### GET
+Gets one given answer.
+
 Headers: None
 Payload: None
 Success: 200
 Response:
 ```
+{
+    answerid: 34,
+    answer: this is an answer,
+    questionid: 234,
+    correct: false,
+    chosen: 0
+}
 ```
 
 ### PUT
+Update a given answer.  Extra fields are ignored, and not all possible fields
+need to be included.
+
 Headers: Token=<40 digit token>
-Payload: None
-Success: 200
-Response:
+Payload:
 ```
+{
+    answer: this is an answer,
+    questionid: 234,
+    correct: false,
+}
 ```
+Success: 204
+Response: None
 
 ### DELETE
+Delete a given answer.  Deleted answers have their archive flag set to true, and
+will no longer appear in queries.
+
 Headers: Token=<40 digit token>
 Payload: None
-Success: 200
-Response:
-```
-```
+Success: 204
+Response: None
 
 ## Certificate
+The fields for certificate are:
+certid: Integer, The unique identifier for a cetificate.
+userid: Integer, Related to the User table.  The user this certificate
+                 belongs to.
+examid: Integer, Related to the Exam table.  The exam this certificate belongs
+                 to.
+correct: Integer, Number of questions that were answered correctly.
+possible: Integer, Number of questions that were given for the exam.
+passed: Boolean, True if the correct/possible was greater than or equal to the
+                 required passing score from the exam AT THE TIME OF TAKING THE
+                 TEST.
+testdate: Date, Date this test was taken.
+archive: Boolean, When true, this certificate will no longer appear in queries.
+
 ```
 amttest/api/certificate/<int:userid>/<int:examid>
 ```
 ### POST
+Grade an exam, and create a new certificate based on the results.
+Here we are expecting the question number, and the answer the user chose.
+Grading is all done on the back end, so the answers cannot be looked up by
+the user mid test.
+
+Stats for questions and answers are also updated during grading.
+
 Headers: Token=<40 digit token>
-Payload: None
-Success: 200
+Payload:
+```
+[
+    {questionid: 1234,
+     answerid: 234
+    },
+    {questionid: 1235,
+     answerid: 267
+    },
+    ...
+]
+```
+Success: 201
 Response:
 ```
+{
+    certid: 1234,
+    userid: 2345,
+    examid: 4567,
+    correct: 24,
+    possible: 25,
+    passed: true,
+    testdate: YYYY-MM-DD HH:MM:SS.SSS
+}
 ```
 
 ### GET
+Get a certificate for a given user and exam.
+
 Headers: None
 Payload: None
 Success: 200
 Response:
 ```
+{
+    certid: 1234,
+    userid: 2345,
+    examid: 4567,
+    correct: 24,
+    possible: 25,
+    passed: true,
+    testdate: YYYY-MM-DD HH:MM:SS.SSS
+}
 ```
 --------------------------------------------------------------------------------
 ```
 amttest/api/certificate/user/<int:userid>
 ```
 ### GET
+Get all cetificates for a given user.
+
 Headers: None
 Payload: None
 Success: 200
 Response:
 ```
+[
+    {
+        certid: 1234,
+        userid: 2345,
+        examid: 4567,
+        correct: 24,
+        possible: 25,
+        passed: true,
+        testdate: YYYY-MM-DD HH:MM:SS.SSS
+    },
+    {
+        certid: <int>,
+        userid: <int>,
+        examid: <int>,
+        correct: <int>,
+        possible: <int>,
+        passed: <bool>,
+        testdate: <date>
+    },
+    ...
+]
 ```
 --------------------------------------------------------------------------------
 ```
 amttest/api/certificate/exam/<int:examid>
 ```
 ### GET
+Get all certificates for a given exam.
+
 Headers: None
 Payload: None
 Success: 200
 Response:
 ```
+[
+    {
+        certid: 1234,
+        userid: 2345,
+        examid: 4567,
+        correct: 24,
+        possible: 25,
+        passed: true,
+        testdate: YYYY-MM-DD HH:MM:SS.SSS
+    },
+    {
+        certid: <int>,
+        userid: <int>,
+        examid: <int>,
+        correct: <int>,
+        possible: <int>,
+        passed: <bool>,
+        testdate: <date>
+    },
+    ...
+]
 ```
 --------------------------------------------------------------------------------
 ```
 amttest/api/certificate
 ```
 ### GET
+Get every certificate issued ever.
+
 Headers: None
 Payload: None
 Success: 200
 Response:
 ```
+[
+    {
+        certid: 1234,
+        userid: 2345,
+        examid: 4567,
+        correct: 24,
+        possible: 25,
+        passed: true,
+        testdate: YYYY-MM-DD HH:MM:SS.SSS
+    },
+    {
+        certid: <int>,
+        userid: <int>,
+        examid: <int>,
+        correct: <int>,
+        possible: <int>,
+        passed: <bool>,
+        testdate: <date>
+    },
+    ...
+]
 ```
