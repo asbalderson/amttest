@@ -1,3 +1,5 @@
+""" Test all routes for Certificate creation, modification, and query."""
+
 import json
 
 from .base_test import BaseTest
@@ -8,32 +10,51 @@ from ..database.tables.certificate import Certificate
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-from ..errors import *
+from ..errors import badrequest, forbbiden, gone, internalservererror, \
+    methodnotallowed, notfound, unauthorized
 from ..routes import certificate
 
 
 class TestExam(BaseTest):
+    """ Class based on UnitTest.TestCase for testing certificate routes. """
 
     def create_app(self):
+        """ Configure and stand up the flask app for testing. """
         return BaseTest.create_app(self)
 
     def setUp(self):
+        """ Create a database for testing. """
         BaseTest.setUp(self)
 
     def tearDown(self):
+        """ Delete the database used during testing. """
         BaseTest.tearDown(self)
 
     def test_get_all_certs(self):
-        cert = Certificate(userid=1, examid=1, correct=1, possible=1,
+        """ Test the route for getting all certificates. """
+        cert = Certificate(userid=1,
+                           examid=1,
+                           correct=1,
+                           possible=1,
                            passed=True)
-        cert2 = Certificate(userid=2, examid=1, correct=1, possible=1,
+        cert2 = Certificate(userid=2,
+                            examid=1,
+                            correct=1,
+                            possible=1,
                             passed=True)
         self.default_get_all('amttest/api/certificate', [cert, cert2])
 
     def test_get_certificate(self):
-        cert = Certificate(userid=1, examid=1, correct=1, possible=1,
+        """ Test the route for getting a single certificate by id. """
+        cert = Certificate(userid=1,
+                           examid=1,
+                           correct=1,
+                           possible=1,
                            passed=True)
-        cert2 = Certificate(userid=1, examid=1, correct=1, possible=1,
+        cert2 = Certificate(userid=1,
+                            examid=1,
+                            correct=1,
+                            possible=1,
                             passed=True)
         self.default_get_all('amttest/api/certificate/1/1', [cert, cert2])
 
@@ -45,20 +66,35 @@ class TestExam(BaseTest):
                          'empty list')
 
     def test_get_user_certs(self):
-        cert = Certificate(userid=1, examid=1, correct=1, possible=1,
+        """ Test the route for getting all of a single users certificate. """
+        cert = Certificate(userid=1,
+                           examid=1,
+                           correct=1,
+                           possible=1,
                            passed=True)
-        cert2 = Certificate(userid=1, examid=2, correct=1, possible=1,
+        cert2 = Certificate(userid=1,
+                            examid=2,
+                            correct=1,
+                            possible=1,
                             passed=True)
         self.default_get_all('amttest/api/certificate/user/1', [cert, cert2])
 
     def test_get_test_certs(self):
-        cert = Certificate(userid=1, examid=1, correct=1, possible=1,
+        """ Test the route for getting all certs based on examid. """
+        cert = Certificate(userid=1,
+                           examid=1,
+                           correct=1,
+                           possible=1,
                            passed=True)
-        cert2 = Certificate(userid=2, examid=1, correct=1, possible=1,
+        cert2 = Certificate(userid=2,
+                            examid=1,
+                            correct=1,
+                            possible=1,
                             passed=True)
         self.default_get_all('amttest/api/certificate/exam/1', [cert, cert2])
 
     def test_update_certs(self):
+        """ Test the creation of a new certificate, and exam grading.  """
         self.enter_data()
         response_no_header = self.client.post('amttest/api/certificate/1/1')
         self.assert400(response_no_header, 'post should require a token')
@@ -84,9 +120,7 @@ class TestExam(BaseTest):
         response_mini_payload = self.client.post('amttest/api/certificate/1/1',
                                                  headers=self.header_dict,
                                                  data=json.dumps(
-                                                     short_payload
-                                                                 )
-                                                 )
+                                                     short_payload))
         self.assert400(response_mini_payload,
                        'There must be equal answers to active questions from '
                        'each section')
@@ -122,9 +156,7 @@ class TestExam(BaseTest):
         response_bad_answer = self.client.post('amttest/api/certificate/1/1',
                                                headers=self.header_dict,
                                                data=json.dumps(
-                                                   payload_bad_answer
-                                                               )
-                                               )
+                                                   payload_bad_answer))
         self.assert400(response_bad_answer,
                        'if an answer is missing, grading should fail')
 
@@ -160,8 +192,7 @@ class TestExam(BaseTest):
         self.assertEqual(answer.chosen, 1,
                          'stats should update answers for being used')
         cert_pass = Certificate.query.filter_by(
-            certid=response_correct.json['certid']
-                                                ).first()
+            certid=response_correct.json['certid']).first()
         cert_dict = table2dict(cert_pass)
         cert_dict.pop('testdate')
         self.compare_object(cert_dict, response_correct.json)
@@ -185,6 +216,7 @@ class TestExam(BaseTest):
                          'failed tests should fail')
 
     def enter_data(self):
+        """ Generate test data for exam testing. """
         data = list()
         data.append(Exam(name='Reeves Test'))
         data.append(Section(name='Rules of Play',
