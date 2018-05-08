@@ -3,7 +3,7 @@
 # R0810(duplicate-code)
 # R0902(too-many-instance-attributes)
 # R0903(too-few-public-methods)
-disable=R0801,R0902,R0903,
+disable=R0801,R0902,R0903,R0914,W0611
 
 
 [REPORTS]
