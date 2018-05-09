@@ -95,12 +95,18 @@ def create_exam():
     """
     check_token(get_token(request))
     payload = get_payload(request)
+    ignore = ['archive', 'examid']
     tabledata = {}
-    for column in payload.keys():
-        if column not in inspect(Exam).mapper.column_attrs:
+    for field in payload.keys():
+        if field == 'pass_percent':
+            if payload[field] > 100 or payload[field] < 1:
+                raise BadRequest('pass_percent must be between 1 and 100')
+
+        if field not in inspect(Exam).mapper.column_attrs \
+                or field in ignore:
             continue
-        else:
-            tabledata[column] = payload[column]
+
+        tabledata[field] = payload[field]
 
     exam = Exam(**tabledata)
     add_value(exam)
@@ -118,7 +124,15 @@ def update_exam(exam_id):
 
     exam = query_exam(exam_id)
     payload = get_payload(request)
+    ignore = ['archive', 'examid']
     for field in payload.keys():
+        if field in ignore:
+            continue
+
+        if field == 'pass_percent':
+            if payload[field] > 100 or payload[field] < 1:
+                raise BadRequest('pass_percent must be between 1 and 100')
+
         if field in table2dict(exam).keys():
             setattr(exam, field, payload[field])
 

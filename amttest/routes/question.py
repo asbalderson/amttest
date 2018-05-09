@@ -9,8 +9,9 @@ from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
 from ..database import db
 from ..database.utils import add_value, table2dict
-from ..database.tables.question import Question
 from ..database.tables.answer import Answer
+from ..database.tables.question import Question
+from ..database.tables.section import Section
 from ..errors.badrequest import BadRequest
 
 
@@ -28,7 +29,10 @@ def create_question(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     question = {'sectionid': section_id}
+    ignore = ['archive', 'correct', 'questionid', 'used']
     for field in payload.keys():
+        if field in ignore:
+            continue
         if field in inspect(Question).mapper.column_attrs:
             question[field] = payload[field]
 
@@ -62,8 +66,10 @@ def update_question(question_id):
     check_token(get_token(request))
     question = query_question(question_id)
     payload = get_payload(request)
-    # TODO ensure there are enough active questions for the section
+    ignore = ['archive', 'correct', 'questionid', 'used']
     for field in payload.keys():
+        if field in ignore:
+            continue
         if field in inspect(Question).mapper.column_attrs:
             setattr(question, field, payload[field])
     db.session.commit()
@@ -78,6 +84,13 @@ def delete_question(question_id):
     """
     check_token(get_token(request))
     question = query_question(question_id)
+    section = Section.query.filter_by(archive=False,
+                                      sectionid=question.sectionid).first()
+    all_question = Question.query.filter_by(archive=False,
+                                            sectionid=section.sectionid).all()
+    if section.active_questions > len(all_question) - 1:
+        raise BadRequest('Archiving question will leave not enough questions '
+                         'to meet the requirements for the section.')
     question.archive = True
     db.session.commit()
     return make_response('', 204)
@@ -86,7 +99,6 @@ def delete_question(question_id):
 def query_question(question_id):
     question = Question.query.filter_by(archive=False,
                                         questionid=question_id).first()
-    print('query happened')
     if not question:
         raise BadRequest('Question not found')
     return question

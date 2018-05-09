@@ -76,7 +76,7 @@ class BaseTest(TestCase):
         self.assertEqual(len(response_archive.json), len(object_list) - 1,
                          'get seems to return archived values')
 
-    def default_put(self, route, payload, db_obj, table):
+    def default_put(self, route, payload, db_obj, table, ignore=None):
         response_no_header = self.client.put('%s/42' % route)
         self.assert400(response_no_header, 'post should require a token')
 
@@ -114,7 +114,19 @@ class BaseTest(TestCase):
         dict_update = table2dict(db_obj)
         self.compare_object(obj_dict, dict_update)
 
-    def default_post(self, route, payload, table):
+        if ignore:
+            for k, v in ignore.items():
+                payload[k] = v
+                self.client.put('%s/1' % route,
+                                data=json.dumps(payload),
+                                headers=self.header_dict)
+                data = table2dict(db_obj)
+                self.assertNotEqual(data[k], v,
+                                    'should not be able to update ignore '
+                                    'value %s' % k)
+                payload.pop(k)
+
+    def default_post(self, route, payload, table, ignore=None):
         response_no_header = self.client.post(route)
         self.assert400(response_no_header, 'post should require a token')
 
@@ -132,6 +144,17 @@ class BaseTest(TestCase):
         self.assertTrue(db_obj, 'object does not exist in database after post')
         obj_dict = table2dict(db_obj)
         self.compare_object(new_entry.json, obj_dict)
+
+        if ignore:
+            for k, v in ignore.items():
+                payload[k] = v
+                response_ignore = self.client.post(route,
+                                                   data=json.dumps(payload),
+                                                   headers=self.header_dict)
+                self.assertNotEqual(response_ignore.json[k], v,
+                                    'should not be able to update ignore '
+                                    'value %s' % k)
+                payload.pop(k)
 
     def default_delete(self, route, db_object):
         response_no_header = self.client.delete('%s/42' % route)

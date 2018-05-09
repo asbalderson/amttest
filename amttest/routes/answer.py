@@ -24,9 +24,12 @@ def add_answer(question_id):
     payload = get_payload(request)
     answer = {'questionid': question_id}
     required = ['answer', 'correct']
+    ignore = ['answerid', 'archive', 'chosen']
     for field in payload.keys():
         if field in required:
             required.remove(field)
+        if field in ignore:
+            continue
         if field in inspect(Answer).mapper.column_attrs:
             answer[field] = payload[field]
 
@@ -50,7 +53,10 @@ def update_answer(answer_id):
     check_token(get_token(request))
     answer = query_answerid(answer_id)
     payload = get_payload(request)
+    ignore = ['answerid', 'archive', 'chosen']
     for field in payload.keys():
+        if field in ignore:
+            continue
         if field in inspect(Answer).mapper.column_attrs:
             setattr(answer, field, payload[field])
 
