@@ -5,11 +5,11 @@ from flask_testing import TestCase
 
 from ..database import db
 from ..database.utils import table2dict
-from ..errors import *
-from ..routes import *
-
+from ..errors import badrequest, forbbiden, gone, internalservererror, \
+    methodnotallowed, notfound, unauthorized
 from ..helpers import token
 from ..helpers.bphandler import BPHandler
+from ..routes import answer, certificate, exam, question, section, user
 
 
 class BaseTest(TestCase):

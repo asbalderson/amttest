@@ -9,9 +9,6 @@ from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import exam
 
 
 class TestExam(BaseTest):

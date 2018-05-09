@@ -6,9 +6,6 @@ from ..database import db
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import question
 
 
 class TesSection(BaseTest):
@@ -16,7 +13,6 @@ class TesSection(BaseTest):
 
     def create_app(self):
         """ Configure and stand up the flask app for testing. """
-
         return BaseTest.create_app(self)
 
     def setUp(self):
@@ -33,7 +29,6 @@ class TesSection(BaseTest):
 
     def tearDown(self):
         """ Delete the database used during testing. """
-
         BaseTest.tearDown(self)
 
     def test_get_question(self):

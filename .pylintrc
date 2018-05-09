@@ -17,3 +17,4 @@ reports=no
 
 [IGNORES]
 ignored-modules=flask_sqlalchemy
+generated-members=db.session.*

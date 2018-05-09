@@ -10,9 +10,6 @@ from ..database.tables.certificate import Certificate
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import certificate
 
 
 class TestExam(BaseTest):

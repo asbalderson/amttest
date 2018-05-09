@@ -6,9 +6,6 @@ from .base_test import BaseTest
 
 from ..database.utils import table2dict
 from ..database.tables.user import User
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import user
 
 
 class TestUser(BaseTest):

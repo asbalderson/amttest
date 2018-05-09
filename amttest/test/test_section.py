@@ -7,9 +7,6 @@ from .base_test import BaseTest
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import section
 
 
 class TestSection(BaseTest):
