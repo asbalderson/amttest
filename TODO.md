@@ -1,8 +1,4 @@
 # TODO
-1) No route should allow updating or posting of a primary or foreign key, or
-any field used for statistics, or which is auto generated. Unit tests should
-be updated to include tests for these changes
-
 2) Changes need to be made or understood so the whole application doesnt require
 sudo to run. Research also needs to be done to see if there is a way to make
 the api a service? May need to switch to a config file instead of command line
