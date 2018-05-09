@@ -27,10 +27,13 @@ def create_section(exam_id):
     check_token(get_token(request))
     payload = get_payload(request)
     fields = {'examid': exam_id}
-    for column in payload.keys():
-        if column not in inspect(Section).mapper.column_attrs:
+    ignore = ['archive', 'sectionid']
+    for field in payload.keys():
+        if field in ignore:
             continue
-        fields[column] = payload[column]
+        if field not in inspect(Section).mapper.column_attrs:
+            continue
+        fields[field] = payload[field]
     section = Section(**fields)
     add_value(section)
 
@@ -96,7 +99,10 @@ def update_section(section_id):
     check_token(get_token(request))
     payload = get_payload(request)
     section = query_section(section_id)
+    ignore = ['archive', 'sectionid']
     for field in payload.keys():
+        if field in ignore:
+            continue
         if field == 'active_questions':
             questions = Question.query.filter_by(archive=False,
                                                  sectionid=section_id).all()

@@ -1,5 +1,7 @@
 """ Test all routes for exam creation, modification, and query."""
 
+import json
+
 from .base_test import BaseTest
 
 from ..database import db
@@ -152,13 +154,45 @@ class TestExam(BaseTest):
     def test_create_exam(self):
         """ Test the route for creating one exam. """
         payload = {'name': 'Reeves Test'}
-        self.default_post('amttest/api/exam', payload, Exam)
+        ignore = {'examid': 9001,
+                  'archive': True}
+        self.default_post('amttest/api/exam', payload, Exam, ignore)
+
+        payload['pass_percent'] = 101
+        response_big_percent = self.client.post('amttest/api/exam',
+                                                data=json.dumps(payload),
+                                                headers=self.header_dict)
+        self.assert400(response_big_percent,
+                       'should not accept pass percent over 100')
+
+        payload['pass_percent'] = .99
+        response_small_percent = self.client.post('amttest/api/exam',
+                                                  data=json.dumps(payload),
+                                                  headers=self.header_dict)
+        self.assert400(response_small_percent,
+                       'should not accept pass percent over 100')
 
     def test_update_exam(self):
         """ Test the route for updating an exam. """
-        payload = {'pass_percent': 101}
+        payload = {'pass_percent': 92}
+        ignore = {'examid': 9001,
+                  'archive': True}
         exam1 = Exam(name='Reeves Test')
-        self.default_put('amttest/api/exam', payload, exam1, Exam)
+        self.default_put('amttest/api/exam', payload, exam1, Exam, ignore)
+
+        payload['pass_percent'] = 101
+        response_big_percent = self.client.put('amttest/api/exam/1',
+                                               data=json.dumps(payload),
+                                               headers=self.header_dict)
+        self.assert400(response_big_percent,
+                       'should not accept pass percent over 100')
+
+        payload['pass_percent'] = .99
+        response_small_percent = self.client.put('amttest/api/exam/1',
+                                                 data=json.dumps(payload),
+                                                 headers=self.header_dict)
+        self.assert400(response_small_percent,
+                       'should not accept pass percent over 100')
 
     def test_delete_exam(self):
         """ Test the route for deleting (archiveing) and exam. """

@@ -47,8 +47,10 @@ class TestUser(BaseTest):
         payload = {'fbuserid': 'abc123',
                    'name': 'test user',
                    'email': 'test@test.test'}
+        ignore = {'archive': True,
+                  'userid': 42}
 
-        self.default_post('amttest/api/user', payload, User)
+        self.default_post('amttest/api/user', payload, User, ignore)
 
         repeat_user = self.client.post('amttest/api/user',
                                        data=json.dumps(payload),
@@ -81,10 +83,11 @@ class TestUser(BaseTest):
     def test_put_user(self):
         """ Test for the route to modify a user. """
         payload = {'kingdom': 'IMD'}
-
+        ignore = {'archive': True,
+                  'userid': 42}
         user1 = User(name='test1', fbuserid='test123',
                      email='test1@test1.test1')
-        self.default_put('amttest/api/user', payload, user1, User)
+        self.default_put('amttest/api/user', payload, user1, User, ignore)
 
     def test_delete_user(self):
         """ Test for the route to delete (archive) a user. """

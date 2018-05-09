@@ -65,14 +65,25 @@ class TestSection(BaseTest):
     def test_new_section(self):
         """ Test the route for creating a new section. """
         payload = {'name': 'just some section'}
-        self.default_post('amttest/api/exam/1/section', payload, Section)
+        ignore = {'archive': True,
+                  'sectionid': 69}
+        self.default_post('amttest/api/exam/1/section',
+                          payload,
+                          Section,
+                          ignore)
 
     def test_update_section(self):
         """ Test the route for updating an existing section. """
         payload = {'name': 'some new section name'}
+        ignore = {'archive': True,
+                  'sectionid': 69}
         section1 = Section(name='world of unknown',
                            examid=1)
-        self.default_put('amttest/api/section', payload, section1, Section)
+        self.default_put('amttest/api/section',
+                         payload,
+                         section1,
+                         Section,
+                         ignore)
 
         payload_question = {'active_questions': 300}
         missing_questions = self.client.put('amttest/api/section/1',

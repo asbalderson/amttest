@@ -52,25 +52,27 @@ def create_user():
     check_token(get_token(request))
     required = ['fbuserid', 'name', 'email']
     possible = ['amtname', 'kingdom', 'admin'] + required
-
+    ignore = ['archive', 'userid']
     payload = get_payload(request)
 
     unused = {}
     user = {}
-    for column in payload.keys():
-        if column == 'fbuserid':
-            exists = User.query.filter_by(fbuserid=payload[column]).first()
+    for field in payload.keys():
+        if field in ignore:
+            continue
+        if field == 'fbuserid':
+            exists = User.query.filter_by(fbuserid=payload[field]).first()
             if exists:
                 return make_response(jsonify(table2dict(exists)), 200)
-        if column in required:
-            required.remove(column)
-            possible.remove(column)
-            user[column] = payload[column]
-        elif column in possible:
-            possible.remove(column)
-            user[column] = payload[column]
+        if field in required:
+            required.remove(field)
+            possible.remove(field)
+            user[field] = payload[field]
+        elif field in possible:
+            possible.remove(field)
+            user[field] = payload[field]
         else:
-            unused[column] = payload[column]
+            unused[field] = payload[field]
     if required:
         raise BadRequest(message='Missing fields: %s' % required)
 
@@ -95,11 +97,13 @@ def update_user(user_id):
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     payload = get_payload(request)
-
+    ignore = ['archive', 'userid']
     user = query_userid(user_id)
 
     ignored = {}
     for field in payload.keys():
+        if field in ignore:
+            continue
         if field not in table2dict(user).keys():
             ignored[field] = payload[field]
         else:
