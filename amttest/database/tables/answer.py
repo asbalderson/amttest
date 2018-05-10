@@ -4,6 +4,8 @@ from .. import DB
 
 class Answer(DB.Model):
     """
+    Answer Table.
+
     answerid: Integer, Unique identifier for an answer.
     correct: Boolean, True for the correct answer
     questionid: Integer, Relates to the question table. The question this
@@ -12,6 +14,7 @@ class Answer(DB.Model):
         queries.
     chosen: Integer, The number of times this answer has been chosen by a user.
     """
+
     __tablename__ = 'answer'
     answerid = DB.Column(DB.Integer, nullable=False, primary_key=True)
     answer = DB.Column(DB.Text, nullable=False)

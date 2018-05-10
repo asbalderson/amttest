@@ -38,6 +38,7 @@ def get_exams():
 def get_randomized_exam(exam_id):
     """
     Generate a randomized test for a user to take.
+
     Questions are randomly selected for each section, and answers are scrambled
     by order.  Questions are then scrambled.
     """
@@ -85,7 +86,7 @@ def get_exam(exam_id):
 
 @EXAM_BP.route('/exam', methods=['POST'])
 def create_exam():
-    """Creates a new exam."""
+    """Create a new exam."""
     check_token(get_token(request))
     payload = get_payload(request)
     ignore = ['archive', 'examid']
@@ -133,7 +134,7 @@ def update_exam(exam_id):
 
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['DELETE'])
 def delete_exam(exam_id):
-    """Sets the archive flag to True, "removing" the test."""
+    """Set the archive flag to True, "removing" the test."""
     check_token(get_token(request))
     exam = query_exam(exam_id)
     exam.archive = True

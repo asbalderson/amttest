@@ -1,7 +1,4 @@
-"""
-Module for parsing arguments, setting up logging and kicking off
-requested functions.
-"""
+"""Parsing arguments, setting up logging and kicking off functions."""
 import argparse
 import logging
 from logging import handlers
@@ -34,9 +31,10 @@ def config_app(name, urlbase_url='/amttest/api'):
 
 def config_dabase(app):
     """
+    Handle database configuration.
+
     Create the database directory, set the database path and add the database
     to the Flask app.
-
     :param app: configured Flask object.
     :return: None
     """

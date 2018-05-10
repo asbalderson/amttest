@@ -4,6 +4,8 @@ from .. import DB
 
 class Exam(DB.Model):
     """
+    Exam table.
+
     examid: Integer, the exam's identifier, always unique.
     time_limit: Integer, The number of minutes given for the user to take
         the exam.
@@ -15,6 +17,7 @@ class Exam(DB.Model):
     archive: Boolean, When true, the exam will no longer be available from
         queries.
     """
+
     __tablename__ = 'exam'
     examid = DB.Column(DB.Integer, primary_key=True, nullable=False)
     time_limit = DB.Column(DB.Integer, nullable=False, default=20)

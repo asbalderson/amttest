@@ -17,11 +17,12 @@ from ..routes import answer, certificate, exam, question, section, user
 class BaseTest(TestCase):
     """
     Class for standing up a flask app and database for testing.
+
     It also has methods for testing get, get_all, post, put, and delete.
     """
 
     def create_app(self):
-        """Creates a flask ap, and empty sqlite database in memory."""
+        """Create a flask ap, and empty sqlite database in memory."""
         app = Flask('testing')
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
@@ -45,6 +46,7 @@ class BaseTest(TestCase):
     def default_get(self, route, db_object, ignore=None):
         """
         Run a set of tests involving a get on of a single item.
+
         Tests include:
             success returns a 200
             result object is the same as the database data
@@ -79,7 +81,8 @@ class BaseTest(TestCase):
 
     def default_get_all(self, route, object_list):
         """
-        Tests for getting all objects from a route.
+        Test for getting all objects from a route.
+
         Tests include:
             200 result even if no data
             response 200 when data exists
@@ -112,8 +115,8 @@ class BaseTest(TestCase):
     # pylint: disable=R0913
     def default_put(self, route, payload, db_obj, table, ignore=None):
         """
-        Test a put route, ensuring the payload is properly input in the
-        database.
+        Test a put route, confirming the payload is input in the database.
+
         Tests include:
             put has a token
             there is a payload in the request
@@ -181,6 +184,7 @@ class BaseTest(TestCase):
     def default_post(self, route, payload, table, ignore=None):
         """
         Test a post route, ensuring the value is added to the database.
+
         Tests include:
             400 if no token
             400 if no data
@@ -226,6 +230,7 @@ class BaseTest(TestCase):
     def default_delete(self, route, db_object):
         """
         Test a delete route, ensuring it works correctly.
+
         Tests include:
             400 if no token
             400 if object not in database
@@ -256,7 +261,8 @@ class BaseTest(TestCase):
 
     def compare_object(self, response_dict, db_dict):
         """
-        Compare values in response.json and the database values
+        Compare values in response.json and the database values.
+
         :param response_dict: response.json: data from the response
         :param db_dict: dict, a dict representing a database row
         :return: None
@@ -269,6 +275,7 @@ class BaseTest(TestCase):
     def add_obj_to_db(object_list):
         """
         Add a list of database row's to the database.
+
         :param object_list: List of SQLAlchemy.database.model instances
         :return: None
         """

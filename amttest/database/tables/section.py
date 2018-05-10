@@ -4,6 +4,8 @@ from .. import DB
 
 class Section(DB.Model):
     """
+    Section Table.
+
     sectionid: Integer, The unique identifier for the section.
     name: Text, Name of the section as seen by the admin.
     examid: Integer, Related to the exam table. The exam where this section
@@ -12,6 +14,7 @@ class Section(DB.Model):
         for each exam.
     archive: Boolean, When true, the section will no longer appear in queries.
     """
+
     __tablename__ = 'section'
     sectionid = DB.Column(DB.Integer, primary_key=True, nullable=False)
     name = DB.Column(DB.Text, nullable=False)

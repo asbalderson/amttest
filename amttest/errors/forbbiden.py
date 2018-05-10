@@ -10,6 +10,7 @@ BPHandler.add_blueprint(FORBIDDEN_BP, url_prefix='/amttest/api')
 
 class Forbidden(APIError):
     """Class representing a Forbidden error."""
+
     def __init__(self, message, **kwargs):
         """
         Create a Forbidden error.

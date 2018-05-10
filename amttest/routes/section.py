@@ -23,7 +23,7 @@ BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['POST'])
 def create_section(exam_id):
-    """Creates a new section"""
+    """Create a new section."""
     check_token(get_token(request))
     payload = get_payload(request)
     fields = {'examid': exam_id}
@@ -67,7 +67,6 @@ def get_all_sections():
 @SECTION_BP.route('/section/<int:section_id>', methods=['GET'])
 def get_section(section_id):
     """Get one section based on the section id."""
-
     section = query_section(section_id)
     return_dict = table2dict(section)
 

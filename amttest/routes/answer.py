@@ -1,4 +1,4 @@
-""" Routes for modifying the Answer table. """
+"""Routes for modifying the Answer table."""
 
 import logging
 
@@ -21,7 +21,7 @@ BPHandler.add_blueprint(ANSWER_BP, url_prefix='/amttest/api')
 
 @ANSWER_BP.route('/question/<int:question_id>/answer', methods=['POST'])
 def add_answer(question_id):
-    """ Add a single answer to the database. """
+    """Add a single answer to the database."""
     check_token(get_token(request))
     payload = get_payload(request)
     answer = {'questionid': question_id}

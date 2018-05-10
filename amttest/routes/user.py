@@ -18,7 +18,7 @@ BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 
 @USER_BP.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
-    """Gets all info about a single user."""
+    """Get all info about a single user."""
     user = query_userid(user_id)
 
     data = table2dict(user)

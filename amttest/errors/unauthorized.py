@@ -15,6 +15,7 @@ class Unauthorized(APIError):
 
     Is subclassed from APIError which is subclassed from Exception.
     """
+
     def __init__(self, message, **kwargs):
         """
         Create an Internal Server Error.

@@ -1,6 +1,4 @@
-"""
-TODO
-"""
+"""Amttest, an API for multiple choice testing."""
 
 __description__ = 'API for amtgard test package'
 __url__ = 'https://github.com/asbalderson/amttest'

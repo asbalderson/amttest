@@ -4,6 +4,8 @@ from .. import DB
 
 class User(DB.Model):
     """
+    User table.
+
     userid: Integer, generated user identifier for each user, always unique.
     fbuserid: Text, the user id from facebook. This is only used for log in,
         and should never be returned.
@@ -12,8 +14,9 @@ class User(DB.Model):
     email: Text, The users email address.
     kingdom: Text, The kingdom that the user is a member of.
     admin: Boolean, When true, the user can access the admin panel.
-archive: Boolean, When true, the user is no longer available for viewing.
+    archive: Boolean, When true, the user is no longer available for viewing.
     """
+
     __tablename__ = 'user'
     userid = DB.Column(DB.Integer, primary_key=True, nullable=False)
     fbuserid = DB.Column(DB.Text, nullable=False)

@@ -6,6 +6,8 @@ from .. import DB
 
 class Certificate(DB.Model):
     """
+    Certificate table.
+
     certid: Integer, The unique identifier for a certificate.
     userid: Integer, Related to the User table. The user this certificate
         belongs to.
@@ -20,6 +22,7 @@ class Certificate(DB.Model):
     archive: Boolean, When true, this certificate will no longer appear in
         queries.
     """
+
     __tablename__ = 'certificate'
     certid = DB.Column(DB.Integer, primary_key=True)
     userid = DB.Column(DB.Integer, DB.ForeignKey('user.userid'),

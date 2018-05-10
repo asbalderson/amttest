@@ -41,7 +41,7 @@ def create_question(section_id):
 
 @QUESTION_BP.route('/question/<int:question_id>', methods=['GET'])
 def get_question(question_id):
-    """Get a single question based on its id. """
+    """Get a single question based on its id."""
     question = query_question(question_id)
     return_dict = table2dict(question)
     return_dict['answers'] = []

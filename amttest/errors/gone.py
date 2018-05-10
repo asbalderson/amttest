@@ -11,6 +11,7 @@ BPHandler.add_blueprint(GONE_BP, url_prefix='/amttest/api')
 
 class Gone(APIError):
     """Class representing a Gone error."""
+
     def __init__(self, message, **kwargs):
         """
         Create a Bad Request error.

@@ -24,7 +24,7 @@ BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['POST'])
 def update_certificate(user_id, exam_id):
     """
-    Grades a test and adds the result to the certificate database.
+    Grade a test and adds the result to the certificate database.
 
     The payload should be formatted as below
     [

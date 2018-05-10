@@ -4,6 +4,8 @@ from .. import DB
 
 class Question(DB.Model):
     """
+    Question table.
+
     questionid: Integer, The unique identifier for the question.
     question: Text, Actual text of the given question.
     sectionid: Integer, Related to the section table. The section that this
@@ -13,6 +15,7 @@ class Question(DB.Model):
     correct: Integer, How many times this question has been answered correctly.
     archive: Boolean, When true, will no longer appear in queries.
     """
+
     __tablename__ = 'question'
     questionid = DB.Column(DB.Integer, nullable=False, primary_key=True)
     question = DB.Column(DB.Text, nullable=False)

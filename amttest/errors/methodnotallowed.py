@@ -1,4 +1,4 @@
-"""A Module for the Method Not Allowed error"""
+"""A Module for the Method Not Allowed error."""
 
 from flask import make_response, Blueprint
 
@@ -36,6 +36,6 @@ def handle_message_not_allowed(error):
 
 @METHOD_NOT_ALLOWED_BP.app_errorhandler(405)
 def handle_405(error):
-    """Method for handling abort 405 calls."""
+    """Route for handling abort 405 calls."""
     err = MethodNotAllowed(message=str(error))
     return make_response(err.to_json(), err.code)

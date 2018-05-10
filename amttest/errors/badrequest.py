@@ -12,6 +12,7 @@ BPHandler.add_blueprint(BAD_REQUEST_BP, url_prefix='/amttest/api')
 
 class BadRequest(APIError):
     """Class representing a Bad Request."""
+
     def __init__(self, message, **kwargs):
         """
         Create a Bad Request error.
@@ -26,5 +27,5 @@ class BadRequest(APIError):
 
 @BAD_REQUEST_BP.app_errorhandler(BadRequest)
 def handle_bad_request(error):
-    """Method for handling raised Bad Requests."""
+    """Route for handling raised Bad Requests."""
     return make_response(error.to_json(), error.code)
