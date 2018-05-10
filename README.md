@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/asbalderson/amttest.svg?branch=master)](https://travis-ci.com/asbalderson/amttest)
+[![codecov](https://codecov.io/gh/asbalderson/amttest/branch/master/graph/badge.svg)](https://codecov.io/gh/asbalderson/amttest
+
 # amttest
 
 A basic API for creating multiple choice tests.  Users are stored based on
