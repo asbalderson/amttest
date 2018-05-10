@@ -1,11 +1,11 @@
-import json
+"""Routes that modify the certificate table."""
+
 import logging
 
 from flask import jsonify, request, make_response, Blueprint
 
 from . import get_payload
 
-from ..database import db
 from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.certificate import Certificate
@@ -24,11 +24,9 @@ BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['POST'])
 def update_certificate(user_id, exam_id):
     """
-    adds a new exam result to the users certificate.  date can be auto gnerated
-    so the only missing information is the users score since pass fail can be
-    calculated on the fly and dropped in.
+    Grade a test and adds the result to the certificate database.
 
-    lets assume we get a list
+    The payload should be formatted as below
     [
         {questionid: 123,
         answerid:123},
@@ -85,16 +83,14 @@ def update_certificate(user_id, exam_id):
         cert_dict['passed'] = True
     cert = Certificate(**cert_dict)
     # calling this calls commit, which should write all the changes
-    #  above for stats
+    # above for stats
     add_value(cert)
     return make_response(jsonify(table2dict(cert)), 201)
 
 
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['GET'])
 def get_certificate(user_id, exam_id):
-    """
-    gets all certs for a single user and test
-    """
+    """Get a specific exam based on the userid and examid."""
     certs = Certificate.query.filter_by(archive=False,
                                         userid=user_id,
                                         examid=exam_id).all()
@@ -108,9 +104,7 @@ def get_certificate(user_id, exam_id):
 
 @CERT_BP.route('/certificate/user/<int:user_id>', methods=['GET'])
 def get_user_certs(user_id):
-    """
-     get all certificates for a given user
-    """
+    """Get all certs for a single user."""
     certs = Certificate.query.filter_by(archive=False, userid=user_id).all()
     cert_dict = []
     for cert in certs:
@@ -122,11 +116,7 @@ def get_user_certs(user_id):
 
 @CERT_BP.route('/certificate/exam/<int:exam_id>', methods=['GET'])
 def get_test_certs(exam_id):
-    """
-    get a cert for a specific testid
-    :param test_id:
-    :return:
-    """
+    """Get all certificates for a given exam id."""
     certs = Certificate.query.filter_by(archive=False, examid=exam_id).all()
     cert_dict = []
     for cert in certs:
@@ -138,10 +128,7 @@ def get_test_certs(exam_id):
 
 @CERT_BP.route('/certificate', methods=['GET'])
 def get_all_certs():
-    """
-    get all certs
-    :return:
-    """
+    """Get all certificates int he database."""
     certs = Certificate.query.filter_by(archive=False).all()
     cert_dict = []
     for cert in certs:

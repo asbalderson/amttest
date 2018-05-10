@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-setup and configuration
-"""
+"""Setup and configuration."""
 
 import os
 from setuptools import setup

@@ -3,7 +3,10 @@
 # R0810(duplicate-code)
 # R0902(too-many-instance-attributes)
 # R0903(too-few-public-methods)
-disable=R0801,R0902,R0903,R0914,W0611
+# R0914()
+# W0611(unused-import) - need to adjust this to ignore route and error imports
+# W0612(unused-variable) - once logging is added, this will be removed
+disable=R0801,R0902,R0903,R0914,W0611,W0612
 
 
 [REPORTS]
@@ -17,3 +20,4 @@ reports=no
 
 [IGNORES]
 ignored-modules=flask_sqlalchemy
+generated-members=DB.session.*

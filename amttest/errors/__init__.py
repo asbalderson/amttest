@@ -1,4 +1,4 @@
-""" Active modules for error routes"""
+"""Active modules for error routes."""
 
 __all__ = [
     'badrequest',

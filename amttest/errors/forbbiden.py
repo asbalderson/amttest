@@ -1,4 +1,4 @@
-""" Module for a Forbidden error. """
+"""Module for a Forbidden error."""
 from flask import make_response, Blueprint
 
 from .apierror import APIError
@@ -9,10 +9,12 @@ BPHandler.add_blueprint(FORBIDDEN_BP, url_prefix='/amttest/api')
 
 
 class Forbidden(APIError):
-    """ Class representing a Forbidden error. """
+    """Class representing a Forbidden error."""
+
     def __init__(self, message, **kwargs):
         """
         Create a Forbidden error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """
@@ -23,12 +25,12 @@ class Forbidden(APIError):
 
 @FORBIDDEN_BP.app_errorhandler(Forbidden)
 def handle_forbidden(error):
-    """ Route for handling raised Forbidden errors. """
+    """Route for handling raised Forbidden errors."""
     return make_response(error.to_json(), error.code)
 
 
 @FORBIDDEN_BP.app_errorhandler(403)
 def handle_403(error):
-    """ Route for handling abort 403. """
+    """Route for handling abort 403."""
     forbidden = Forbidden(message=str(error))
     return make_response(forbidden.to_json(), forbidden.code)

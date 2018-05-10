@@ -1,4 +1,4 @@
-""" Module for handling an Unauthorized error. """
+"""Module for handling an Unauthorized error."""
 
 from flask import make_response, Blueprint
 
@@ -12,11 +12,14 @@ BPHandler.add_blueprint(UNAUTHORIZED_BP, url_prefix='/amttest/api')
 class Unauthorized(APIError):
     """
     Class for an Unauthorized error.
+
     Is subclassed from APIError which is subclassed from Exception.
     """
+
     def __init__(self, message, **kwargs):
         """
         Create an Internal Server Error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """
@@ -27,5 +30,5 @@ class Unauthorized(APIError):
 
 @UNAUTHORIZED_BP.app_errorhandler(Unauthorized)
 def handle_unauthorized(error):
-    """ Route for handling an Unauthorized error. """
+    """Route for handling an Unauthorized error."""
     return make_response(error.to_json(), error.code)

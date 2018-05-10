@@ -1,18 +1,21 @@
-from ..database import db
-from ..database.tables.token import Token
-
-from ..errors.badrequest import BadRequest
-from ..errors.unauthorized import Unauthorized
+"""Methods for modifying the token table."""
 
 import logging
 import random
 import string
 
+from ..database import DB
+from ..database.tables.token import Token
+from ..errors.badrequest import BadRequest
+from ..errors.unauthorized import Unauthorized
+
 
 def gen_token(length=40):
     """
     Create a new token used to verify a user has write permission.
+
     Once the new token is generated, it is saved to the database.
+
     :param length: Integer, length of a token to generate
     :return: None
     """
@@ -23,8 +26,8 @@ def gen_token(length=40):
     for i in range(length):
         token += random.choice(string.ascii_letters + string.digits)
     this = Token(token=token)
-    db.session.add(this)
-    db.session.commit()
+    DB.session.add(this)
+    DB.session.commit()
     logger.info('created token')
     logger.info(token)
     return token
@@ -32,7 +35,8 @@ def gen_token(length=40):
 
 def list_token():
     """
-    List all current tokens in the database
+    List all current tokens in the database.
+
     :return: None
     """
     logger = logging.getLogger(__name__)
@@ -44,7 +48,8 @@ def list_token():
 
 def check_token(token):
     """
-    Check if a token exists in the database
+    Check if a token exists in the database.
+
     :param token: String, a string of characters used as an API token
     :return: Boolean, true if the api token exists in the database
     """
@@ -56,7 +61,8 @@ def check_token(token):
 
 def get_token(request):
     """
-    Get an API token from a flask.request object
+    Get an API token from a flask.request object.
+
     :param request: flask.request: a request from a http(s) request
     :return: String, token used ot authenticate api requests
     """

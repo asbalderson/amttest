@@ -1,28 +1,25 @@
-""" Test all routes for exam creation, modification, and query."""
+"""Test all routes for exam creation, modification, and query."""
 
 import json
 
 from .base_test import BaseTest
 
-from ..database import db
+from ..database import DB
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
-    methodnotallowed, notfound, unauthorized
-from ..routes import exam
 
 
 class TestExam(BaseTest):
-    """ Class based on UnitTest.TestCase for testing exam routes. """
+    """Class based on UnitTest.TestCase for testing exam routes."""
 
     def create_app(self):
-        """ Configure and stand up the flask app for testing. """
+        """Configure and stand up the flask app for testing."""
         return BaseTest.create_app(self)
 
     def setUp(self):
-        """ Create a database for testing. """
+        """Create a database for testing."""
         BaseTest.setUp(self)
         data = list()
         data.append(Section(name='Rules of Play',
@@ -96,17 +93,17 @@ class TestExam(BaseTest):
         self.add_obj_to_db(data)
 
     def tearDown(self):
-        """ Delete the database used during testing. """
+        """Delete the database used during testing."""
         BaseTest.tearDown(self)
 
     def test_get_all_exams(self):
-        """ Test the route for getting all exams.  """
+        """Test the route for getting all exams."""
         exam1 = Exam(name='Reeves Test')
         exam2 = Exam(name='Corpora Test')
         self.default_get_all('amttest/api/exam', [exam1, exam2])
 
     def test_get_randomized_test(self):
-        """ Test the route for generating an exam. """
+        """Test the route for generating an exam."""
         exam1 = Exam(name='Reeves Test')
         self.add_obj_to_db([exam1])
         response_dne = self.client.get('amttest/api/exam/42/take')
@@ -128,7 +125,7 @@ class TestExam(BaseTest):
         section.active_questions = 1
         answer = Answer.query.filter_by(answerid=15).first()
         answer.archive = True
-        db.session.commit()
+        DB.session.commit()
 
         exam_archive = self.client.get('amttest/api/exam/1/take')
         self.assert200(exam_archive,
@@ -147,12 +144,12 @@ class TestExam(BaseTest):
                          'there should be 11, there are %s' % answers)
 
     def test_get_exam(self):
-        """ Test the route for getting one exam. """
+        """Test the route for getting one exam."""
         exam1 = Exam(name='Reeves Test')
         self.default_get('amttest/api/exam', exam1)
 
     def test_create_exam(self):
-        """ Test the route for creating one exam. """
+        """Test the route for creating one exam."""
         payload = {'name': 'Reeves Test'}
         ignore = {'examid': 9001,
                   'archive': True}
@@ -173,7 +170,7 @@ class TestExam(BaseTest):
                        'should not accept pass percent over 100')
 
     def test_update_exam(self):
-        """ Test the route for updating an exam. """
+        """Test the route for updating an exam."""
         payload = {'pass_percent': 92}
         ignore = {'examid': 9001,
                   'archive': True}
@@ -195,6 +192,6 @@ class TestExam(BaseTest):
                        'should not accept pass percent over 100')
 
     def test_delete_exam(self):
-        """ Test the route for deleting (archiveing) and exam. """
+        """Test the route for deleting (archiving) and exam."""
         exam1 = Exam(name='Reeves Test')
         self.default_delete('amttest/api/exam', exam1)

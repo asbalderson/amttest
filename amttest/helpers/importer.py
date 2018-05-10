@@ -1,18 +1,24 @@
-from ..database import db
-from ..database.tables.answer import Answer
-from ..database.tables.question import Question
-from ..database.tables.section import Section
-from ..database.tables.exam import Exam
+"""
+Methods for importing a csv file into the database.
 
+An example file can be found in the /data directory.
+"""
 import csv
 import collections
 import logging
 import os
 
+from ..database import DB
+from ..database.tables.answer import Answer
+from ..database.tables.question import Question
+from ..database.tables.section import Section
+from ..database.tables.exam import Exam
+
 
 def import_file(file_path, examname):
     """
     Import a csv file of questions into the database.
+
     :param file_path: String, path to the csv file to import
     :param examname: String, name of the test` to import questions to
     :return: None
@@ -33,10 +39,7 @@ def import_file(file_path, examname):
         for row in data:
             answer = {}
             answer['answer'] = row['answer']
-            if row['correct'].lower() == 'true':
-                answer['correct'] = True
-            else:
-                answer['correct'] = False
+            answer['correct'] = row['correct'].lower() == 'true'
             questions[row['question']].append(answer)
             sections[row['section']].add(row['question'])
 
@@ -52,6 +55,7 @@ def import_file(file_path, examname):
 def get_exam_id(examname):
     """
     Get a test id, or create one if it does not exist.
+
     :param testname: String, name of test to find id for
     :return: int, id for the test
     """
@@ -61,9 +65,9 @@ def get_exam_id(examname):
         logger.info('Found exam, id is: %s', result.examid)
         return result.examid
     new = Exam(name=examname)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New exam created: %s', new)
     return new.examid
 
@@ -71,6 +75,7 @@ def get_exam_id(examname):
 def get_section_id(sectionname, examid):
     """
     Get a section id or crate it if it does not exist.
+
     :param sectionname: String, Name of the section to get the id for
     :param testid: Int, when creating a new section, test to associate
     the section with
@@ -82,16 +87,17 @@ def get_section_id(sectionname, examid):
         logger.info('Found section, id is: %s', result.sectionid)
         return result.sectionid
     new = Section(name=sectionname, examid=examid)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New section created: %s', new)
     return new.sectionid
 
 
 def get_question_id(question, sectionid):
     """
-    Get a question id or create one, if it does not exist
+    Get a question id or create one, if it does not exist.
+
     :param question: String, Text for the question
     :param sectionid: Int, if creating, the section id to associate the
     question to
@@ -103,22 +109,23 @@ def get_question_id(question, sectionid):
         logger.info('Found question, id is: %s', result.questionid)
         return result.questionid
     new = Question(question=question, sectionid=sectionid)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New question created: %s', new)
     return new.questionid
 
 
 def new_answer(answerdict):
     """
-    Create a new answer in the database
+    Create a new answer in the database.
+
     :param answerdict: dict, keyvalue pairs for answer key names
     :return: None
     """
     logger = logging.getLogger(__name__)
     new = Answer(**answerdict)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New answer created: %s', new)

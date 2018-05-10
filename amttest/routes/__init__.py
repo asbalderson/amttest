@@ -1,3 +1,5 @@
+"""All modules that are used for routes, and global methods."""
+
 import json
 
 from ..errors.badrequest import BadRequest
@@ -13,6 +15,7 @@ __all__ = [
 
 
 def get_payload(request):
+    """Get a payload from a request, or raise a BadRequest."""
     payload_raw = request.data
     payload_raw.decode()
     if not payload_raw:

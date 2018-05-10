@@ -1,4 +1,4 @@
-""" Module for handling a Not Found error."""
+"""Module for handling a Not Found error."""
 from flask import make_response, Blueprint
 
 from .apierror import APIError
@@ -9,11 +9,12 @@ BPHandler.add_blueprint(NOT_FOUND_BP, url_prefix='/amttest/api')
 
 
 class NotFound(APIError):
-    """ Class representing a Not Found error."""
+    """Class representing a Not Found error."""
 
     def __init__(self, message, **kwargs):
         """
         Create a Not Found error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """
@@ -24,12 +25,12 @@ class NotFound(APIError):
 
 @NOT_FOUND_BP.app_errorhandler(NotFound)
 def handle_not_found(error):
-    """ Method for handling a raised Not Found error."""
+    """Route for handling a raised Not Found error."""
     return make_response(error.to_json(), error.code)
 
 
 @NOT_FOUND_BP.app_errorhandler(404)
 def handle_404(error):
-    """ Method for handling an abort 404 error. """
+    """Route for handling an abort 404 error."""
     not_found = NotFound(message=str(error))
     return make_response(not_found.to_json(), not_found.code)
