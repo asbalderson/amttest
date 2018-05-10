@@ -89,6 +89,7 @@ def delete_question(question_id):
 def query_question(question_id):
     """
     Get a single question, or raise a BadRequest if not found.
+
     :param question_id: int, primary key for a question.
     :return: Table data for a question.
     """

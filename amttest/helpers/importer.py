@@ -1,5 +1,6 @@
 """
 Methods for importing a csv file into the database.
+
 An example file can be found in the /data directory.
 """
 import csv
@@ -17,6 +18,7 @@ from ..database.tables.exam import Exam
 def import_file(file_path, examname):
     """
     Import a csv file of questions into the database.
+
     :param file_path: String, path to the csv file to import
     :param examname: String, name of the test` to import questions to
     :return: None
@@ -53,6 +55,7 @@ def import_file(file_path, examname):
 def get_exam_id(examname):
     """
     Get a test id, or create one if it does not exist.
+
     :param testname: String, name of test to find id for
     :return: int, id for the test
     """
@@ -72,6 +75,7 @@ def get_exam_id(examname):
 def get_section_id(sectionname, examid):
     """
     Get a section id or crate it if it does not exist.
+
     :param sectionname: String, Name of the section to get the id for
     :param testid: Int, when creating a new section, test to associate
     the section with
@@ -92,7 +96,8 @@ def get_section_id(sectionname, examid):
 
 def get_question_id(question, sectionid):
     """
-    Get a question id or create one, if it does not exist
+    Get a question id or create one, if it does not exist.
+
     :param question: String, Text for the question
     :param sectionid: Int, if creating, the section id to associate the
     question to
@@ -113,7 +118,8 @@ def get_question_id(question, sectionid):
 
 def new_answer(answerdict):
     """
-    Create a new answer in the database
+    Create a new answer in the database.
+
     :param answerdict: dict, keyvalue pairs for answer key names
     :return: None
     """

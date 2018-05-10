@@ -117,6 +117,7 @@ def delete_user(user_id):
 def query_userid(userid):
     """
     Get a user based on its userid, or raise a BadRequest if not found.
+
     :param userid: int, primary key for a single user.
     :return: Table data on a single user.
     """

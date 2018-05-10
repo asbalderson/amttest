@@ -12,11 +12,13 @@ BPHandler.add_blueprint(UNAUTHORIZED_BP, url_prefix='/amttest/api')
 class Unauthorized(APIError):
     """
     Class for an Unauthorized error.
+
     Is subclassed from APIError which is subclassed from Exception.
     """
     def __init__(self, message, **kwargs):
         """
         Create an Internal Server Error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """

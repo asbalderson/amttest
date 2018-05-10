@@ -82,7 +82,8 @@ def delete_answer(answer_id):
 def query_answerid(answer_id):
     """
     Get an answer based on the answerid or raise a BadRequest when not found.
-    :param answer_id: int, primary key for the answer..
+
+    :param answer_id: int, primary key for the answer.
     :return: Table row representing an answer.
     """
     answer = Answer.query.filter_by(archive=False, answerid=answer_id).first()

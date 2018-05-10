@@ -22,6 +22,7 @@ from .routes import answer, certificate, exam, question, section, user
 def config_app(name, urlbase_url='/amttest/api'):
     """
     Configure the Flask app before standing it up.
+
     :param name: string, Name of the flask app.
     :param urlbase_url: string, base url for all flask routes.
     :return: Flask object.
@@ -35,6 +36,7 @@ def config_dabase(app):
     """
     Create the database directory, set the database path and add the database
     to the Flask app.
+
     :param app: configured Flask object.
     :return: None
     """
@@ -51,6 +53,7 @@ def config_dabase(app):
 def setup_logging(debug=False, verbose=False):
     """
     Configure logging for the application.
+    
     :param debug: Boolean, True will set log level to debug
     :param verbose: Boolean, True will set log level to info
     :return: None

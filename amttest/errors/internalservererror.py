@@ -11,12 +11,14 @@ BPHandler.add_blueprint(INTERNAL_SERVER_ERROR_BP, url_prefix='/amttest/api')
 class InternalServerError(APIError):
     """
     Error class representing an Internal Server Error (500).
+
     Is subclassed from APIError which is subclassed from Exception.
     """
 
     def __init__(self, message, **kwargs):
         """
         Create an Internal Server Error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """
@@ -27,7 +29,7 @@ class InternalServerError(APIError):
 
 @INTERNAL_SERVER_ERROR_BP.app_errorhandler(InternalServerError)
 def handle_internal_server_error(error):
-    """Define a route to handle an Internal Server Error when raised"""
+    """Define a route to handle an Internal Server Error when raised."""
     return make_response(error.to_json(), error.code)
 
 

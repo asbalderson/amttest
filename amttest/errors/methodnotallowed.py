@@ -11,13 +11,15 @@ BPHandler.add_blueprint(METHOD_NOT_ALLOWED_BP, url_prefix='/amttest/api')
 
 class MethodNotAllowed(APIError):
     """
-    An object resembling a Method Not Allowed error.  This class is subclassed
-    from APIError which is subclassed from Exception.
+    An object resembling a Method Not Allowed error.
+
+    This class is subclassed from APIError which is subclassed from Exception.
     """
 
     def __init__(self, message, **kwargs):
         """
         Create a Method Not Allowed error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """

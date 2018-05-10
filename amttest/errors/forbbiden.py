@@ -13,6 +13,7 @@ class Forbidden(APIError):
     def __init__(self, message, **kwargs):
         """
         Create a Forbidden error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """

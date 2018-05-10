@@ -14,6 +14,7 @@ class Gone(APIError):
     def __init__(self, message, **kwargs):
         """
         Create a Bad Request error.
+
         :param message: String, Message to send along with the error.
         :param kwargs: Other values to send with the error.
         """
