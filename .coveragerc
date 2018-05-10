@@ -1,0 +1,15 @@
+[report]
+show_missing = True
+# skip_covered = True
+omit =
+    __init__.py
+    __main__.py
+    amttest/amttest.py
+    amttest/helpers/importer.py
+
+[run]
+omit =
+    __init__.py
+    __main__.py
+    amttest/amttest.py
+    amttest/helpers/importer.py
