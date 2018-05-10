@@ -53,7 +53,7 @@ def config_dabase(app):
 def setup_logging(debug=False, verbose=False):
     """
     Configure logging for the application.
-    
+
     :param debug: Boolean, True will set log level to debug
     :param verbose: Boolean, True will set log level to info
     :return: None
