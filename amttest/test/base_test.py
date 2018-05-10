@@ -1,11 +1,11 @@
-""" Base test class for testing get, put, pull, and delete routes. """
+"""Base test class for testing get, put, pull, and delete routes."""
 
 import json
 
 from flask import Flask
 from flask_testing import TestCase
 
-from ..database import db
+from ..database import DB
 from ..database.utils import table2dict
 from ..errors import badrequest, forbbiden, gone, internalservererror, \
     methodnotallowed, notfound, unauthorized
@@ -21,26 +21,26 @@ class BaseTest(TestCase):
     """
 
     def create_app(self):
-        """ Creates a flask ap, and empty sqlite database in memory. """
+        """Creates a flask ap, and empty sqlite database in memory."""
         app = Flask('testing')
         app.config['TESTING'] = True
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
         BPHandler.register_blueprints(app)
-        db.app = app
-        db.init_app(app)
+        DB.app = app
+        DB.init_app(app)
         return app
 
     def setUp(self):
-        """ Create the tables for testing, and create a token for writing. """
-        db.create_all()
+        """Create the tables for testing, and create a token for writing."""
+        DB.create_all()
         this_token = token.gen_token()
         self.header_dict = {'token': this_token}
 
     def tearDown(self):
-        """ Delete the database, clearing all the data. """
-        db.session.remove()
-        db.drop_all()
+        """Delete the database, clearing all the data."""
+        DB.session.remove()
+        DB.drop_all()
 
     def default_get(self, route, db_object, ignore=None):
         """
@@ -71,8 +71,8 @@ class BaseTest(TestCase):
         self.assert400(response, 'non existent route should return 400')
 
         db_object.archive = True
-        db.session.commit()
-        db.session.refresh(db_object)
+        DB.session.commit()
+        DB.session.refresh(db_object)
 
         response = self.client.get('%s/1' % route)
         self.assert400(response, 'archived values should not return')
@@ -101,7 +101,7 @@ class BaseTest(TestCase):
                          'get not returning all values')
 
         object_list[0].archive = True
-        db.session.commit()
+        DB.session.commit()
 
         response_archive = self.client.get(route)
         self.assert200(response_archive,
@@ -109,6 +109,7 @@ class BaseTest(TestCase):
         self.assertEqual(len(response_archive.json), len(object_list) - 1,
                          'get seems to return archived values')
 
+    # pylint: disable=R0913
     def default_put(self, route, payload, db_obj, table, ignore=None):
         """
         Test a put route, ensuring the payload is properly input in the
@@ -242,15 +243,15 @@ class BaseTest(TestCase):
                                             headers=self.header_dict)
         self.assert400(response_empty, 'requesting a bad id should fail')
 
-        db.session.add(db_object)
-        db.session.commit()
-        db.session.refresh(db_object)
+        DB.session.add(db_object)
+        DB.session.commit()
+        DB.session.refresh(db_object)
 
         response_delete = self.client.delete('%s/1' % route,
                                              headers=self.header_dict)
         self.assertEqual(response_delete.status_code, 204,
                          'delete should return a 204')
-        db.session.refresh(db_object)
+        DB.session.refresh(db_object)
         self.assertTrue(db_object.archive, 'entry should be archived')
 
     def compare_object(self, response_dict, db_dict):
@@ -272,6 +273,6 @@ class BaseTest(TestCase):
         :return: None
         """
         for db_object in object_list:
-            db.session.add(db_object)
-            db.session.commit()
-            db.session.refresh(db_object)
+            DB.session.add(db_object)
+            DB.session.commit()
+            DB.session.refresh(db_object)

@@ -1,4 +1,4 @@
-""" Test all routes for Answer creation, modification, and query."""
+"""Test all routes for Answer creation, modification, and query."""
 
 from .base_test import BaseTest
 
@@ -6,29 +6,29 @@ from ..database.tables.answer import Answer
 
 
 class TestAnswer(BaseTest):
-    """ Class based on UnitTest.TestCase for testing answer routes. """
+    """Class based on UnitTest.TestCase for testing answer routes."""
 
     def create_app(self):
-        """ Configure and stand up the flask app for testing. """
+        """Configure and stand up the flask app for testing """
         return BaseTest.create_app(self)
 
     def setUp(self):
-        """ Create a database for testing. """
+        """Create a database for testing."""
         BaseTest.setUp(self)
 
     def tearDown(self):
-        """ Delete the database used during testing. """
+        """Delete the database used during testing."""
         BaseTest.tearDown(self)
 
     def test_get_answer(self):
-        """ Test the route for querying a single answer. """
+        """Test the route for querying a single answer."""
         answer1 = Answer(answer='is this an answer?',
                          correct=False,
                          questionid=1)
         self.default_get('amttest/api/answer', answer1)
 
     def test_add_answer(self):
-        """ Test the route for creating an answre. """
+        """Test the route for creating an answer."""
         payload = {'answer': 'is this an answer?',
                    'correct': False}
         ignore = {'answerid': 235,
@@ -40,7 +40,7 @@ class TestAnswer(BaseTest):
                           ignore)
 
     def test_update_answer(self):
-        """ Test the route for updating an answer. """
+        """Test the route for updating an answer."""
         payload = {'correct': False}
         answer1 = Answer(answer='is this an answer?',
                          correct=False,
@@ -55,7 +55,7 @@ class TestAnswer(BaseTest):
                          ignore)
 
     def test_delete_answer(self):
-        """ Test the route for deleteing (archiving) an answer"""
+        """Test the route for deleting (archiving) an answer."""
         answer1 = Answer(answer='is this an answer?',
                          correct=False,
                          questionid=1)

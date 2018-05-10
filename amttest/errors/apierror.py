@@ -1,4 +1,4 @@
-""" Module for the Base Class APIError. """
+"""Module for the Base Class APIError."""
 
 from flask import jsonify
 
@@ -21,5 +21,5 @@ class APIError(Exception):
             self.__dict__.update(kwargs)
 
     def to_json(self):
-        """ Convert the object into a json dictionary. """
+        """Convert the object into a json dictionary."""
         return jsonify(self.__dict__)

@@ -1,4 +1,4 @@
-""" Module for handling an Unauthorized error. """
+"""Module for handling an Unauthorized error."""
 
 from flask import make_response, Blueprint
 
@@ -27,5 +27,5 @@ class Unauthorized(APIError):
 
 @UNAUTHORIZED_BP.app_errorhandler(Unauthorized)
 def handle_unauthorized(error):
-    """ Route for handling an Unauthorized error. """
+    """Route for handling an Unauthorized error."""
     return make_response(error.to_json(), error.code)

@@ -1,13 +1,17 @@
-from ..database import db
-from ..database.tables.answer import Answer
-from ..database.tables.question import Question
-from ..database.tables.section import Section
-from ..database.tables.exam import Exam
-
+"""
+Methods for importing a csv file into the database.
+An example file can be found in the /data directory.
+"""
 import csv
 import collections
 import logging
 import os
+
+from ..database import DB
+from ..database.tables.answer import Answer
+from ..database.tables.question import Question
+from ..database.tables.section import Section
+from ..database.tables.exam import Exam
 
 
 def import_file(file_path, examname):
@@ -33,10 +37,7 @@ def import_file(file_path, examname):
         for row in data:
             answer = {}
             answer['answer'] = row['answer']
-            if row['correct'].lower() == 'true':
-                answer['correct'] = True
-            else:
-                answer['correct'] = False
+            answer['correct'] = row['correct'].lower() == 'true'
             questions[row['question']].append(answer)
             sections[row['section']].add(row['question'])
 
@@ -61,9 +62,9 @@ def get_exam_id(examname):
         logger.info('Found exam, id is: %s', result.examid)
         return result.examid
     new = Exam(name=examname)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New exam created: %s', new)
     return new.examid
 
@@ -82,9 +83,9 @@ def get_section_id(sectionname, examid):
         logger.info('Found section, id is: %s', result.sectionid)
         return result.sectionid
     new = Section(name=sectionname, examid=examid)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New section created: %s', new)
     return new.sectionid
 
@@ -103,9 +104,9 @@ def get_question_id(question, sectionid):
         logger.info('Found question, id is: %s', result.questionid)
         return result.questionid
     new = Question(question=question, sectionid=sectionid)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New question created: %s', new)
     return new.questionid
 
@@ -118,7 +119,7 @@ def new_answer(answerdict):
     """
     logger = logging.getLogger(__name__)
     new = Answer(**answerdict)
-    db.session.add(new)
-    db.session.commit()
-    db.session.refresh(new)
+    DB.session.add(new)
+    DB.session.commit()
+    DB.session.refresh(new)
     logger.info('New answer created: %s', new)

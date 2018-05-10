@@ -1,4 +1,4 @@
-""" Test all routes for Certificate creation, modification, and query."""
+"""Test all routes for Certificate creation, modification, and query."""
 
 import json
 
@@ -13,22 +13,22 @@ from ..database.tables.exam import Exam
 
 
 class TestExam(BaseTest):
-    """ Class based on UnitTest.TestCase for testing certificate routes. """
+    """Class based on UnitTest.TestCase for testing certificate routes."""
 
     def create_app(self):
-        """ Configure and stand up the flask app for testing. """
+        """Configure and stand up the flask app for testing."""
         return BaseTest.create_app(self)
 
     def setUp(self):
-        """ Create a database for testing. """
+        """Create a database for testing."""
         BaseTest.setUp(self)
 
     def tearDown(self):
-        """ Delete the database used during testing. """
+        """Delete the database used during testing."""
         BaseTest.tearDown(self)
 
     def test_get_all_certs(self):
-        """ Test the route for getting all certificates. """
+        """Test the route for getting all certificates."""
         cert = Certificate(userid=1,
                            examid=1,
                            correct=1,
@@ -42,7 +42,7 @@ class TestExam(BaseTest):
         self.default_get_all('amttest/api/certificate', [cert, cert2])
 
     def test_get_certificate(self):
-        """ Test the route for getting a single certificate by id. """
+        """Test the route for getting a single certificate by id."""
         cert = Certificate(userid=1,
                            examid=1,
                            correct=1,
@@ -63,7 +63,7 @@ class TestExam(BaseTest):
                          'empty list')
 
     def test_get_user_certs(self):
-        """ Test the route for getting all of a single users certificate. """
+        """Test the route for getting all of a single users certificate."""
         cert = Certificate(userid=1,
                            examid=1,
                            correct=1,
@@ -77,7 +77,7 @@ class TestExam(BaseTest):
         self.default_get_all('amttest/api/certificate/user/1', [cert, cert2])
 
     def test_get_test_certs(self):
-        """ Test the route for getting all certs based on examid. """
+        """Test the route for getting all certs based on examid."""
         cert = Certificate(userid=1,
                            examid=1,
                            correct=1,
@@ -91,7 +91,7 @@ class TestExam(BaseTest):
         self.default_get_all('amttest/api/certificate/exam/1', [cert, cert2])
 
     def test_update_certs(self):
-        """ Test the creation of a new certificate, and exam grading.  """
+        """Test the creation of a new certificate, and exam grading."""
         self.enter_data()
         response_no_header = self.client.post('amttest/api/certificate/1/1')
         self.assert400(response_no_header, 'post should require a token')
@@ -213,7 +213,7 @@ class TestExam(BaseTest):
                          'failed tests should fail')
 
     def enter_data(self):
-        """ Generate test data for exam testing. """
+        """Generate test data for exam testing."""
         data = list()
         data.append(Exam(name='Reeves Test'))
         data.append(Section(name='Rules of Play',

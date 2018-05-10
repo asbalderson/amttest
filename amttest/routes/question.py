@@ -1,3 +1,4 @@
+"""Routes which modify the question table."""
 import logging
 
 from flask import jsonify, request, make_response, Blueprint
@@ -7,7 +8,7 @@ from . import get_payload
 
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
-from ..database import db
+from ..database import DB
 from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
@@ -21,11 +22,7 @@ BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')
 
 @QUESTION_BP.route('/section/<int:section_id>/question', methods=['POST'])
 def create_question(section_id):
-    """
-    creates a new question under a section, question id's will probably all be
-    unique but, it seems right to specify the section id every time. mongo
-    can assign the question id
-    """
+    """Create a new question based on a sectionid."""
     check_token(get_token(request))
     payload = get_payload(request)
     question = {'sectionid': section_id}
@@ -44,9 +41,7 @@ def create_question(section_id):
 
 @QUESTION_BP.route('/question/<int:question_id>', methods=['GET'])
 def get_question(question_id):
-    """
-    may not be needed but returns a specfic question.
-    """
+    """Get a single question based on its id. """
     question = query_question(question_id)
     return_dict = table2dict(question)
     return_dict['answers'] = []
@@ -60,9 +55,7 @@ def get_question(question_id):
 
 @QUESTION_BP.route('/question/<int:question_id>', methods=['PUT'])
 def update_question(question_id):
-    """
-    updates a question, so it should probably send the entire question
-    """
+    """Update an existing question."""
     check_token(get_token(request))
     question = query_question(question_id)
     payload = get_payload(request)
@@ -72,16 +65,13 @@ def update_question(question_id):
             continue
         if field in inspect(Question).mapper.column_attrs:
             setattr(question, field, payload[field])
-    db.session.commit()
+    DB.session.commit()
     return make_response('', 204)
 
 
 @QUESTION_BP.route('/question/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
-    """
-    deletes question from a section
-    archive
-    """
+    """Set a questions archive flag to True, removing it from queries."""
     check_token(get_token(request))
     question = query_question(question_id)
     section = Section.query.filter_by(archive=False,
@@ -92,11 +82,16 @@ def delete_question(question_id):
         raise BadRequest('Archiving question will leave not enough questions '
                          'to meet the requirements for the section.')
     question.archive = True
-    db.session.commit()
+    DB.session.commit()
     return make_response('', 204)
 
 
 def query_question(question_id):
+    """
+    Get a single question, or raise a BadRequest if not found.
+    :param question_id: int, primary key for a question.
+    :return: Table data for a question.
+    """
     question = Question.query.filter_by(archive=False,
                                         questionid=question_id).first()
     if not question:

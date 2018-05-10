@@ -1,12 +1,13 @@
-from ..database import db
-from ..database.tables.token import Token
-
-from ..errors.badrequest import BadRequest
-from ..errors.unauthorized import Unauthorized
+"""Methods for modifying the token table."""
 
 import logging
 import random
 import string
+
+from ..database import DB
+from ..database.tables.token import Token
+from ..errors.badrequest import BadRequest
+from ..errors.unauthorized import Unauthorized
 
 
 def gen_token(length=40):
@@ -23,8 +24,8 @@ def gen_token(length=40):
     for i in range(length):
         token += random.choice(string.ascii_letters + string.digits)
     this = Token(token=token)
-    db.session.add(this)
-    db.session.commit()
+    DB.session.add(this)
+    DB.session.commit()
     logger.info('created token')
     logger.info(token)
     return token

@@ -1,4 +1,4 @@
-""" Routes that modify the section table. """
+"""Routes that modify the section table."""
 
 import logging
 
@@ -7,7 +7,7 @@ from sqlalchemy import inspect
 
 from . import get_payload
 
-from ..database import db
+from ..database import DB
 from ..database.tables.answer import Answer
 from ..database.tables.section import Section
 from ..database.tables.question import Question
@@ -23,7 +23,7 @@ BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['POST'])
 def create_section(exam_id):
-    """ Creates a new section """
+    """Creates a new section"""
     check_token(get_token(request))
     payload = get_payload(request)
     fields = {'examid': exam_id}
@@ -42,7 +42,7 @@ def create_section(exam_id):
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['GET'])
 def get_exam_sections(exam_id):
-    """  Get all sections for one exam. """
+    """Get all sections for one exam."""
     section_data = Section.query.filter_by(archive=False, examid=exam_id).all()
 
     section_list = []
@@ -54,7 +54,7 @@ def get_exam_sections(exam_id):
 
 @SECTION_BP.route('/section', methods=['GET'])
 def get_all_sections():
-    """ Get all sections in the database. """
+    """Get all sections in the database."""
     section_data = Section.query.filter_by(archive=False).all()
 
     section_list = []
@@ -66,7 +66,7 @@ def get_all_sections():
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['GET'])
 def get_section(section_id):
-    """ Get one section based on the section id. """
+    """Get one section based on the section id."""
 
     section = query_section(section_id)
     return_dict = table2dict(section)
@@ -88,7 +88,7 @@ def get_section(section_id):
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['PUT'])
 def update_section(section_id):
-    """ Update a single section based on a payload. """
+    """Update a single section based on a payload."""
     check_token(get_token(request))
     payload = get_payload(request)
     section = query_section(section_id)
@@ -105,23 +105,23 @@ def update_section(section_id):
         if field in inspect(Section).mapper.column_attrs:
             setattr(section, field, payload[field])
 
-    db.session.commit()
+    DB.session.commit()
 
     return make_response('', 204)
 
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['DELETE'])
 def delete_section(section_id):
-    """ Set a sections archive flag to True, removing it from all queries. """
+    """Set a sections archive flag to True, removing it from all queries."""
     check_token(get_token(request))
     section = query_section(section_id)
     section.archive = True
-    db.session.commit()
+    DB.session.commit()
     return make_response('', 204)
 
 
 def query_section(section_id):
-    """ Query a single section or raise a BadRequest if not found. """
+    """Query a single section or raise a BadRequest if not found."""
     section = Section.query.filter_by(archive=False,
                                       sectionid=section_id).first()
     if not section:

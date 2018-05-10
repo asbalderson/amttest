@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Entry point for running the app as a module."""
 
 from .amttest import launch_api
 

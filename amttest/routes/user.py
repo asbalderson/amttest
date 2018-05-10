@@ -1,10 +1,11 @@
+"""Routes related to a the user table."""
 import logging
 
 from flask import jsonify, request, make_response, Blueprint
 
 from . import get_payload
 
-from ..database import db
+from ..database import DB
 from ..database.tables.user import User
 from ..database.utils import add_value, table2dict
 from ..errors.badrequest import BadRequest
@@ -17,12 +18,7 @@ BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
 
 @USER_BP.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
-    """
-    gets user data to be parsed and/or displayed on the admin page
-    return: literally everything in the users table, see line 21
-            but should probably return only the non expired most
-            recent test result for each user.
-    """
+    """Gets all info about a single user."""
     user = query_userid(user_id)
 
     data = table2dict(user)
@@ -32,6 +28,7 @@ def get_user(user_id):
 
 @USER_BP.route('/user', methods=['GET'])
 def get_all_users():
+    """Get data on all users."""
     all_users = User.query.filter_by(archive=False).all()
     returnlist = []
     for user in all_users:
@@ -44,10 +41,7 @@ def get_all_users():
 
 @USER_BP.route('/user', methods=['POST'])
 def create_user():
-    """
-    creates a shell of a user, with their uid, amtname, name, and email
-    args:
-    """
+    """Create a single user."""
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     required = ['fbuserid', 'name', 'email']
@@ -84,16 +78,7 @@ def create_user():
 
 @USER_BP.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
-    """
-    updates user with new information, generally after a user has submitted
-    a test, uid is required, whatever information is being updated should be
-    included
-    {
-        "uid": "whatever this is",
-        "email": "jane.doe@example.com",
-    }
-
-    """
+    """Update a single user."""
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     payload = get_payload(request)
@@ -109,17 +94,14 @@ def update_user(user_id):
         else:
             setattr(user, field, payload[field])
 
-    db.session.commit()
+    DB.session.commit()
 
     return make_response('', 204)
 
 
 @USER_BP.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    """
-    removes a user, probably because something went wrong :)
-    user will actually be archived
-    """
+    """Set a users archive flag to True, removing it from queries."""
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
 
@@ -127,12 +109,17 @@ def delete_user(user_id):
 
     logger.info(user)
     user.archive = True
-    db.session.commit()
+    DB.session.commit()
 
     return make_response('', 204)
 
 
 def query_userid(userid):
+    """
+    Get a user based on its userid, or raise a BadRequest if not found.
+    :param userid: int, primary key for a single user.
+    :return: Table data on a single user.
+    """
     user = User.query.filter_by(userid=userid, archive=False).first()
     if not user:
         raise BadRequest(message='User not found')

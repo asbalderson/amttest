@@ -1,4 +1,4 @@
-""" Functions that modify the certificate table. """
+"""Routes that modify the certificate table."""
 
 import logging
 
@@ -83,14 +83,14 @@ def update_certificate(user_id, exam_id):
         cert_dict['passed'] = True
     cert = Certificate(**cert_dict)
     # calling this calls commit, which should write all the changes
-    #  above for stats
+    # above for stats
     add_value(cert)
     return make_response(jsonify(table2dict(cert)), 201)
 
 
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['GET'])
 def get_certificate(user_id, exam_id):
-    """ Get a specific exam based on the userid and examid. """
+    """Get a specific exam based on the userid and examid."""
     certs = Certificate.query.filter_by(archive=False,
                                         userid=user_id,
                                         examid=exam_id).all()
@@ -104,7 +104,7 @@ def get_certificate(user_id, exam_id):
 
 @CERT_BP.route('/certificate/user/<int:user_id>', methods=['GET'])
 def get_user_certs(user_id):
-    """ Get all certs for a single user. """
+    """Get all certs for a single user."""
     certs = Certificate.query.filter_by(archive=False, userid=user_id).all()
     cert_dict = []
     for cert in certs:
@@ -116,7 +116,7 @@ def get_user_certs(user_id):
 
 @CERT_BP.route('/certificate/exam/<int:exam_id>', methods=['GET'])
 def get_test_certs(exam_id):
-    """ Get all certificates for a given exam id. """
+    """Get all certificates for a given exam id."""
     certs = Certificate.query.filter_by(archive=False, examid=exam_id).all()
     cert_dict = []
     for cert in certs:
@@ -128,7 +128,7 @@ def get_test_certs(exam_id):
 
 @CERT_BP.route('/certificate', methods=['GET'])
 def get_all_certs():
-    """ Get all certificates int he database. """
+    """Get all certificates int he database."""
     certs = Certificate.query.filter_by(archive=False).all()
     cert_dict = []
     for cert in certs:

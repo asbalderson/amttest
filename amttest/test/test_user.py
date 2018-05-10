@@ -1,4 +1,4 @@
-""" Test all routes for User creation, modification, and query."""
+"""Test all routes for User creation, modification, and query."""
 
 import json
 
@@ -9,27 +9,27 @@ from ..database.tables.user import User
 
 
 class TestUser(BaseTest):
-    """ Class based on UnitTest.TestCase for testing user routes. """
+    """Class based on UnitTest.TestCase for testing user routes."""
 
     def create_app(self):
-        """ Configure and stand up the flask app for testing. """
+        """Configure and stand up the flask app for testing."""
         return BaseTest.create_app(self)
 
     def setUp(self):
-        """ Create a database for testing. """
+        """Create a database for testing."""
         BaseTest.setUp(self)
 
     def tearDown(self):
-        """ Delete the database used during testing. """
+        """Delete the database used during testing."""
         BaseTest.tearDown(self)
 
     def test_get_user(self):
-        """ Tests for querying a single user. """
+        """Tests for querying a single user."""
         user1 = User(name='test', fbuserid='abc123', email='test@test.test')
         self.default_get('amttest/api/user', user1)
 
     def test_get_all_users(self):
-        """ Tests for querying all users. """
+        """Tests for querying all users."""
         user1 = User(name='test1',
                      fbuserid='test123',
                      email='test1@test1.test1')
@@ -40,7 +40,7 @@ class TestUser(BaseTest):
         self.default_get_all('amttest/api/user', user_list)
 
     def test_add_user(self):
-        """ Tests for route to add users. """
+        """Tests for route to add users."""
         payload = {'fbuserid': 'abc123',
                    'name': 'test user',
                    'email': 'test@test.test'}
@@ -78,7 +78,7 @@ class TestUser(BaseTest):
         self.assertEqual(user2_dict['kingdom'], payload['kingdom'])
 
     def test_put_user(self):
-        """ Test for the route to modify a user. """
+        """Test for the route to modify a user."""
         payload = {'kingdom': 'IMD'}
         ignore = {'archive': True,
                   'userid': 42}
@@ -87,7 +87,7 @@ class TestUser(BaseTest):
         self.default_put('amttest/api/user', payload, user1, User, ignore)
 
     def test_delete_user(self):
-        """ Test for the route to delete (archive) a user. """
+        """Test for the route to delete (archive) a user."""
         user1 = User(name='test1', fbuserid='test123',
                      email='test1@test1.test1')
         self.default_delete('amttest/api/user', user1)

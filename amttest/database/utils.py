@@ -1,18 +1,23 @@
-from . import db
-from .tables import *
+"""Standard functions for working with database values."""
 from sqlalchemy import inspect
+
+from . import DB
+from .tables import answer, certificate, exam, question, section, token, user
 
 
 def create_tables():
-    db.create_all()
+    """Create all tables in the database."""
+    DB.create_all()
 
 
 def table2dict(table):
+    """Take a query result for a table, and convert it to a dict."""
     return {attr.key: getattr(table, attr.key)
             for attr in inspect(table).mapper.column_attrs}
 
 
 def add_value(entry):
-    db.session.add(entry)
-    db.session.commit()
-    db.session.refresh(entry)
+    """Add a single database row to the database."""
+    DB.session.add(entry)
+    DB.session.commit()
+    DB.session.refresh(entry)

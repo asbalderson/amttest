@@ -1,4 +1,4 @@
-""" Routes for working with the exam table. """
+"""Routes for working with the exam table."""
 
 import logging
 import random
@@ -8,7 +8,7 @@ from sqlalchemy import inspect
 
 from . import get_payload
 
-from ..database import db
+from ..database import DB
 from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.question import Question
@@ -25,7 +25,7 @@ BPHandler.add_blueprint(EXAM_BP, url_prefix='/amttest/api')
 
 @EXAM_BP.route('/exam', methods=['GET'])
 def get_exams():
-    """ Get all exams which are not archived. """
+    """Get all exams which are not archived."""
     data = Exam.query.filter_by(archive=False).all()
     return_list = []
     for exam in data:
@@ -50,17 +50,19 @@ def get_randomized_exam(exam_id):
     for section in sections:
         if section.active_questions == 0:
             continue
-        sectionid = section.sectionid
-        all_questions = Question.query.filter_by(archive=False,
-                                                 sectionid=sectionid).all()
+        all_questions = Question.query.filter_by(
+            archive=False,
+            sectionid=section.sectionid
+        ).all()
         used_questions = random.sample(all_questions, section.active_questions)
         for question in used_questions:
             toadd = {'questionid': question.questionid,
                      'question': question.question,
                      'answers': []}
-            questionid = question.questionid
-            answers = Answer.query.filter_by(archive=False,
-                                             questionid=questionid).all()
+            answers = Answer.query.filter_by(
+                archive=False,
+                questionid=question.questionid
+            ).all()
             random.shuffle(answers)
             for answer in answers:
                 answer_dict = {'answerid': answer.answerid,
@@ -74,7 +76,7 @@ def get_randomized_exam(exam_id):
 
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['GET'])
 def get_exam(exam_id):
-    """ Get one single exam based on the id. """
+    """Get one single exam based on the id."""
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
         raise BadRequest('exam not found')
@@ -83,7 +85,7 @@ def get_exam(exam_id):
 
 @EXAM_BP.route('/exam', methods=['POST'])
 def create_exam():
-    """ Creates a new exam. """
+    """Creates a new exam."""
     check_token(get_token(request))
     payload = get_payload(request)
     ignore = ['archive', 'examid']
@@ -107,7 +109,7 @@ def create_exam():
 
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['PUT'])
 def update_exam(exam_id):
-    """ Update the exam based on the payload supplied. """
+    """Update the exam based on the payload supplied."""
     check_token(get_token(request))
 
     exam = query_exam(exam_id)
@@ -124,23 +126,23 @@ def update_exam(exam_id):
         if field in table2dict(exam).keys():
             setattr(exam, field, payload[field])
 
-    db.session.commit()
+    DB.session.commit()
 
     return make_response('', 204)
 
 
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['DELETE'])
 def delete_exam(exam_id):
-    """ Sets the archive flag to True, "removing" the test. """
+    """Sets the archive flag to True, "removing" the test."""
     check_token(get_token(request))
     exam = query_exam(exam_id)
     exam.archive = True
-    db.session.commit()
+    DB.session.commit()
     return make_response('', 204)
 
 
 def query_exam(exam_id):
-    """ Get an exam from the database, or raise a not found. """
+    """Get an exam from the database, or raise a not found."""
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
         raise BadRequest('exam not found')
