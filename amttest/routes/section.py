@@ -1,3 +1,5 @@
+""" Routes that modify the section table. """
+
 import logging
 
 from flask import jsonify, request, make_response, Blueprint
@@ -21,9 +23,7 @@ BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['POST'])
 def create_section(exam_id):
-    """
-    creates a new section
-    """
+    """ Creates a new section """
     check_token(get_token(request))
     payload = get_payload(request)
     fields = {'examid': exam_id}
@@ -42,6 +42,7 @@ def create_section(exam_id):
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['GET'])
 def get_exam_sections(exam_id):
+    """  Get all sections for one exam. """
     section_data = Section.query.filter_by(archive=False, examid=exam_id).all()
 
     section_list = []
@@ -53,9 +54,7 @@ def get_exam_sections(exam_id):
 
 @SECTION_BP.route('/section', methods=['GET'])
 def get_all_sections():
-    """
-    gets all the section names and uid's
-    """
+    """ Get all sections in the database. """
     section_data = Section.query.filter_by(archive=False).all()
 
     section_list = []
@@ -67,11 +66,7 @@ def get_all_sections():
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['GET'])
 def get_section(section_id):
-    """
-    returns all the section data + questions for a given section,
-    actually dont know if this is needed, might be able to just
-    get questions for a section id
-    """
+    """ Get one section based on the section id. """
 
     section = query_section(section_id)
     return_dict = table2dict(section)
@@ -93,9 +88,7 @@ def get_section(section_id):
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['PUT'])
 def update_section(section_id):
-    """
-    this is used to change the number of questions usd for a section
-    """
+    """ Update a single section based on a payload. """
     check_token(get_token(request))
     payload = get_payload(request)
     section = query_section(section_id)
@@ -119,10 +112,7 @@ def update_section(section_id):
 
 @SECTION_BP.route('/section/<int:section_id>', methods=['DELETE'])
 def delete_section(section_id):
-    """
-    removes a section, tests calling removed section will be invalid
-    should produce error if section is in use
-    """
+    """ Set a sections archive flag to True, removing it from all queries. """
     check_token(get_token(request))
     section = query_section(section_id)
     section.archive = True
@@ -131,6 +121,7 @@ def delete_section(section_id):
 
 
 def query_section(section_id):
+    """ Query a single section or raise a BadRequest if not found. """
     section = Section.query.filter_by(archive=False,
                                       sectionid=section_id).first()
     if not section:
