@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/asbalderson/amttest.svg?branch=master)](https://travis-ci.com/asbalderson/amttest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5367f199992041cea4fc8f700de21fe7)](https://www.codacy.com/app/asbalderson/amttest?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=asbalderson/amttest&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/asbalderson/amttest/branch/master/graph/badge.svg)](https://codecov.io/gh/asbalderson/amttest)
+[![Codecov branch](https://codecov.io/gh/asbalderson/amttest/graph/badge.svg?branch=master&service=github)](https://codecov.io/gh/asbalderson/amttest)
 
 # amttest
 
