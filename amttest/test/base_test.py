@@ -7,7 +7,7 @@ from flask_testing import TestCase
 
 from ..database import DB
 from ..database.utils import table2dict
-from ..errors import badrequest, forbbiden, gone, internalservererror, \
+from ..errors import badrequest, forbidden, gone, internalservererror, \
     methodnotallowed, notfound, unauthorized
 from ..helpers import token
 from ..helpers.bphandler import BPHandler
