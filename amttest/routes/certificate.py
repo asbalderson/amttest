@@ -13,6 +13,7 @@ from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import check_token, get_token
 
@@ -42,7 +43,7 @@ def update_certificate(user_id, exam_id):
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
 
     if not exam:
-        raise BadRequest('exam not found')
+        raise NotFound('exam not found')
 
     needed_questions = 0
     for section in sections:

@@ -6,7 +6,7 @@ import string
 
 from ..database import DB
 from ..database.tables.token import Token
-from ..errors.badrequest import BadRequest
+from ..errors.forbidden import Forbidden
 from ..errors.unauthorized import Unauthorized
 
 
@@ -68,5 +68,5 @@ def get_token(request):
     """
     token = request.headers.get('Token')
     if not token:
-        raise BadRequest(message='API token not provided')
+        raise Forbidden(message='API token not provided')
     return token

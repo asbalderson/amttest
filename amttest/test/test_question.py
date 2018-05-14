@@ -74,4 +74,4 @@ class TesSection(BaseTest):
         DB.session.commit()
 
         bad_delete = self.client.delete('amttest/api/question/1')
-        self.assert400(bad_delete)
+        self.assert403(bad_delete, 'cannot delete an already deleted question')

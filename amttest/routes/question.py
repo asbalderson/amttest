@@ -14,6 +14,7 @@ from ..database.tables.answer import Answer
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 
 
 QUESTION_BP = Blueprint('question', __name__)
@@ -96,5 +97,5 @@ def query_question(question_id):
     question = Question.query.filter_by(archive=False,
                                         questionid=question_id).first()
     if not question:
-        raise BadRequest('Question not found')
+        raise NotFound('Question not found')
     return question

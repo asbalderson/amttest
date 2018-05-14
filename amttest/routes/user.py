@@ -9,6 +9,7 @@ from ..database import DB
 from ..database.tables.user import User
 from ..database.utils import add_value, table2dict
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import check_token, get_token
 
@@ -123,5 +124,5 @@ def query_userid(userid):
     """
     user = User.query.filter_by(userid=userid, archive=False).first()
     if not user:
-        raise BadRequest(message='User not found')
+        raise NotFound(message='User not found')
     return user
