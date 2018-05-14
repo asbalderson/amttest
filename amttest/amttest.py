@@ -8,7 +8,7 @@ from flask import Flask
 
 from .database import DB
 from .database.utils import create_tables
-from .errors import badrequest, forbbiden, gone, internalservererror, \
+from .errors import badrequest, forbidden, gone, internalservererror, \
     methodnotallowed, notfound, unauthorized
 from .helpers.bphandler import BPHandler
 from .helpers.importer import import_file

@@ -2,7 +2,7 @@
 
 __all__ = [
     'badrequest',
-    'forbbiden',
+    'forbidden',
     'gone',
     'internalservererror',
     'methodnotallowed',
