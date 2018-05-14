@@ -13,6 +13,7 @@ from ..database.tables.section import Section
 from ..database.tables.question import Question
 from ..database.utils import add_value, table2dict
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
 
@@ -124,5 +125,5 @@ def query_section(section_id):
     section = Section.query.filter_by(archive=False,
                                       sectionid=section_id).first()
     if not section:
-        raise BadRequest('Section not found')
+        raise NotFound('Section not found')
     return section

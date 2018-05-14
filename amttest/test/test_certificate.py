@@ -94,7 +94,7 @@ class TestExam(BaseTest):
         """Test the creation of a new certificate, and exam grading."""
         self.enter_data()
         response_no_header = self.client.post('amttest/api/certificate/1/1')
-        self.assert400(response_no_header, 'post should require a token')
+        self.assert403(response_no_header, 'post should require a token')
         response_no_data = self.client.post('amttest/api/certificate/1/1',
                                             headers=self.header_dict)
         self.assert400(response_no_data,
@@ -103,7 +103,7 @@ class TestExam(BaseTest):
         response_no_exam = self.client.post('amttest/api/certificate/1/42',
                                             headers=self.header_dict,
                                             data=json.dumps(['abc', '123']))
-        self.assert400(response_no_exam,
+        self.assert404(response_no_exam,
                        'if exam doesnt exist, it cant be graded')
 
         short_payload = [

@@ -15,6 +15,7 @@ from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 from ..helpers.bphandler import BPHandler
 from ..helpers.token import get_token, check_token
 
@@ -80,7 +81,7 @@ def get_exam(exam_id):
     """Get one single exam based on the id."""
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
-        raise BadRequest('exam not found')
+        raise NotFound('exam not found')
     return make_response(jsonify(table2dict(exam)), 200)
 
 
@@ -146,5 +147,5 @@ def query_exam(exam_id):
     """Get an exam from the database, or raise a not found."""
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
-        raise BadRequest('exam not found')
+        raise NotFound('exam not found')
     return exam

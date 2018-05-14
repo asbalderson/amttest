@@ -13,6 +13,7 @@ from ..database import DB
 from ..database.utils import add_value, table2dict
 from ..database.tables.answer import Answer
 from ..errors.badrequest import BadRequest
+from ..errors.notfound import NotFound
 
 
 ANSWER_BP = Blueprint('answer', __name__)
@@ -88,5 +89,5 @@ def query_answerid(answer_id):
     """
     answer = Answer.query.filter_by(archive=False, answerid=answer_id).first()
     if not answer:
-        raise BadRequest('Answer not found')
+        raise NotFound('Answer not found')
     return answer

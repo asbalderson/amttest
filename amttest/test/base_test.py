@@ -70,14 +70,14 @@ class BaseTest(TestCase):
         self.compare_object(response.json, record)
 
         response = self.client.get('%s/42' % route)
-        self.assert400(response, 'non existent route should return 400')
+        self.assert404(response, 'non existent route should return 404')
 
         db_object.archive = True
         DB.session.commit()
         DB.session.refresh(db_object)
 
         response = self.client.get('%s/1' % route)
-        self.assert400(response, 'archived values should not return')
+        self.assert404(response, 'archived values should not return')
 
     def default_get_all(self, route, object_list):
         """
@@ -133,20 +133,20 @@ class BaseTest(TestCase):
         :return: None
         """
         response_no_header = self.client.put('%s/42' % route)
-        self.assert400(response_no_header, 'post should require a token')
+        self.assert403(response_no_header, 'post should require a token')
 
-        response_no_data = self.client.put('%s/42' % route,
+        self.add_obj_to_db([db_obj])
+
+        response_no_data = self.client.put('%s/1' % route,
                                            headers=self.header_dict)
         self.assert400(response_no_data,
                        'some data is required for a new entry')
 
-        self.add_obj_to_db([db_obj])
-
         response_no_value = self.client.put('%s/42' % route,
                                             data=json.dumps(payload),
                                             headers=self.header_dict)
-        self.assert400(response_no_value,
-                       'should return 400 when key does not exist')
+        self.assert404(response_no_value,
+                       'should return 404 when key does not exist')
 
         basic_update = self.client.put('%s/1' % route,
                                        data=json.dumps(payload),
@@ -199,7 +199,7 @@ class BaseTest(TestCase):
         :return: None
         """
         response_no_header = self.client.post(route)
-        self.assert400(response_no_header, 'post should require a token')
+        self.assert403(response_no_header, 'post should require a token')
 
         response_no_data = self.client.post(route,
                                             headers=self.header_dict)
@@ -242,11 +242,11 @@ class BaseTest(TestCase):
         :return: None
         """
         response_no_header = self.client.delete('%s/42' % route)
-        self.assert400(response_no_header, 'delete should require a token')
+        self.assert403(response_no_header, 'delete should require a token')
 
         response_empty = self.client.delete('%s/42' % route,
                                             headers=self.header_dict)
-        self.assert400(response_empty, 'requesting a bad id should fail')
+        self.assert404(response_empty, 'requesting a bad id should fail')
 
         DB.session.add(db_object)
         DB.session.commit()

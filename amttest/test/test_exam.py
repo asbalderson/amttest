@@ -107,7 +107,7 @@ class TestExam(BaseTest):
         exam1 = Exam(name='Reeves Test')
         self.add_obj_to_db([exam1])
         response_dne = self.client.get('amttest/api/exam/42/take')
-        self.assert400(response_dne, 'non existent id should return a 400')
+        self.assert404(response_dne, 'non existent id should return a 404')
 
         exam_response = self.client.get('amttest/api/exam/1/take')
         self.assert200(exam_response,
