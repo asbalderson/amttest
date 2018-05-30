@@ -16,16 +16,14 @@ from .helpers.token import gen_token, list_token
 from .routes import answer, certificate, exam, question, section, user
 
 
-def config_app(name, urlbase_url='/amttest/api'):
+def config_app(name):
     """
     Configure the Flask app before standing it up.
 
     :param name: string, Name of the flask app.
-    :param urlbase_url: string, base url for all flask routes.
     :return: Flask object.
     """
     app = Flask(name)
-    app.config['APPLICATION_ROOT'] = urlbase_url
     return app
 
 
