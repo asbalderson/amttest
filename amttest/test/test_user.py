@@ -25,24 +25,21 @@ class TestUser(BaseTest):
 
     def test_get_user(self):
         """Tests for querying a single user."""
-        user1 = User(name='test', fbuserid='abc123', email='test@test.test')
+        user1 = User(name='test', email='test@test.test')
         self.default_get('amttest/api/user', user1)
 
     def test_get_all_users(self):
         """Tests for querying all users."""
         user1 = User(name='test1',
-                     fbuserid='test123',
                      email='test1@test1.test1')
         user2 = User(name='test2',
-                     fbuserid='testabc',
                      email='test2@test2.test2')
         user_list = [user1, user2]
         self.default_get_all('amttest/api/user', user_list)
 
     def test_add_user(self):
         """Tests for route to add users."""
-        payload = {'fbuserid': 'abc123',
-                   'name': 'test user',
+        payload = {'name': 'test user',
                    'email': 'test@test.test'}
         ignore = {'archive': True,
                   'userid': 42}
@@ -53,9 +50,9 @@ class TestUser(BaseTest):
                                        data=json.dumps(payload),
                                        headers=self.header_dict)
         self.assert200(repeat_user,
-                       'existing fbuserid should return a 200, existing user')
+                       'existing email should return a 200, existing user')
         payload.pop('name')
-        payload['fbuserid'] = 'abcdefg'
+        payload['email'] = 'bob@bob.bob'
         missing_data = self.client.post('amttest/api/user',
                                         data=json.dumps(payload),
                                         headers=self.header_dict)
@@ -82,12 +79,12 @@ class TestUser(BaseTest):
         payload = {'kingdom': 'IMD'}
         ignore = {'archive': True,
                   'userid': 42}
-        user1 = User(name='test1', fbuserid='test123',
+        user1 = User(name='test1',
                      email='test1@test1.test1')
         self.default_put('amttest/api/user', payload, user1, User, ignore)
 
     def test_delete_user(self):
         """Test for the route to delete (archive) a user."""
-        user1 = User(name='test1', fbuserid='test123',
+        user1 = User(name='test1',
                      email='test1@test1.test1')
         self.default_delete('amttest/api/user', user1)

@@ -23,7 +23,6 @@ def get_user(user_id):
     user = query_userid(user_id)
 
     data = table2dict(user)
-    data.pop('fbuserid')
     return make_response(jsonify(data), 200)
 
 
@@ -34,7 +33,6 @@ def get_all_users():
     returnlist = []
     for user in all_users:
         tmp = table2dict(user)
-        tmp.pop('fbuserid')
         returnlist.append(tmp)
 
     return make_response(jsonify(returnlist), 200)
@@ -45,7 +43,7 @@ def create_user():
     """Create a single user."""
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
-    required = ['fbuserid', 'name', 'email']
+    required = ['name', 'email']
     possible = ['amtname', 'kingdom', 'admin'] + required
     ignore = ['archive', 'userid']
     payload = get_payload(request)
@@ -55,11 +53,17 @@ def create_user():
     for field in payload.keys():
         if field in ignore:
             continue
-        if field == 'fbuserid':
-            exists = User.query.filter_by(fbuserid=payload[field]).first()
+        if field == 'email':
+            exists = User.query.filter_by(
+                email=payload[field].lower()
+            ).first()
             if exists:
                 return make_response(jsonify(table2dict(exists)), 200)
-        if field in required:
+            else:
+                user[field] = payload[field].lower()
+                required.remove(field)
+                possible.remove(field)
+        elif field in required:
             required.remove(field)
             possible.remove(field)
             user[field] = payload[field]
@@ -83,7 +87,7 @@ def update_user(user_id):
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     payload = get_payload(request)
-    ignore = ['archive', 'userid']
+    ignore = ['archive', 'userid', 'email']
     user = query_userid(user_id)
 
     ignored = {}
