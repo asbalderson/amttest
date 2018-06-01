@@ -84,7 +84,7 @@ def update_user(user_id):
     logger = logging.getLogger(__name__)
     check_token(get_token(request))
     payload = get_payload(request)
-    ignore = ['archive', 'userid']
+    ignore = ['archive', 'userid', 'email']
     user = query_userid(user_id)
 
     ignored = {}
