@@ -54,15 +54,12 @@ def create_user():
         if field in ignore:
             continue
         if field == 'email':
-            exists = User.query.filter_by(
-                email=payload[field].lower()
-            ).first()
+            exists = User.query.filter_by(email=payload[field].lower()).first()
             if exists:
                 return make_response(jsonify(table2dict(exists)), 200)
-            else:
-                user[field] = payload[field].lower()
-                required.remove(field)
-                possible.remove(field)
+            required.remove(field)
+            possible.remove(field)
+            user[field] = payload[field].lower()
         elif field in required:
             required.remove(field)
             possible.remove(field)

@@ -10,6 +10,7 @@ from ..database.tables.certificate import Certificate
 from ..database.tables.question import Question
 from ..database.tables.section import Section
 from ..database.tables.exam import Exam
+from ..database.tables.user import User
 
 
 class TestExam(BaseTest):
@@ -22,6 +23,7 @@ class TestExam(BaseTest):
     def setUp(self):
         """Create a database for testing."""
         BaseTest.setUp(self)
+        self.enter_data()
 
     def tearDown(self):
         """Delete the database used during testing."""
@@ -71,8 +73,8 @@ class TestExam(BaseTest):
                            passed=True)
         cert2 = Certificate(userid=1,
                             examid=2,
-                            correct=1,
-                            possible=1,
+                            correct=4,
+                            possible=4,
                             passed=True)
         self.default_get_all('amttest/api/certificate/user/1', [cert, cert2])
 
@@ -92,7 +94,6 @@ class TestExam(BaseTest):
 
     def test_update_certs(self):
         """Test the creation of a new certificate, and exam grading."""
-        self.enter_data()
         response_no_header = self.client.post('amttest/api/certificate/1/1')
         self.assert403(response_no_header, 'post should require a token')
         response_no_data = self.client.post('amttest/api/certificate/1/1',
@@ -215,7 +216,10 @@ class TestExam(BaseTest):
     def enter_data(self):
         """Generate test data for exam testing."""
         data = list()
+        data.append(User(email='bob@bob.bob', name='bob'))
+        data.append(User(email='robert@robert.robert', name='robert'))
         data.append(Exam(name='Reeves Test'))
+        data.append(Exam(name='Corpora Test'))
         data.append(Section(name='Rules of Play',
                             examid=1,
                             active_questions=2))

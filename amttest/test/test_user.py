@@ -52,7 +52,7 @@ class TestUser(BaseTest):
         self.assert200(repeat_user,
                        'existing email should return a 200, existing user')
         payload.pop('name')
-        payload['email'] = 'bob@bob.bob'
+        payload['email'] = 'abc@def.g'
         missing_data = self.client.post('amttest/api/user',
                                         data=json.dumps(payload),
                                         headers=self.header_dict)
