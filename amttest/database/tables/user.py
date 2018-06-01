@@ -7,8 +7,6 @@ class User(DB.Model):
     User table.
 
     userid: Integer, generated user identifier for each user, always unique.
-    fbuserid: Text, the user id from facebook. This is only used for log in,
-        and should never be returned.
     amt_name: Text, A users amtgard persona name, not required, good to have.
     name: Text, The users real name.
     email: Text, The users email address.
@@ -19,7 +17,6 @@ class User(DB.Model):
 
     __tablename__ = 'user'
     userid = DB.Column(DB.Integer, primary_key=True, nullable=False)
-    fbuserid = DB.Column(DB.Text, nullable=False)
     amt_name = DB.Column(DB.Text, default='')
     name = DB.Column(DB.Text, nullable=False)
     email = DB.Column(DB.Text, nullable=False)
