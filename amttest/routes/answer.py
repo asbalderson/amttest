@@ -74,6 +74,12 @@ def delete_answer(answer_id):
     """Set the archive flag to true, removing it from queries."""
     check_token(get_token(request))
     answer = query_answerid(answer_id)
+
+    all_answers = Answer.query.filter_by(archive=False,
+                                         questionid=answer.questionid).all()
+    if len(all_answers) <= 1:
+        raise BadRequest('cannot archive all answers to a question')
+
     answer.archive = True
 
     DB.session.commit()

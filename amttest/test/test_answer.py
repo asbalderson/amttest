@@ -2,6 +2,7 @@
 
 from .base_test import BaseTest
 
+from ..database import DB
 from ..database.tables.answer import Answer
 
 
@@ -59,4 +60,19 @@ class TestAnswer(BaseTest):
         answer1 = Answer(answer='is this an answer?',
                          correct=False,
                          questionid=1)
+
+        self.add_obj_to_db((answer1, ))
+
+        response_delete = self.client.delete('%s/1' % 'amttest/api/answer',
+                                             headers=self.header_dict)
+        self.assert400(response_delete,
+                       'delete should return a 400 when there is only one '
+                       'answer.')
+        self.assertFalse(answer1.archive, 'entry should not be archived')
+
+        answer2 = Answer(answer='is this an also answer?',
+                         correct=False,
+                         questionid=1)
+        self.add_obj_to_db((answer2, ))
+
         self.default_delete('amttest/api/answer', answer1)
