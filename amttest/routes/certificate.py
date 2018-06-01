@@ -60,26 +60,28 @@ def update_certificate(user_id, exam_id):
                  'possible': needed_questions,
                  'passed': False}
     for submission in payload:
-        answer = Answer.query.filter_by(archive=False,
-                                        answerid=submission[
-                                            'answerid'
-                                        ]).first()
-        question = Question.query.filter_by(archive=False,
-                                            questionid=submission[
-                                                'questionid'
-                                            ]).first()
-        if not answer:
-            raise BadRequest('no answer found as submitted for question %s'
-                             % submission['questionid'])
-        if not question:
-            raise BadRequest('could not find question %s'
-                             % submission['questionid'])
+        if submission['answerid'] > 0:
 
-        if answer.correct:
-            cert_dict['correct'] += 1
-            question.correct += 1
-        answer.chosen += 1
-        question.used += 1
+            answer = Answer.query.filter_by(archive=False,
+                                            answerid=submission[
+                                                'answerid'
+                                            ]).first()
+            question = Question.query.filter_by(archive=False,
+                                                questionid=submission[
+                                                    'questionid'
+                                                ]).first()
+            if not answer:
+                raise BadRequest('no answer found as submitted for question %s'
+                                 % submission['questionid'])
+            if not question:
+                raise BadRequest('could not find question %s'
+                                 % submission['questionid'])
+
+            if answer.correct:
+                cert_dict['correct'] += 1
+                question.correct += 1
+            answer.chosen += 1
+            question.used += 1
 
     if (100.0 * cert_dict['correct'] / cert_dict['possible']) \
             >= exam.pass_percent:
