@@ -156,6 +156,7 @@ def query_certs(userid=None, examid=None):
         Certificate.possible,
         Certificate.passed,
         Certificate.testdate,
+        Certificate.examid,
         User.name.label('username'),
         Exam.name.label('examname')
     ).filter_by(
@@ -175,6 +176,7 @@ def query_certs(userid=None, examid=None):
             'possible': cert.possible,
             'passed': cert.passed,
             'testdate': cert.testdate,
+            'examid': cert.examid,
             'username': cert.username,
             'examname': cert.examname
         }
