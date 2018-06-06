@@ -80,8 +80,8 @@ def get_randomized_exam(exam_id):
 
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['GET'])
 def get_exam(exam_id):
-    check_token(get_token(request))
     """Get one single exam based on the id."""
+    check_token(get_token(request))
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
         raise NotFound('exam not found')
