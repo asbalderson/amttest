@@ -10,8 +10,7 @@ chosen from each section, answers and question order is scrambled.  Tests are
 graded and stored as certificates for each user based on the exam requirements
 at the time of grading.
 
-A front-end (UI) for this project is under development (at the time of this
-writing) by [dpat](https://github.com/dpat).
+A front-end (UI) for this project is under development located [here](https://github.com/dpat/amtfront).
 
 ## Prereqs
 
