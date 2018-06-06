@@ -6,7 +6,7 @@ from .apierror import APIError
 from ..helpers.bphandler import BPHandler
 
 UNAUTHORIZED_BP = Blueprint('Unauthorized', __name__)
-BPHandler.add_blueprint(UNAUTHORIZED_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(UNAUTHORIZED_BP)
 
 
 class Unauthorized(APIError):

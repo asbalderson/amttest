@@ -5,7 +5,7 @@ from .apierror import APIError
 from ..helpers.bphandler import BPHandler
 
 NOT_FOUND_BP = Blueprint('NotFound', __name__)
-BPHandler.add_blueprint(NOT_FOUND_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(NOT_FOUND_BP)
 
 
 class NotFound(APIError):

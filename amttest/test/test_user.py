@@ -26,7 +26,7 @@ class TestUser(BaseTest):
     def test_get_user(self):
         """Tests for querying a single user."""
         user1 = User(name='test', email='test@test.test')
-        self.default_get('amttest/api/user', user1)
+        self.default_get('/user', user1)
 
     def test_get_all_users(self):
         """Tests for querying all users."""
@@ -35,7 +35,7 @@ class TestUser(BaseTest):
         user2 = User(name='test2',
                      email='test2@test2.test2')
         user_list = [user1, user2]
-        self.default_get_all('amttest/api/user', user_list)
+        self.default_get_all('user', user_list)
 
     def test_add_user(self):
         """Tests for route to add users."""
@@ -44,16 +44,16 @@ class TestUser(BaseTest):
         ignore = {'archive': True,
                   'userid': 42}
 
-        self.default_post('amttest/api/user', payload, User, ignore)
+        self.default_post('user', payload, User, ignore)
 
-        repeat_user = self.client.post('amttest/api/user',
+        repeat_user = self.client.post('user',
                                        data=json.dumps(payload),
                                        headers=self.header_dict)
         self.assert200(repeat_user,
                        'existing email should return a 200, existing user')
         payload.pop('name')
         payload['email'] = 'abc@def.g'
-        missing_data = self.client.post('amttest/api/user',
+        missing_data = self.client.post('user',
                                         data=json.dumps(payload),
                                         headers=self.header_dict)
         self.assert400(missing_data,
@@ -64,7 +64,7 @@ class TestUser(BaseTest):
         payload['kingdom'] = 'IMD'
         payload['amt_name'] = 'toaster'  # no idea
 
-        extra_data = self.client.post('amttest/api/user',
+        extra_data = self.client.post('user',
                                       data=json.dumps(payload),
                                       headers=self.header_dict)
 
@@ -81,10 +81,10 @@ class TestUser(BaseTest):
                   'userid': 42}
         user1 = User(name='test1',
                      email='test1@test1.test1')
-        self.default_put('amttest/api/user', payload, user1, User, ignore)
+        self.default_put('user', payload, user1, User, ignore)
 
     def test_delete_user(self):
         """Test for the route to delete (archive) a user."""
         user1 = User(name='test1',
                      email='test1@test1.test1')
-        self.default_delete('amttest/api/user', user1)
+        self.default_delete('user', user1)

@@ -5,7 +5,7 @@ from .apierror import APIError
 from ..helpers.bphandler import BPHandler
 
 FORBIDDEN_BP = Blueprint('Forbidden', __name__)
-BPHandler.add_blueprint(FORBIDDEN_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(FORBIDDEN_BP)
 
 
 class Forbidden(APIError):

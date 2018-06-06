@@ -7,7 +7,7 @@ from ..helpers.bphandler import BPHandler
 
 
 BAD_REQUEST_BP = Blueprint('BadRequest', __name__)
-BPHandler.add_blueprint(BAD_REQUEST_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(BAD_REQUEST_BP)
 
 
 class BadRequest(APIError):

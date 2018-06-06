@@ -36,7 +36,7 @@ def config_dabase(app):
     :param app: configured Flask object.
     :return: None
     """
-    app_path = '/var/cache/amttest'
+    app_path = '/opt/amttest'
     if not os.path.exists(app_path):
         os.mkdir(app_path)
     db_path = 'sqlite:///%s/amttest.db' % app_path
@@ -55,7 +55,7 @@ def setup_logging(debug=False, verbose=False):
     :return: None
     """
     logger = logging.getLogger()
-    log_dir = '/var/log/amttest'
+    log_dir = '/opt/amttest'
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     file_name = os.path.join(log_dir, 'amttest.log')
