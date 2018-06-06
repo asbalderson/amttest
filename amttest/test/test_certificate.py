@@ -57,7 +57,8 @@ class TestExam(BaseTest):
                             passed=True)
         self.default_get_all('certificate/1/1', [cert, cert2])
 
-        no_user_resp = self.client.get('certificate/42/1')
+        no_user_resp = self.client.get('certificate/42/1',
+                                       headers=self.header_dict)
         self.assert200(no_user_resp,
                        'no user should still return an empty list')
         self.assertEqual(no_user_resp.json, [],

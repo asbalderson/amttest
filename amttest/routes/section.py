@@ -44,6 +44,7 @@ def create_section(exam_id):
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['GET'])
 def get_exam_sections(exam_id):
     """Get all sections for one exam."""
+    check_token(get_token(request))
     section_data = Section.query.filter_by(archive=False, examid=exam_id).all()
 
     section_list = []
@@ -56,6 +57,7 @@ def get_exam_sections(exam_id):
 @SECTION_BP.route('/section', methods=['GET'])
 def get_all_sections():
     """Get all sections in the database."""
+    check_token(get_token(request))
     section_data = Section.query.filter_by(archive=False).all()
 
     section_list = []
@@ -68,6 +70,7 @@ def get_all_sections():
 @SECTION_BP.route('/section/<int:section_id>', methods=['GET'])
 def get_section(section_id):
     """Get one section based on the section id."""
+    check_token(get_token(request))
     section = query_section(section_id)
     return_dict = table2dict(section)
 

@@ -20,6 +20,7 @@ BPHandler.add_blueprint(USER_BP)
 @USER_BP.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     """Get all info about a single user."""
+    check_token(get_token(request))
     user = query_userid(user_id)
 
     data = table2dict(user)
@@ -29,6 +30,7 @@ def get_user(user_id):
 @USER_BP.route('/user', methods=['GET'])
 def get_all_users():
     """Get data on all users."""
+    check_token(get_token(request))
     all_users = User.query.filter_by(archive=False).all()
     returnlist = []
     for user in all_users:

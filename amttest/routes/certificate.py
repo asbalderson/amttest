@@ -106,6 +106,7 @@ def update_certificate(user_id, exam_id):
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['GET'])
 def get_certificate(user_id, exam_id):
     """Get a specific exam based on the userid and examid."""
+    check_token(get_token(request))
     cert_list = query_certs(userid=user_id, examid=exam_id)
 
     return make_response(jsonify(cert_list), 200)
@@ -114,6 +115,7 @@ def get_certificate(user_id, exam_id):
 @CERT_BP.route('/certificate/user/<int:user_id>', methods=['GET'])
 def get_user_certs(user_id):
     """Get all certs for a single user."""
+    check_token(get_token(request))
     cert_list = query_certs(userid=user_id)
 
     return make_response(jsonify(cert_list), 200)
@@ -122,6 +124,7 @@ def get_user_certs(user_id):
 @CERT_BP.route('/certificate/exam/<int:exam_id>', methods=['GET'])
 def get_test_certs(exam_id):
     """Get all certificates for a given exam id."""
+    check_token(get_token(request))
     cert_list = query_certs(examid=exam_id)
 
     return make_response(jsonify(cert_list), 200)
@@ -130,6 +133,7 @@ def get_test_certs(exam_id):
 @CERT_BP.route('/certificate', methods=['GET'])
 def get_all_certs():
     """Get all certificates int he database."""
+    check_token(get_token(request))
     cert_list = query_certs()
 
     return make_response(jsonify(cert_list), 200)
