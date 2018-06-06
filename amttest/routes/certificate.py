@@ -21,7 +21,7 @@ from ..helpers.token import check_token, get_token
 
 
 CERT_BP = Blueprint('certificate', __name__)
-BPHandler.add_blueprint(CERT_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(CERT_BP)
 
 
 @CERT_BP.route('/certificate/<int:user_id>/<int:exam_id>', methods=['POST'])

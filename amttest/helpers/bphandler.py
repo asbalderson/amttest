@@ -25,7 +25,7 @@ class BPHandler(object):
         :return: None
         """
         argdict = {}
-
+        # argdict['url_prefix'] = '/amttest/api'
         if kwargs:
             argdict.update(**kwargs)
         BPHandler.bpdict[blueprint] = argdict

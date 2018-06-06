@@ -6,7 +6,7 @@ from .apierror import APIError
 from ..helpers.bphandler import BPHandler
 
 GONE_BP = Blueprint('Gone', __name__)
-BPHandler.add_blueprint(GONE_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(GONE_BP)
 
 
 class Gone(APIError):

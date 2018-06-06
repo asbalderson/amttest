@@ -18,7 +18,7 @@ from ..errors.notfound import NotFound
 
 
 QUESTION_BP = Blueprint('question', __name__)
-BPHandler.add_blueprint(QUESTION_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(QUESTION_BP)
 
 
 @QUESTION_BP.route('/section/<int:section_id>/question', methods=['POST'])

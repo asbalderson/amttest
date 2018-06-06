@@ -42,13 +42,13 @@ class TestSection(BaseTest):
         section2 = Section(name='world of known',
                            examid=1)
 
-        self.default_get_all('amttest/api/section', [section1, section2])
+        self.default_get_all('section', [section1, section2])
 
     def test_get_section(self):
         """Test the route for getting a single section."""
         section1 = Section(name='world of unknown',
                            examid=1)
-        self.default_get('amttest/api/section', section1, ignore=['questions'])
+        self.default_get('section', section1, ignore=['questions'])
 
     def test_get_exam_sections(self):
         """Test the route for getting all sections for an exam."""
@@ -56,7 +56,7 @@ class TestSection(BaseTest):
                            examid=1)
         section2 = Section(name='world of known',
                            examid=1)
-        self.default_get_all('amttest/api/exam/1/section',
+        self.default_get_all('exam/1/section',
                              [section1, section2])
 
     def test_new_section(self):
@@ -64,7 +64,7 @@ class TestSection(BaseTest):
         payload = {'name': 'just some section'}
         ignore = {'archive': True,
                   'sectionid': 69}
-        self.default_post('amttest/api/exam/1/section',
+        self.default_post('exam/1/section',
                           payload,
                           Section,
                           ignore)
@@ -76,14 +76,14 @@ class TestSection(BaseTest):
                   'sectionid': 69}
         section1 = Section(name='world of unknown',
                            examid=1)
-        self.default_put('amttest/api/section',
+        self.default_put('section',
                          payload,
                          section1,
                          Section,
                          ignore)
 
         payload_question = {'active_questions': 300}
-        missing_questions = self.client.put('amttest/api/section/1',
+        missing_questions = self.client.put('section/1',
                                             headers=self.header_dict,
                                             data=json.dumps(payload_question))
         self.assert400(missing_questions,
@@ -94,4 +94,4 @@ class TestSection(BaseTest):
         """Test the route for deleting (archiving) a section."""
         section1 = Section(name='world of unknown',
                            examid=1)
-        self.default_delete('amttest/api/section', section1)
+        self.default_delete('section', section1)

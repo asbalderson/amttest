@@ -100,16 +100,16 @@ class TestExam(BaseTest):
         """Test the route for getting all exams."""
         exam1 = Exam(name='Reeves Test')
         exam2 = Exam(name='Corpora Test')
-        self.default_get_all('amttest/api/exam', [exam1, exam2])
+        self.default_get_all('exam', [exam1, exam2])
 
     def test_get_randomized_test(self):
         """Test the route for generating an exam."""
         exam1 = Exam(name='Reeves Test')
         self.add_obj_to_db([exam1])
-        response_dne = self.client.get('amttest/api/exam/42/take')
+        response_dne = self.client.get('exam/42/take')
         self.assert404(response_dne, 'non existent id should return a 404')
 
-        exam_response = self.client.get('amttest/api/exam/1/take')
+        exam_response = self.client.get('exam/1/take')
         self.assert200(exam_response,
                        'successful test generation should return 200')
         self.assertEqual(len(exam_response.json['questions']), 4,
@@ -127,7 +127,7 @@ class TestExam(BaseTest):
         answer.archive = True
         DB.session.commit()
 
-        exam_archive = self.client.get('amttest/api/exam/1/take')
+        exam_archive = self.client.get('exam/1/take')
         self.assert200(exam_archive,
                        'when a question is archived, test generation does not '
                        'return 200')
@@ -146,24 +146,24 @@ class TestExam(BaseTest):
     def test_get_exam(self):
         """Test the route for getting one exam."""
         exam1 = Exam(name='Reeves Test')
-        self.default_get('amttest/api/exam', exam1)
+        self.default_get('exam', exam1)
 
     def test_create_exam(self):
         """Test the route for creating one exam."""
         payload = {'name': 'Reeves Test'}
         ignore = {'examid': 9001,
                   'archive': True}
-        self.default_post('amttest/api/exam', payload, Exam, ignore)
+        self.default_post('exam', payload, Exam, ignore)
 
         payload['pass_percent'] = 101
-        response_big_percent = self.client.post('amttest/api/exam',
+        response_big_percent = self.client.post('exam',
                                                 data=json.dumps(payload),
                                                 headers=self.header_dict)
         self.assert400(response_big_percent,
                        'should not accept pass percent over 100')
 
         payload['pass_percent'] = .99
-        response_small_percent = self.client.post('amttest/api/exam',
+        response_small_percent = self.client.post('exam',
                                                   data=json.dumps(payload),
                                                   headers=self.header_dict)
         self.assert400(response_small_percent,
@@ -175,17 +175,17 @@ class TestExam(BaseTest):
         ignore = {'examid': 9001,
                   'archive': True}
         exam1 = Exam(name='Reeves Test')
-        self.default_put('amttest/api/exam', payload, exam1, Exam, ignore)
+        self.default_put('exam', payload, exam1, Exam, ignore)
 
         payload['pass_percent'] = 101
-        response_big_percent = self.client.put('amttest/api/exam/1',
+        response_big_percent = self.client.put('exam/1',
                                                data=json.dumps(payload),
                                                headers=self.header_dict)
         self.assert400(response_big_percent,
                        'should not accept pass percent over 100')
 
         payload['pass_percent'] = .99
-        response_small_percent = self.client.put('amttest/api/exam/1',
+        response_small_percent = self.client.put('exam/1',
                                                  data=json.dumps(payload),
                                                  headers=self.header_dict)
         self.assert400(response_small_percent,
@@ -194,4 +194,4 @@ class TestExam(BaseTest):
     def test_delete_exam(self):
         """Test the route for deleting (archiving) and exam."""
         exam1 = Exam(name='Reeves Test')
-        self.default_delete('amttest/api/exam', exam1)
+        self.default_delete('exam', exam1)

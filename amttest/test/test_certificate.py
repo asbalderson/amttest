@@ -41,7 +41,7 @@ class TestExam(BaseTest):
                             correct=1,
                             possible=1,
                             passed=True)
-        self.default_get_all('amttest/api/certificate', [cert, cert2])
+        self.default_get_all('certificate', [cert, cert2])
 
     def test_get_certificate(self):
         """Test the route for getting a single certificate by id."""
@@ -55,9 +55,9 @@ class TestExam(BaseTest):
                             correct=1,
                             possible=1,
                             passed=True)
-        self.default_get_all('amttest/api/certificate/1/1', [cert, cert2])
+        self.default_get_all('certificate/1/1', [cert, cert2])
 
-        no_user_resp = self.client.get('amttest/api/certificate/42/1')
+        no_user_resp = self.client.get('certificate/42/1')
         self.assert200(no_user_resp,
                        'no user should still return an empty list')
         self.assertEqual(no_user_resp.json, [],
@@ -76,7 +76,7 @@ class TestExam(BaseTest):
                             correct=4,
                             possible=4,
                             passed=True)
-        self.default_get_all('amttest/api/certificate/user/1', [cert, cert2])
+        self.default_get_all('certificate/user/1', [cert, cert2])
 
     def test_get_test_certs(self):
         """Test the route for getting all certs based on examid."""
@@ -90,18 +90,18 @@ class TestExam(BaseTest):
                             correct=1,
                             possible=1,
                             passed=True)
-        self.default_get_all('amttest/api/certificate/exam/1', [cert, cert2])
+        self.default_get_all('certificate/exam/1', [cert, cert2])
 
     def test_update_certs(self):
         """Test the creation of a new certificate, and exam grading."""
-        response_no_header = self.client.post('amttest/api/certificate/1/1')
+        response_no_header = self.client.post('certificate/1/1')
         self.assert403(response_no_header, 'post should require a token')
-        response_no_data = self.client.post('amttest/api/certificate/1/1',
+        response_no_data = self.client.post('certificate/1/1',
                                             headers=self.header_dict)
         self.assert400(response_no_data,
                        'some data is required for a new entry')
 
-        response_no_exam = self.client.post('amttest/api/certificate/1/42',
+        response_no_exam = self.client.post('certificate/1/42',
                                             headers=self.header_dict,
                                             data=json.dumps(['abc', '123']))
         self.assert404(response_no_exam,
@@ -115,7 +115,7 @@ class TestExam(BaseTest):
             {'questionid': 3,
              'answerid': 12}
         ]
-        response_mini_payload = self.client.post('amttest/api/certificate/1/1',
+        response_mini_payload = self.client.post('certificate/1/1',
                                                  headers=self.header_dict,
                                                  data=json.dumps(
                                                      short_payload))
@@ -135,7 +135,7 @@ class TestExam(BaseTest):
         ]
 
         response_bad_question = self.client.post(
-            'amttest/api/certificate/1/1',
+            'certificate/1/1',
             headers=self.header_dict,
             data=json.dumps(payload_bad_question))
         self.assert400(response_bad_question,
@@ -151,7 +151,7 @@ class TestExam(BaseTest):
              'answerid': 13}
         ]
 
-        response_bad_answer = self.client.post('amttest/api/certificate/1/1',
+        response_bad_answer = self.client.post('certificate/1/1',
                                                headers=self.header_dict,
                                                data=json.dumps(
                                                    payload_bad_answer))
@@ -169,7 +169,7 @@ class TestExam(BaseTest):
              'answerid': 13}
         ]
 
-        response_correct = self.client.post('amttest/api/certificate/1/1',
+        response_correct = self.client.post('certificate/1/1',
                                             headers=self.header_dict,
                                             data=json.dumps(payload))
         self.assertEqual(response_correct.status_code, 201,
@@ -205,7 +205,7 @@ class TestExam(BaseTest):
             {'questionid': 4,
              'answerid': 13}
         ]
-        response_wrong = self.client.post('amttest/api/certificate/1/1',
+        response_wrong = self.client.post('certificate/1/1',
                                           headers=self.header_dict,
                                           data=json.dumps(payload_wrong))
         self.assertEqual(response_wrong.status_code, 201,

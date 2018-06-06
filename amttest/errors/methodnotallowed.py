@@ -6,7 +6,7 @@ from .apierror import APIError
 from ..helpers.bphandler import BPHandler
 
 METHOD_NOT_ALLOWED_BP = Blueprint('Method Not Allowed', __name__)
-BPHandler.add_blueprint(METHOD_NOT_ALLOWED_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(METHOD_NOT_ALLOWED_BP)
 
 
 class MethodNotAllowed(APIError):

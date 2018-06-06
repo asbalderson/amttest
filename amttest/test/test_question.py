@@ -34,7 +34,7 @@ class TesSection(BaseTest):
     def test_get_question(self):
         """Test the route for querying a single question."""
         question1 = Question(question='what is not a question?', sectionid=1)
-        self.default_get('amttest/api/question', question1, ignore=['answers'])
+        self.default_get('question', question1, ignore=['answers'])
 
     def test_add_question(self):
         """Test the route for adding a question."""
@@ -44,7 +44,7 @@ class TesSection(BaseTest):
                   'questionid': 21,
                   'used': 98}
 
-        self.default_post('amttest/api/section/1/question',
+        self.default_post('section/1/question',
                           payload,
                           Question,
                           ignore)
@@ -57,7 +57,7 @@ class TesSection(BaseTest):
                   'correct': 700,
                   'questionid': 21,
                   'used': 98}
-        self.default_put('amttest/api/question',
+        self.default_put('question',
                          payload,
                          question1,
                          Question,
@@ -68,10 +68,10 @@ class TesSection(BaseTest):
         question1 = Question(question='what is not a question?', sectionid=2)
         section = Section(examid=1, name='bacon', active_questions=0)
         self.add_obj_to_db([section])
-        self.default_delete('amttest/api/question', question1)
+        self.default_delete('question', question1)
 
         section.active_questions = 3
         DB.session.commit()
 
-        bad_delete = self.client.delete('amttest/api/question/1')
+        bad_delete = self.client.delete('question/1')
         self.assert403(bad_delete, 'cannot delete an already deleted question')

@@ -26,7 +26,7 @@ class TestAnswer(BaseTest):
         answer1 = Answer(answer='is this an answer?',
                          correct=False,
                          questionid=1)
-        self.default_get('amttest/api/answer', answer1)
+        self.default_get('answer', answer1)
 
     def test_add_answer(self):
         """Test the route for creating an answer."""
@@ -35,7 +35,7 @@ class TestAnswer(BaseTest):
         ignore = {'answerid': 235,
                   'chosen': 40,
                   'archive': True}
-        self.default_post('amttest/api/question/1/answer',
+        self.default_post('question/1/answer',
                           payload,
                           Answer,
                           ignore)
@@ -49,7 +49,7 @@ class TestAnswer(BaseTest):
         ignore = {'answerid': 235,
                   'chosen': 40,
                   'archive': True}
-        self.default_put('amttest/api/answer',
+        self.default_put('answer',
                          payload,
                          answer1,
                          Answer,
@@ -63,7 +63,7 @@ class TestAnswer(BaseTest):
 
         self.add_obj_to_db((answer1, ))
 
-        response_delete = self.client.delete('%s/1' % 'amttest/api/answer',
+        response_delete = self.client.delete('%s/1' % 'answer',
                                              headers=self.header_dict)
         self.assert400(response_delete,
                        'delete should return a 400 when there is only one '
@@ -75,4 +75,4 @@ class TestAnswer(BaseTest):
                          questionid=1)
         self.add_obj_to_db((answer2, ))
 
-        self.default_delete('amttest/api/answer', answer1)
+        self.default_delete('answer', answer1)

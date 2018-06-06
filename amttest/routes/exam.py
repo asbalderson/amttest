@@ -21,7 +21,7 @@ from ..helpers.token import get_token, check_token
 
 
 EXAM_BP = Blueprint('exam', __name__)
-BPHandler.add_blueprint(EXAM_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(EXAM_BP)
 
 
 @EXAM_BP.route('/exam', methods=['GET'])

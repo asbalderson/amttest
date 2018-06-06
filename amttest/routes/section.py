@@ -19,7 +19,7 @@ from ..helpers.token import get_token, check_token
 
 
 SECTION_BP = Blueprint('section', __name__)
-BPHandler.add_blueprint(SECTION_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(SECTION_BP)
 
 
 @SECTION_BP.route('/exam/<int:exam_id>/section', methods=['POST'])

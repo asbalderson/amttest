@@ -14,7 +14,7 @@ from ..helpers.bphandler import BPHandler
 from ..helpers.token import check_token, get_token
 
 USER_BP = Blueprint('user', __name__)
-BPHandler.add_blueprint(USER_BP, url_prefix='/amttest/api')
+BPHandler.add_blueprint(USER_BP)
 
 
 @USER_BP.route('/user/<int:user_id>', methods=['GET'])
