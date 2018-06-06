@@ -106,10 +106,12 @@ class TestExam(BaseTest):
         """Test the route for generating an exam."""
         exam1 = Exam(name='Reeves Test')
         self.add_obj_to_db([exam1])
-        response_dne = self.client.get('exam/42/take', headers=self.header_dict)
+        response_dne = self.client.get('exam/42/take',
+                                       headers=self.header_dict)
         self.assert404(response_dne, 'non existent id should return a 404')
 
-        exam_response = self.client.get('exam/1/take', headers=self.header_dict)
+        exam_response = self.client.get('exam/1/take',
+                                        headers=self.header_dict)
         self.assert200(exam_response,
                        'successful test generation should return 200')
         self.assertEqual(len(exam_response.json['questions']), 4,
