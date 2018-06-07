@@ -27,6 +27,7 @@ BPHandler.add_blueprint(EXAM_BP)
 @EXAM_BP.route('/exam', methods=['GET'])
 def get_exams():
     """Get all exams which are not archived."""
+    check_token(get_token(request))
     data = Exam.query.filter_by(archive=False).all()
     return_list = []
     for exam in data:
@@ -43,6 +44,7 @@ def get_randomized_exam(exam_id):
     Questions are randomly selected for each section, and answers are scrambled
     by order.  Questions are then scrambled.
     """
+    check_token(get_token(request))
     logger = logging.getLogger(__name__)
     exam = query_exam(exam_id)
 
@@ -79,6 +81,7 @@ def get_randomized_exam(exam_id):
 @EXAM_BP.route('/exam/<int:exam_id>', methods=['GET'])
 def get_exam(exam_id):
     """Get one single exam based on the id."""
+    check_token(get_token(request))
     exam = Exam.query.filter_by(archive=False, examid=exam_id).first()
     if not exam:
         raise NotFound('exam not found')

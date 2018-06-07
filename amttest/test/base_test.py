@@ -57,9 +57,13 @@ class BaseTest(TestCase):
         :param ignore: list, keys not returned from the get
         :return: None
         """
+        response_no_header = self.client.get('%s/42' % route)
+        self.assert403(response_no_header, 'get should require a token')
+
         self.add_obj_to_db([db_object])
 
-        response = self.client.get('%s/1' % route)
+        response = self.client.get('%s/1' % route,
+                                   headers=self.header_dict)
         self.assert200(response, 'success status code not 200')
 
         record = table2dict(db_object)
@@ -69,14 +73,14 @@ class BaseTest(TestCase):
 
         self.compare_object(response.json, record)
 
-        response = self.client.get('%s/42' % route)
+        response = self.client.get('%s/42' % route, headers=self.header_dict)
         self.assert404(response, 'non existent route should return 404')
 
         db_object.archive = True
         DB.session.commit()
         DB.session.refresh(db_object)
 
-        response = self.client.get('%s/1' % route)
+        response = self.client.get('%s/1' % route, headers=self.header_dict)
         self.assert404(response, 'archived values should not return')
 
     def default_get_all(self, route, object_list):
@@ -92,13 +96,16 @@ class BaseTest(TestCase):
         :param object_list: list of database entires to add to the database.
         :return: None
         """
-        response_empty = self.client.get(route)
+        response_no_header = self.client.get(route)
+        self.assert403(response_no_header, 'get should require a token')
+
+        response_empty = self.client.get(route, headers=self.header_dict)
         self.assert200(response_empty,
                        'even an emptry respones should return values')
         self.assertListEqual(response_empty.json, [])
         self.add_obj_to_db(object_list)
 
-        response = self.client.get(route)
+        response = self.client.get(route, headers=self.header_dict)
         self.assert200(response, 'getting values should return a 200')
         self.assertEqual(len(response.json), len(object_list),
                          'get not returning all values')
@@ -106,7 +113,7 @@ class BaseTest(TestCase):
         object_list[0].archive = True
         DB.session.commit()
 
-        response_archive = self.client.get(route)
+        response_archive = self.client.get(route, headers=self.header_dict)
         self.assert200(response_archive,
                        'should get 200 even when archived values')
         self.assertEqual(len(response_archive.json), len(object_list) - 1,

@@ -48,6 +48,7 @@ def add_answer(question_id):
 @ANSWER_BP.route('/answer/<int:answer_id>', methods=['GET'])
 def get_answer(answer_id):
     """Get a single answer based on the answer id."""
+    check_token(get_token(request))
     answer = query_answerid(answer_id)
     return make_response(jsonify(table2dict(answer)), 200)
 
