@@ -46,6 +46,9 @@ class TestUser(BaseTest):
 
         self.default_post('user', payload, User, ignore)
 
+        user = User.query.filter_by(userid=1).first()
+        self.assertTrue(user.admin, 'first user created should be an admin')
+
         repeat_user = self.client.post('user',
                                        data=json.dumps(payload),
                                        headers=self.header_dict)
