@@ -80,6 +80,7 @@ def create_user():
     add_value(new)
     if new.userid == 1:
         new.admin = True
+    DB.session.commit()
     DB.session.refresh(new)
     return make_response(jsonify(table2dict(new)), 201)
 
