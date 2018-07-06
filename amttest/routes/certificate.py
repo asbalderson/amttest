@@ -53,8 +53,8 @@ def update_certificate(user_id, exam_id):
         needed_questions += section.active_questions
 
     logger.debug('there are %s active questions in %s sections',
-                needed_questions,
-                len(sections))
+                 needed_questions,
+                 len(sections))
 
     if needed_questions != len(payload):
         raise BadRequest('submitted exam does not have enough answers')
@@ -90,7 +90,8 @@ def update_certificate(user_id, exam_id):
             answer.chosen += 1
             question.used += 1
 
-    logger.debug('before grading the exam, the cert_dict is %s', str(cert_dict))
+    logger.debug('before grading the exam, the cert_dict is %s',
+                 str(cert_dict))
 
     if (100.0 * cert_dict['correct'] / cert_dict['possible']) \
             >= exam.pass_percent:
