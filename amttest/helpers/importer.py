@@ -37,6 +37,7 @@ def import_file(file_path, examname):
         questions = collections.defaultdict(list)
 
         for row in data:
+            print(row)
             answer = {}
             answer['answer'] = row['answer']
             answer['correct'] = row['correct'].lower() == 'true'
