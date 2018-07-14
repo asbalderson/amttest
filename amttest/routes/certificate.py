@@ -141,9 +141,10 @@ def get_test_certs(exam_id):
     reduce_dict = {}
     for cert in cert_list:
         existing = reduce_dict.get(cert['username'])
-        if existing and existing['passed']:
-            if cert.testdate > existing.testdate:
-                reduce_dict[existing['username']] = cert
+        if existing:
+            if cert['passed']:
+                if cert['testdate'] > existing['testdate']:
+                    reduce_dict[existing['username']] = cert
         else:
             reduce_dict[cert['username']] = cert
 
