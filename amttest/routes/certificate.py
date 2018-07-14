@@ -135,9 +135,19 @@ def get_user_certs(user_id):
 def get_test_certs(exam_id):
     """Get all certificates for a given exam id."""
     check_token(get_token(request))
+
     cert_list = query_certs(examid=exam_id)
 
-    return make_response(jsonify(cert_list), 200)
+    reduce_dict = {}
+    for cert in cert_list:
+        existing = reduce_dict.get(cert['username'])
+        if existing and existing['passed']:
+            if cert.testdate > existing.testdate:
+                reduce_dict[existing['username']] = cert
+        else:
+            reduce_dict[cert['username']] = cert
+
+    return make_response(jsonify(list(reduce_dict.values())), 200)
 
 
 @CERT_BP.route('/certificate', methods=['GET'])
@@ -182,7 +192,6 @@ def query_certs(userid=None, examid=None):
     ).all()
 
     cert_list = []
-    print(len(certs))
     for cert in certs:
         temp = {
             'certid': cert.certid,
@@ -195,5 +204,4 @@ def query_certs(userid=None, examid=None):
             'examname': cert.examname
         }
         cert_list.append(temp)
-    print(cert_list)
     return cert_list
