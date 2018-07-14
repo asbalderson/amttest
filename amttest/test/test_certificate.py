@@ -1,9 +1,11 @@
 """Test all routes for Certificate creation, modification, and query."""
 
+import datetime
 import json
 
 from .base_test import BaseTest
 
+from ..database import DB
 from ..database.utils import table2dict
 from ..database.tables.answer import Answer
 from ..database.tables.certificate import Certificate
@@ -92,6 +94,49 @@ class TestExam(BaseTest):
                             possible=1,
                             passed=True)
         self.default_get_all('certificate/exam/1', [cert, cert2])
+
+        cert3 = Certificate(userid=2,
+                            examid=1,
+                            correct=1,
+                            possible=1,
+                            passed=True,
+                            testdate=datetime.datetime.utcnow() +
+                            datetime.timedelta(days=1))
+        self.add_obj_to_db((cert3, ))
+
+        get_exam_most_recent = self.client.get('certificate/exam/1',
+                                               headers=self.header_dict)
+        self.assert200(get_exam_most_recent,
+                       'getting certs after reduce should return 200')
+        cert.archive = False
+        DB.session.commit()
+        DB.session.refresh(cert)
+
+        for cert_query in get_exam_most_recent.json:
+            if cert_query['certid'] == 1:
+                pass
+            elif cert_query['certid'] == 3:
+                pass
+            else:
+                raise IndexError('unexpected value in cert dict')
+
+        cert3.passed = False
+        DB.session.commit()
+        DB.session.refresh(cert3)
+
+        exam_most_recent_fail = self.client.get('certificate/exam/1',
+                                                headers=self.header_dict)
+        self.assert200(exam_most_recent_fail,
+                       'should return 201 even if a failed exam in list 201')
+
+        for cert_query in exam_most_recent_fail.json:
+            if cert_query['certid'] == 1:
+                pass
+            elif cert_query['certid'] == 2:
+                pass
+            else:
+                print(exam_most_recent_fail.json)
+                raise IndexError('unexpected value in cert dict')
 
     def test_update_certs(self):
         """Test the creation of a new certificate, and exam grading."""
