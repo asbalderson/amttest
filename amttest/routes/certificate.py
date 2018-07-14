@@ -183,6 +183,8 @@ def query_certs(userid=None, examid=None):
         Certificate.testdate,
         Certificate.examid,
         User.name.label('username'),
+        User.amt_name.label('amtname'),
+        User.kingdom,
         Exam.name.label('examname')
     ).filter_by(
         **filter_dict
@@ -202,6 +204,8 @@ def query_certs(userid=None, examid=None):
             'testdate': cert.testdate,
             'examid': cert.examid,
             'username': cert.username,
+            'amtname': cert.amtname,
+            'kingdom': cert.kingdom,
             'examname': cert.examname
         }
         cert_list.append(temp)
