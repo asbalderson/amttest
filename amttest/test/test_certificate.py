@@ -222,6 +222,8 @@ class TestExam(BaseTest):
                          'grading should return 201')
         self.assertTrue(response_correct.json['passed'],
                         'grading should give a pass with all correct')
+        self.assertFalse(response_correct.json['incorrect'],
+                         'when all are correct, incorrect should be empty')
         self.assertEqual(response_correct.json['correct'], 4,
                          'all questions should be correct')
         self.assertEqual(response_correct.json['possible'], len(payload),
@@ -258,6 +260,8 @@ class TestExam(BaseTest):
                          'even wrong answers should return a 201')
         self.assertFalse(response_wrong.json['passed'],
                          'failed tests should fail')
+        self.assertTrue(response_wrong.json['incorrect'],
+                        'failed tests should return incorrect answers')
 
     def enter_data(self):
         """Generate test data for exam testing."""

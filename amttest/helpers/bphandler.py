@@ -2,7 +2,7 @@
 from collections import defaultdict
 
 
-class BPHandler(object):
+class BPHandler:
     """
     This class collects blueprints so they can be registered with flask later.
 

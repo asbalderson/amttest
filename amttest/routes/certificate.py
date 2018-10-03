@@ -66,6 +66,7 @@ def update_certificate(user_id, exam_id):
                  'passed': False}
     logger.debug('the cert_dict is %s', str(cert_dict))
 
+    incorrect = []
     for submission in payload:
         if submission['answerid'] > 0:
 
@@ -87,6 +88,8 @@ def update_certificate(user_id, exam_id):
             if answer.correct:
                 cert_dict['correct'] += 1
                 question.correct += 1
+            else:
+                incorrect.append(question.question)
             answer.chosen += 1
             question.used += 1
 
@@ -106,7 +109,9 @@ def update_certificate(user_id, exam_id):
 
     for a_cert in cert_list:
         if a_cert['certid'] == cert.certid:
-            return make_response(jsonify(table2dict(cert)), 201)
+            return_dict = table2dict(cert)
+            return_dict['incorrect'] = incorrect
+            return make_response(jsonify(return_dict), 201)
 
     raise InternalServerError('There should be no way to get here. '
                               'After grading a test, the cert should exist and'
