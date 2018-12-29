@@ -68,16 +68,16 @@ def update_certificate(user_id, exam_id):
 
     incorrect = []
     for submission in payload:
+        question = Question.query.filter_by(archive=False,
+                                            questionid=submission[
+                                                'questionid'
+                                            ]).first()
         if submission['answerid'] > 0:
 
             answer = Answer.query.filter_by(archive=False,
                                             answerid=submission[
                                                 'answerid'
                                             ]).first()
-            question = Question.query.filter_by(archive=False,
-                                                questionid=submission[
-                                                    'questionid'
-                                                ]).first()
             if not answer:
                 raise BadRequest('no answer found as submitted for question %s'
                                  % submission['questionid'])
@@ -92,6 +92,8 @@ def update_certificate(user_id, exam_id):
                 incorrect.append(question.question)
             answer.chosen += 1
             question.used += 1
+        else:
+            incorrect.append(question.question)
 
     logger.debug('before grading the exam, the cert_dict is %s',
                  str(cert_dict))
